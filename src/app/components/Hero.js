@@ -28,13 +28,13 @@ function Hero() {
       <div className="typing-container">
         <h1>
           <span className="typing-fast">Welcome to MediLink</span>
-          <span className="cursor-fast"></span>
+          {/* <span className="cursor-fast"></span> */}
         </h1>
         <h2>
           <span className="typing-slow">
             Revolutionizing Healthcare with AI-Powered Solutions
           </span>
-          <span className="cursor-slow"></span>
+          {/* <span className="cursor-slow"></span> */}
         </h2>
       </div>
       <div className="image-slider">
