@@ -19,17 +19,53 @@
 
 .feature-card {
   background: white;
-  padding: 15px; /* Reduced padding */
+  padding: 15px;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Added shadow */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
   transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
 }
 
-.feature-card:hover {
+/* .feature-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  background-color: #007bff; /* Hover background color */
-  color: white; /* Text color */
+  background-color: #007bff;
+  color: white;
+}
+*/
+/* .feature-card {
+  background: linear-gradient(135deg, 
+    #004080,  
+    #007bff,  
+    #00aaff,  
+    #e0f7ff   
+  );
+  color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+} */
+
+.feature-card:hover {
+  color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-6px);
+  background: linear-gradient(135deg, 
+    #007bff,  /* Base blue color */
+    #00aaff,  /* Bright lighter sheen */
+    #004080,  /* Darker tone */
+    #007bff   /* Back to base */
+  );
+}
+
+.feature-card:active {
+  transform: scale(0.95);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5), 
+              inset 0 2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .feature-icon {
@@ -39,6 +75,7 @@
 }
 
 .feature-card h3 :hover {
+  
   font-size: 1.15rem; /* Slight reduction in font size */
   margin-bottom: 10px;
   color: white; /* Changed color to white on hover */

@@ -40,7 +40,7 @@ function Hero() {
       <div className="image-slider">
         <ImageSlider images={images} interval={7000} />
       </div>
-      <button className="cta-button">Book an Appointment</button>
+      <button className="cta-button metallic-button">Book an Appointment</button>
     </section>
   );
 }
