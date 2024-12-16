@@ -1,9 +1,6 @@
-
-
-
-"use client"
+"use client";
 import React from "react";
-//import { FaSearch } from "react-icons/fa"; // Import the search icon
+import { FaSearch } from "react-icons/fa"; 
 import "./Header.css";
 
 function Header() {
@@ -17,7 +14,7 @@ function Header() {
           className="search-bar"
         />
         <button className="search-button">
-          {/* <FaSearch /> */} Search
+          <FaSearch />
         </button>
       </div>
       <nav>
