@@ -1,0 +1,152 @@
+.hero {
+  background: linear-gradient(120deg, #EBFBFF, #EBFBFF);
+  color: #007bff;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.typing-container {
+  display: inline-block;
+  text-align: center;
+}
+
+/* First Line Typing Animation (Fast Typing) */
+.typing-fast {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  display: inline-block;
+  animation: typing-fast 2s steps(40, end) forwards;
+  font-size: 2rem;
+}
+
+/* Second Line Typing Animation (Slow Typing) */
+.typing-slow {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 0;
+  display: inline-block;
+  animation: typing-slow 4s steps(40, end) 2s forwards; /* Starts after 2s */
+  font-size: 1.5rem;
+  margin-top: 10px;
+}
+
+/* Cursor for the First Line */
+.cursor-fast {
+  display: inline;
+  border-right: 2px solid black;
+  margin-left: 2px;
+  animation: blink-caret 0.7s step-end infinite;
+  animation-delay: 0s;
+}
+
+.cursor-fast.typing-complete {
+  display: none; /* Cursor disappears after typing */
+}
+
+/* Cursor for the Second Line */
+.cursor-slow {
+  display: inline;
+  border-right: 2px solid black;
+  margin-left: 2px;
+  animation: blink-caret 0.7s step-end infinite;
+  animation-delay: 2s; /* Starts with the second line typing */
+}
+
+.cursor-slow.typing-complete {
+  display: none; /* Cursor disappears after typing */
+}
+
+/* Typing Keyframes */
+@keyframes typing-fast {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes typing-slow {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: black;
+  }
+}
+
+.image-slider {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Adjust the height as needed */
+  overflow: hidden;
+}
+
+.slider-wrapper {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.slider-image {
+  min-width: 100%; /* Each image takes up the full width of the slider */
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.slider-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  /* background: #007bff; */
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 1.5rem;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+
+.slider-button.left {
+  left: 10px;
+}
+
+.slider-button.right {
+  right: 10px;
+}
+
+/*   .slider-button:hover {
+  background: #0056b3;
+} */
+
+
+.cta-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: white;
+  background: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.cta-button:hover {
+  background: #fff;
+  color: #007bff;
+}

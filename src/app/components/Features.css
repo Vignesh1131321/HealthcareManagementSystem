@@ -1,0 +1,54 @@
+.features-section {
+  padding: 50px 20px;
+  text-align: center;
+  width: 80%; /* Reduced width to 80% of the screen */
+  margin: 0 auto;
+}
+
+.features-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #007bff;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Reduced min width of card */
+  gap: 20px;
+}
+
+.feature-card {
+  background: white;
+  padding: 15px; /* Reduced padding */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Added shadow */
+  transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  background-color: #007bff; /* Hover background color */
+  color: white; /* Text color */
+}
+
+.feature-icon {
+  font-size: 2rem; /* Reduced icon size */
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.feature-card h3 :hover {
+  font-size: 1.15rem; /* Slight reduction in font size */
+  margin-bottom: 10px;
+  color: white; /* Changed color to white on hover */
+}
+
+.feature-card p :hover{
+  font-size: 0.85rem; /* Reduced text size */
+  color: white; /* Changed color to white on hover */
+}
+
+.icons {
+  height: 48px; /* Reduced height of icons */
+}

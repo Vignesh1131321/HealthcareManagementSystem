@@ -1,0 +1,46 @@
+
+
+
+.feature-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  margin: 20px 0;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  max-width: 100%;
+}
+
+.feature-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.feature-content {
+  max-width: 60%;
+}
+
+.feature-content h3 {
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.feature-content p {
+  color: #333;
+}
+
+.feature-image {
+  max-width: 30%;
+  text-align: center;
+}
+
+.feature-image img {
+  width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+}

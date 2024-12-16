@@ -1,0 +1,72 @@
+/* Header Styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #343a40;
+  color: white;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Navigation Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 5px 10px;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* Search Bar Container */
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 0; /* No gap between input and button for seamless integration */
+}
+
+.search-bar {
+  padding: 8px 12px; /* Adjust padding */
+  border: 2px solid #007bff;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  font-size: 1rem;
+  width: 200px;
+  height: 21px; /* Set a fixed height */
+}
+
+.search-bar::placeholder {
+  color: #ccc;
+}
+
+.search-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0 15px; /* Adjust padding for better alignment */
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px; /* Set same height as search bar */
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
