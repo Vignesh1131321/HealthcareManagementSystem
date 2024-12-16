@@ -42,7 +42,7 @@ export default function LoginPage() {
   }, [user]);
 
   return (
-    <div className={styles.page}>
+    <div className={styles.lody}>
       <div className="logo">
         <img src="/logo.png" alt="Logo" />
         <a href="#">Logo</a>
