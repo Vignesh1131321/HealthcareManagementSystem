@@ -40,12 +40,13 @@
 
 .search-bar {
   padding: 8px 12px; /* Adjust padding */
-  border: 2px solid #007bff;
+  border: none; /* Remove the blue outline */
   border-radius: 5px 0 0 5px;
   outline: none;
   font-size: 1rem;
   width: 200px;
-  height: 21px; /* Set a fixed height */
+  height: 22px; /* Match the height of search button */
+  background-color: #f8f9fa; /* Light background for search bar */
 }
 
 .search-bar::placeholder {
