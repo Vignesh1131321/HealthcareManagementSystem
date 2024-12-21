@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
+    "@speechly/react-client": "^2.2.4",
     "axios": "^1.7.9",
     "bcryptjs": "^2.4.3",
+    "bootstrap": "^5.3.3",
     "boxicons": "^2.1.4",
+    "font-awesome": "^4.7.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.4",
     "next": "^15.0.4",
