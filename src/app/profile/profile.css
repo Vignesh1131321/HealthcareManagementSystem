@@ -1,0 +1,137 @@
+/* General Styles */
+body {
+  font-family: 'Mulish', sans-serif;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center; /* Center the cards horizontally */
+  align-items: center; /* Center the cards vertically */
+  min-height: 100vh;
+  background-color: #eef1f7;
+  padding: 20px;
+  gap: 20px; /* Space between profile and records cards */
+}
+
+.profile-card,
+.health-record-container {
+  position: relative; /* Make container the reference for absolute positioning */
+  width: 45%; /* Take up 45% of the width to leave space for both cards */
+  max-width: 600px;
+  padding: 30px;
+  border-radius: 15px;
+  background-color: #ffffff; /* Solid white background */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.profile-image-container {
+  position: absolute; /* Position the image relative to the container */
+  top: -50px; /* Adjust to make the image overlap */
+  left: 50%;
+  transform: translateX(-50%); /* Center the image horizontally */
+}
+
+.profile-image {
+  width: 100px; /* Adjust size as needed */
+  height: 100px;
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover; /* Ensure the image covers the container */
+  border: 3px solid #fff; /* Optional white border around the image */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+.profile-header {
+  margin-top: 60px; /* Add space to account for the overlapping image */
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #3b3f5e;
+  margin-bottom: 20px;
+}
+
+.profile-details {
+  text-align: left;
+  font-size: 1.2rem;
+  color: #4f5568;
+}
+
+.profile-details p {
+  margin-bottom: 10px;
+}
+
+.logout-button {
+  margin-top: 20px;
+  background-color: #6b43ff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #5222fd;
+  transform: translateY(-2px);
+}
+
+.health-record-container h2 {
+  font-size: 1.8rem;
+  color: #6b43ff;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.health-record-list {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 15px; /* Space between records */
+  max-height: 500px; /* Limit height to show 4 items */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.health-record-card {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #ffffff; /* Solid background */
+  text-align: left;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.health-record-card p {
+  margin: 5px 0;
+  color: #444;
+  font-size: 1rem;
+}
+
+/* Hide scrollbar but keep scrolling functional */
+.health-record-list::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+
+.health-record-list {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    flex-direction: column; /* Stack vertically on smaller screens */
+    align-items: center;
+  }
+
+  .profile-card,
+  .health-record-container {
+    width: 95%; /* Full width for smaller screens */
+  }
+
+  .health-record-list {
+    max-height: 400px; /* Adjust height for smaller screens */
+  }
+}
