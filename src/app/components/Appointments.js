@@ -12,7 +12,7 @@ function Appointments() {
 
         <label htmlFor="date">Date:</label>
         <input type="date" id="date" name="date" required />
-
+      
         <label htmlFor="time">Time:</label>
         <input type="time" id="time" name="time" required />
 
