@@ -5,96 +5,118 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: #f4f8fb;
     color: #333;
-}
-
-.hospital-locator {
+  }
+  
+  .hospital-locator {
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
     background: linear-gradient(145deg, #ffffff, #e6eaf3);
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-h2, h3 {
-    text-align: center;
-}
-
-.description {
-    text-align: center;
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-#hospital-list {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-#hospital-list h3 {
-    font-size: 1.5rem;
-    color: #004080;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    font-size: 1rem;
-    position: relative; /* Relative positioning for button */
-}
-
-li:last-child {
-    border-bottom: none;
-}
-
-.name {
-    font-weight: bold;
-    color: #007bff;
-}
-
-.address {
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.book-appointment-btn {
-    display: none; /* Initially hidden */
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    font-size: 0.9rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-}
-
-li:hover .book-appointment-btn {
-    display: block; /* Show button on hover */
-    opacity: 1;
-}
-
-.book-appointment-btn:hover {
-    background-color: #0056b3;
-}
-
-.hospital-button {
-    display: none;
   }
   
-  div:hover .hospital-button {
+  .search-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 20px;
+    position: relative;
+  }
+  
+  .search-input {
+    width: calc(100% - 100px);
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px 0 0 8px;
+    font-size: 1rem;
+  }
+  
+  .search-button {
+    width: 100px;
+    padding: 12px;
+    background-color: #6b43ff;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+  }
+  
+  .hospitals-grid-container {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .hospitals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .hospital-card {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+  }
+  
+  .hospital-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .hospital-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+  }
+  
+  .hospital-address {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+  
+  .book-appointment-btn {
+    display: none;
+    width: 100%;
+    padding: 8px 15px;
+    background-color: #6b43ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .hospital-card:hover .book-appointment-btn {
     display: block;
   }
   
+  .book-appointment-btn:hover {
+    background-color: #5632d6;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .hospitals-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .hospitals-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .hospital-locator {
+      margin: 10px;
+      padding: 15px;
+    }
+  }
