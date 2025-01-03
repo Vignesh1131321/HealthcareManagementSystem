@@ -5,63 +5,96 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: #f4f8fb;
     color: #333;
-  }
-  
-  .hospital-locator {
+}
+
+.hospital-locator {
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
     background: linear-gradient(145deg, #ffffff, #e6eaf3);
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2, h3 {
+}
+
+h2, h3 {
     text-align: center;
-  }
-  
-  .description {
+}
+
+.description {
     text-align: center;
     font-size: 1.1rem;
     color: #555;
     margin-bottom: 20px;
-  }
-  
-  #hospital-list {
+}
+
+#hospital-list {
     background: #ffffff;
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  #hospital-list h3 {
+}
+
+#hospital-list h3 {
     font-size: 1.5rem;
     color: #004080;
-  }
-  
-  ul {
+}
+
+ul {
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  
-  li {
+}
+
+li {
     padding: 10px;
     border-bottom: 1px solid #ddd;
     font-size: 1rem;
-  }
-  
-  li:last-child {
+    position: relative; /* Relative positioning for button */
+}
+
+li:last-child {
     border-bottom: none;
-  }
-  
-  .name {
+}
+
+.name {
     font-weight: bold;
     color: #007bff;
+}
+
+.address {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.book-appointment-btn {
+    display: none; /* Initially hidden */
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+li:hover .book-appointment-btn {
+    display: block; /* Show button on hover */
+    opacity: 1;
+}
+
+.book-appointment-btn:hover {
+    background-color: #0056b3;
+}
+
+.hospital-button {
+    display: none;
   }
   
-  .address {
-    font-size: 0.9rem;
-    color: white;
+  div:hover .hospital-button {
+    display: block;
   }
   

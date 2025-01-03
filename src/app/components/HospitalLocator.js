@@ -9,10 +9,11 @@ const containerStyle = {
 
 const HospitalLocator = () => {
   const [hospitals, setHospitals] = useState([]);
-  const [mapCenter, setMapCenter] = useState(null); // Initially null for dynamic location
+  const [mapCenter, setMapCenter] = useState(null);
+  const [hoveredHospital, setHoveredHospital] = useState(null); // Track the hovered hospital
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4", // Use your API key here
+    googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",
     libraries: ["places"],
   });
 
@@ -33,7 +34,6 @@ const HospitalLocator = () => {
         },
         (error) => {
           console.error("Error fetching user location:", error);
-          // Fallback to a default location if location access is denied
           const defaultLocation = { lat: 37.7749, lng: -122.4194 }; // San Francisco
           setMapCenter(defaultLocation);
           fetchHospitals(defaultLocation);
@@ -41,7 +41,6 @@ const HospitalLocator = () => {
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
-      // Fallback to a default location
       const defaultLocation = { lat: 37.7749, lng: -122.4194 };
       setMapCenter(defaultLocation);
       fetchHospitals(defaultLocation);
@@ -53,7 +52,7 @@ const HospitalLocator = () => {
 
     const request = {
       location,
-      radius: 500000, 
+      radius: 5000,
       type: "hospital",
     };
 
@@ -91,14 +90,46 @@ const HospitalLocator = () => {
             </GoogleMap>
             <div style={{ width: "100%", maxWidth: "600px" }}>
               <h2>Nearby Hospitals:</h2>
-              <ul>
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {hospitals.map((hospital) => (
-                  <li key={hospital.place_id}>
-                    <strong>{hospital.name}</strong>
-                    <p>{hospital.vicinity}</p>
-                  </li>
+                  <div
+                    key={hospital.place_id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "15px",
+                      borderRadius: "10px",
+                      backgroundColor: "#ffffff",
+                      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                      transition: "box-shadow 0.3s ease",
+                    }}
+                    onMouseEnter={() => setHoveredHospital(hospital.place_id)}
+                    onMouseLeave={() => setHoveredHospital(null)}
+                  >
+                    <div>
+                      <strong>{hospital.name}</strong>
+                      <p>{hospital.vicinity}</p>
+                    </div>
+                    {hoveredHospital === hospital.place_id && (
+                      <button
+                        style={{
+                          padding: "10px 15px",
+                          borderRadius: "8px",
+                          backgroundColor: "#6b43ff",
+                          color: "white",
+                          border: "none",
+                          cursor: "pointer",
+                          fontWeight: 600,
+                          transition: "background-color 0.3s ease",
+                        }}
+                      >
+                        Book Appointment
+                      </button>
+                    )}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </>
         ) : (
