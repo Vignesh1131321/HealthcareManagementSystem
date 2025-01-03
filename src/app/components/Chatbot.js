@@ -6,6 +6,7 @@ import "font-awesome/css/font-awesome.min.css";
 /* import Submit from "../icons/submit.png";
 import Microphone from "../icons/voice.png";
 import Nurse from "../icons/nurse.png"; */
+import User from "../icons/profile.png";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 function Chatbot(){
@@ -126,11 +127,7 @@ function Chatbot(){
                   </div>
                   {msg.sender === "user" && (
                     <div className="img_cont_msg">
-                      <img
-                        src="https://i.ibb.co/d5b84Xw/Untitled-design.png"
-                        className="rounded-circle user_img_msg"
-                        alt="User"
-                      />
+                      <img src= {"../icons/profile.png"} className="user" alt="Error" />
                     </div>
                   )}
                 </div>
