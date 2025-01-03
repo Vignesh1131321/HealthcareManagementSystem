@@ -1,14 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./Chatbot.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaUserMd, FaMicrophone, FaPaperPlane } from "react-icons/fa";
+import { FaUserMd, FaMicrophone, FaPaperPlane, FaRobot, FaUser } from "react-icons/fa"; // Add icons
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
+
+  const chatBodyRef = useRef(null); // Reference for the chat body
 
   const genAI = new GoogleGenerativeAI("AIzaSyCyuYOuA0RMoZBsDivYMjdJEGbPQLvWAvQ");
 
@@ -50,7 +51,15 @@ function Chatbot() {
       ...prev,
       { sender: "bot", text: botResponse, time: timestamp },
     ]);
+    // Play audio for bot response with female voice
+    const synth = window.speechSynthesis;
+    const utterThis = new SpeechSynthesisUtterance(botResponse);
+    const voices = synth.getVoices();
+    const femaleVoice = voices.find((voice) => voice.name.includes("female") && voice.lang === "en-US");
+    utterThis.voice = femaleVoice || voices[0];
+    synth.speak(utterThis);
   };
+
 
   const handleSpeechInput = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -72,40 +81,52 @@ function Chatbot() {
     recognition.start();
   };
 
+  // Auto-scroll to bottom when messages update
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
- 
-    <div className="chat-container">
-      <div className="chat-header">
-        <FaUserMd className="header-icon" />
-        <h3>Medical Chatbot</h3>
-        <p>How can I assist you today?</p>
-      </div>
-      <div className="chat-body">
-        {messages.map((msg, index) => (
-          <div key={index} className={`message ${msg.sender}`}>
-            <div className="message-text">{msg.text}</div>
-            <span className="message-time">{msg.time}</span>
-          </div>
-        ))}
-      </div>
-      <div className="chat-footer">
-        <form onSubmit={handleSendMessage}>
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Type your message..."
-          />
-          <button type="button" onClick={handleSpeechInput}>
-            <FaMicrophone />
-          </button>
-          <button type="submit">
-            <FaPaperPlane />
-          </button>
-        </form>
+    <div className="chat-body">
+      <div className="chat-container">
+        <div className="chat-header">
+          <FaUserMd className="header-icon" />
+          <h3>Medical Chatbot</h3>
+          <p>How can I assist you today?</p>
+        </div>
+        <div className="chat-body" ref={chatBodyRef}> {/* Attach the ref */}
+          {messages.map((msg, index) => (
+            <div key={index} className={`message ${msg.sender}`}>
+              <div className="message-icon">
+                {msg.sender === "user" ? <FaUser /> : <FaRobot />}
+              </div>
+              <div className="message-content">
+                <div className="message-text">{msg.text}</div>
+                <span className={`message-time ${msg.sender}`}>{msg.time}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="chat-footer">
+          <form onSubmit={handleSendMessage}>
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              placeholder="Type your message..."
+            />
+            <button type="button" onClick={handleSpeechInput}>
+              <FaMicrophone />
+            </button>
+            <button type="submit">
+              <FaPaperPlane />
+            </button>
+          </form>
+        </div>
       </div>
     </div>
-  
   );
 }
 
