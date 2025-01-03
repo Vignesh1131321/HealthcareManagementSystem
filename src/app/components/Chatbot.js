@@ -11,7 +11,7 @@ function Chatbot() {
 
   const chatBodyRef = useRef(null); // Reference for the chat body
 
-  const genAI = new GoogleGenerativeAI("AIzaSyCyuYOuA0RMoZBsDivYMjdJEGbPQLvWAvQ");
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_CHATBOT_API_KEY);
 
   const fetchGeminiResponse = async (userInput) => {
     try {
