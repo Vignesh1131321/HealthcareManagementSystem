@@ -1,15 +1,14 @@
 export interface GoogleSignUpProps {
   onSignUp: () => void;
 }
-
 export interface EmailSignUpProps {
-  onSubmit: (email: string) => void;
+  onSubmit: (username: string, email: string, password: string, confirmPassword: string) => void;
 }
 
 export interface SignUpFormProps {
-  onGoogleSignUp: () => void;
-  onEmailSignUp: (email: string) => void;
+  onEmailSignUp: (username: string, email: string, password: string, confirmPassword: string) => void;
 }
+
 
 export interface TermsAndPrivacyProps {
   className?: string;

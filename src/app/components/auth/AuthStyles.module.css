@@ -203,3 +203,19 @@
     max-width: 100%;
   }
 }
+.accountLink {
+  margin-top: 20px; /* Space above the link */
+  text-align: center;
+  font-size: 14px; /* Adjust font size as needed */
+  color: #555; /* Neutral color for text */
+}
+
+.loginLink {
+  color: #4e73df; /* Highlight color for the link */
+  text-decoration: none; /* Remove underline */
+  font-weight: bold;
+}
+
+.loginLink:hover {
+  text-decoration: underline; /* Add underline on hover */
+}

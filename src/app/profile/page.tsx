@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import "./profile.css";
 import Header from "../components/Header";
-
+import { signOut } from "next-auth/react";
 type UserDetails = {
   _id: string;
   username: string;
@@ -30,17 +30,27 @@ export default function ProfilePage() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // const logout = async () => {
+  //   try {
+  //     await axios.get("/api/users/logout");
+  //     toast.success("Logged Out Successfully");
+  //     router.push("/login");
+  //   } catch (error: any) {
+  //     console.error(error.message);
+  //     toast.error("Failed to Logout");
+  //   }
+  // };
   const logout = async () => {
     try {
-      await axios.get("/api/users/logout");
+      await signOut({ redirect: false }); // Logout without redirecting immediately
       toast.success("Logged Out Successfully");
+      // After sign out, manually redirect to the login page
       router.push("/login");
     } catch (error: any) {
       console.error(error.message);
       toast.error("Failed to Logout");
     }
   };
-
   const getUserDetails = async () => {
     try {
       const res = await axios.get<{ data: UserDetails }>("/api/users/me");
