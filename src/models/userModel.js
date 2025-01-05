@@ -11,6 +11,58 @@ const userSchema = new mongoose.Schema({
     required:[true,"Please enter an email"],
     unique:true,
   },
+  firstName: {
+    type: String,
+    required: false,
+  },
+  lastName: {
+    type: String,
+    required: false,
+  },
+  phoneNumber: {
+    type: String,
+    required: false,
+  },
+  emergencyContact: {
+    name: {
+      type: String,
+      required: false,
+    },
+    phoneNumber: {
+      type: String,
+      required: false,
+    },
+  },
+  address: {
+    street: {
+      type: String,
+      required: false,
+    },
+    city: {
+      type: String,
+      required: false,
+    },
+    state: {
+      type: String,
+      required: false,
+    },
+    zipCode: {
+      type: String,
+      required: false,
+    },
+  },
+  age: {
+    type: Number,
+    required: false,
+  },
+  gender: {
+    type: String,
+    required: false,
+  },
+  profilePhotoUrl: {
+    type: String, // GCS public URL for the profile photo
+    required: false,
+  },
   password:{
     type:String,
     required:[true,"Please enter a password"],
@@ -27,6 +79,10 @@ const userSchema = new mongoose.Schema({
   forgotPasswordTokenExpiry:Date,
   verifyToken:String,
   verifyTokenExpiry:Date,
+  isCompleteProfile:{
+    type:Boolean,
+    default:false,
+  },
 })
 
 const User = mongoose.models.users || mongoose.model("users",userSchema);
