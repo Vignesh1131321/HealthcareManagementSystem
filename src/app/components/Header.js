@@ -12,6 +12,7 @@ function Header() {
           type="text"
           placeholder="Search..."
           className="search-bar"
+        
         />
         <button className="search-button">
           <FaSearch />
