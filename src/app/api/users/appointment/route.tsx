@@ -1,43 +1,87 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
+import clientPromise from "../../../../../lib/db";
 import axios from "axios";
 
 // Replace this with your actual Google Places API Key
 const GOOGLE_PLACES_API_KEY = "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed. Use GET." });
-  }
+// Handler for POST requests
+export async function POST(req: NextRequest) {
+    const body = await req.json();
+    const { doctorId, doctorName, specialty, date, time } = body;
 
-  const { placeId } = req.query;
-
-  if (!placeId || typeof placeId !== "string") {
-    return res.status(400).json({ error: "Invalid or missing placeId parameter." });
-  }
-
-  try {
-    const response = await axios.get(
-      `https://maps.googleapis.com/maps/api/place/details/json`,
-      {
-        params: {
-          place_id: placeId,
-          key: GOOGLE_PLACES_API_KEY,
-          fields: "reviews",
-        },
-      }
-    );
-
-    if (response.data && response.data.result) {
-      const reviews = response.data.result.reviews || [];
-      return res.status(200).json({ reviews });
-    } else {
-      return res.status(404).json({ error: "No reviews found for this place." });
+    if (!doctorId || !doctorName || !specialty || !date || !time) {
+        return NextResponse.json(
+            { message: "Missing required fields." },
+            { status: 400 }
+        );
     }
-  } catch (error) {
-    console.error("Error fetching Google reviews:", error);
-    return res.status(500).json({ error: "Internal server error." });
-  }
+
+    try {
+        const client = await clientPromise;
+        const db = client.db("your-database-name"); // Replace with your database name
+        const appointmentsCollection = db.collection("appointments");
+
+        await appointmentsCollection.insertOne({
+            doctorId,
+            doctorName,
+            specialty,
+            appointmentDate: date,
+            appointmentTime: time,
+            createdAt: new Date(),
+        });
+
+        return NextResponse.json(
+            { message: "Appointment successfully booked." },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("Database error:", error);
+        return NextResponse.json(
+            { message: "Error saving appointment." },
+            { status: 500 }
+        );
+    }
+}
+
+// Handler for GET requests
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const placeId = searchParams.get('placeId');
+
+    if (!placeId) {
+        return NextResponse.json(
+            { error: "Invalid or missing placeId parameter." },
+            { status: 400 }
+        );
+    }
+
+    try {
+        const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/place/details/json`,
+            {
+                params: {
+                    place_id: placeId,
+                    key: GOOGLE_PLACES_API_KEY,
+                    fields: "reviews",
+                },
+            }
+        );
+
+        if (response.data && response.data.result) {
+            const reviews = response.data.result.reviews || [];
+            return NextResponse.json({ reviews });
+        } else {
+            return NextResponse.json(
+                { error: "No reviews found for this place." },
+                { status: 404 }
+            );
+        }
+    } catch (error) {
+        console.error("Error fetching Google reviews:", error);
+        return NextResponse.json(
+            { error: "Internal server error." },
+            { status: 500 }
+        );
+    }
 }

@@ -10,6 +10,7 @@ const AppointmentPage = () => {
   const [ratingDistribution, setRatingDistribution] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // For submit button state
   const searchParams = useSearchParams();
 
   // Generate time slots from 9 AM to 4 PM
@@ -65,6 +66,50 @@ const AppointmentPage = () => {
       setSelectedTimeSlot(slot.time === selectedTimeSlot ? null : slot.time);
     }
   };
+
+  const handleAppointmentSubmit = async () => {
+    if (!selectedDate || !selectedTimeSlot) {
+      alert("Please select both date and time");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const appointmentDetails = {
+      doctorId: doctor.id,
+      doctorName: doctor.name,
+      specialty: doctor.specialty,
+      date: selectedDate,
+      time: selectedTimeSlot,
+    };
+
+    try {
+        const response = await fetch("/api/users/appointment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(appointmentDetails),
+        });
+  
+        if (response.ok) {
+          alert("Appointment successfully booked!");
+          setSelectedDate("");
+          setSelectedTimeSlot(null);
+        } else {
+          const error = await response.json();
+          console.error("Error booking appointment:", error.message);
+          alert("Failed to book appointment.");
+        }
+      } catch (error) {
+        console.error("Error booking appointment:", error);
+        alert("An error occurred while booking the appointment.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+
 
   if (!doctor) {
     return <p className="loading-message">Loading doctor details...</p>;
@@ -182,18 +227,42 @@ const AppointmentPage = () => {
 
         {/* Confirm Button */}
         <button
-          className="confirm-button"
-          disabled={!selectedDate || !selectedTimeSlot}
-          onClick={() => {
-            if (selectedDate && selectedTimeSlot) {
-              alert(`Appointment scheduled for ${selectedDate} at ${selectedTimeSlot}`);
-            } else {
-              alert("Please select both date and time");
-            }
-          }}
-        >
-          Confirm Appointment
+            className="confirm-button"
+            disabled={!selectedDate || !selectedTimeSlot}
+            onClick={async () => {
+                if (selectedDate && selectedTimeSlot) {
+                try {
+                    const response = await fetch("/api/users/appointment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        doctorId: doctor.id,
+                        doctorName: doctor.name,
+                        specialty: doctor.specialty,
+                        date: selectedDate,
+                        time: selectedTimeSlot,
+                    }),
+                    });
+
+                    if (response.ok) {
+                    alert(`Appointment scheduled for ${selectedDate} at ${selectedTimeSlot}`);
+                    } else {
+                    alert("Failed to schedule appointment. Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while booking the appointment.");
+                }
+                } else {
+                alert("Please select both date and time.");
+                }
+            }}
+            >
+            Confirm Appointment
         </button>
+
       </div>
     </div>
   );
