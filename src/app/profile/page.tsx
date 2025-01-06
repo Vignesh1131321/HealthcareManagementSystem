@@ -96,12 +96,31 @@ export default function ProfilePage() {
   
     try {
       setLoading(true);
+  
+      const formData = new FormData();
+      formData.append("username", userDetails.username);
+      formData.append("email", userDetails.email);
+      formData.append("firstName", userDetails.firstName);
+      formData.append("lastName", userDetails.lastName);
+      formData.append("phoneNumber", userDetails.phoneNumber);
+      formData.append("age", String(userDetails.age || ""));
+      formData.append("gender", userDetails.gender || "");
+  
+      if (userDetails.emergencyContact?.name && userDetails.emergencyContact?.phoneNumber) {
+        formData.append("emergencyContactName", userDetails.emergencyContact.name);
+        formData.append("emergencyContactPhone", userDetails.emergencyContact.phoneNumber);
+      }
+
+      if (userDetails.address) {
+        formData.append("street", userDetails.address.street || '');
+        formData.append("city", userDetails.address.city || '');
+        formData.append("state", userDetails.address.state || '');
+        formData.append("zipCode", userDetails.address.zipCode || '');
+      }
+      
       const response = await fetch("/api/users/complete-profile", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDetails),
+        body: formData, // Send form data
       });
   
       const data = await response.json();
@@ -120,6 +139,7 @@ export default function ProfilePage() {
       setLoading(false);
     }
   };
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -199,11 +219,11 @@ export default function ProfilePage() {
   <>
     <Header />
     <div className="profile-container">
-      {showCompleteProfileCard && (
+    {showCompleteProfileCard && (
         <div className="complete-profile-card">
           <h2>Complete Your Profile</h2>
           <form onSubmit={handleCompleteProfileSubmit}>
-            <input
+          <input
                 type="text"
                 placeholder="Username"
                 value={userDetails?.username || ""}
@@ -289,6 +309,7 @@ export default function ProfilePage() {
         </div>
       )}
       {!showCompleteProfileCard && userDetails && (
+        <>
         <div className="profile-card">
           <div className="profile-image-container">
             {loading ? (
@@ -308,9 +329,9 @@ export default function ProfilePage() {
               <p>No profile image</p>
             )}
           </div>
-          <h1>Profile</h1>
+          <h1 className="profile-header">Profile</h1>
           {loading ? (
-            <p>Loading...</p>
+            <p className="loading-text">Loading...</p>
           ) : userDetails ? (
             <div className="profile-details">
               <p><strong>Name:</strong> {userDetails.firstName} {userDetails.lastName}</p>
@@ -318,35 +339,71 @@ export default function ProfilePage() {
               <p><strong>Phone:</strong> {userDetails.phoneNumber}</p>
               <p><strong>Age:</strong> {userDetails.age}</p>
               <p><strong>Gender:</strong> {userDetails.gender}</p>
-              <p><strong>Emergency Contact:</strong> {userDetails.emergencyContact?.name} ({userDetails.emergencyContact?.phoneNumber})</p>
+              <p>
+                <strong>Emergency Contact:</strong>{' '}
+                {userDetails.emergencyContact ? (
+                  <>
+                    {userDetails.emergencyContact.name || 'N/A'} 
+                    {userDetails.emergencyContact.phoneNumber ? 
+                      `(+91 ${userDetails.emergencyContact.phoneNumber})` : 
+                      '(No phone number provided)'
+                    }
+                  </>
+                ) : (
+                  'No emergency contact provided'
+                )}
+              </p>
+              <p>
+                <strong>Address:</strong>{' '}
+                {userDetails.address ? (
+                  <>
+                    {userDetails.address.street}, {userDetails.address.city}, {userDetails.address.state} - {userDetails.address.zipCode}
+                  </>
+                ) : (
+                  'No address provided'
+                )}
+              </p>
               <div className="profile-actions">
-                <input
-                  type="file"
-                  onChange={(e) => setFile(e.target.files?.[0] || null)}
-                />
-                <button onClick={handleSubmit} disabled={loading}>
-                  Upload Profile Picture
+                <label className="custom-file-upload">
+                  <input
+                    type="file"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  />
+                  Choose File
+                </label>
+                <button 
+                  className="upload-btn"
+                  onClick={handleSubmit} 
+                  disabled={loading}
+                >
+                  {loading ? "Uploading..." : "Upload Profile Picture"}
                 </button>
-                <button onClick={logout}>Logout</button>
+                <button 
+                  className="logout-btn" 
+                  onClick={logout}
+                >
+                  Logout
+                </button>
               </div>
             </div>
           ) : (
             <p>No profile data available</p>
           )}
         </div>
-      )}
-      <div className="health-records">
+      <div className="health-record-container">
         <h2>Health Records</h2>
         <div className="health-record-list">
           {healthRecords.map((record, index) => (
             <div key={index} className="health-record-card">
-              <p><strong>Date:</strong> {record.date}</p>
-              <p><strong>Description:</strong> {record.description}</p>
-              <p><strong>Doctor:</strong> {record.doctor}</p>
+              <p className="record-date"><strong>Date:</strong> {record.date}</p>
+              <p className="record-description"><strong>Description:</strong> {record.description}</p>
+              <p className="record-doctor"><strong>Doctor:</strong> {record.doctor}</p>
             </div>
           ))}
         </div>
       </div>
+      </>
+      )}
     </div>
   </>
 );
