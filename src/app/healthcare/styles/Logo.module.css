@@ -1,0 +1,35 @@
+.logoWrapper {
+  display: flex;
+  align-items: center;  /* Ensure proper vertical alignment */
+  gap: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  margin-top: -10px;
+}
+
+.logoLetter {
+  background-color: rgba(69, 143, 246, 1);
+  border-radius: 50%;
+  font-size: 26px;
+  color: #fff;
+  width: 41px;
+  height: 41px;
+  display: flex;
+  justify-content: center;  /* Center content horizontally */
+  align-items: center;  /* Center content vertically */
+}
+
+.logoText {
+  color: rgba(35, 51, 72, 1);
+  font-size: 24px;
+  margin: auto 0;
+}
+
+@media (max-width: 991px) {
+  .logoWrapper {
+    white-space: initial;
+  }
+  .logoLetter {
+    white-space: initial;
+  }
+}
