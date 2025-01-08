@@ -31,10 +31,10 @@ type UserDetails = {
 };
 
 type HealthRecord = {
-  date: string;
-  description: string;
-  doctor: string;
+  name: string;
+  uploadedAt: string;
 };
+
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -44,6 +44,7 @@ export default function ProfilePage() {
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
+  
 
   const logout = async () => {
     try {
@@ -68,19 +69,34 @@ export default function ProfilePage() {
         }
       } else {
         toast.error("Failed to get user details");
+        return;
       }
   
-      setHealthRecords([
-        { date: "2024-12-01", description: "Routine Checkup", doctor: "Dr. Smith" },
-        { date: "2024-12-15", description: "Dental Cleaning", doctor: "Dr. Adams" },
-        { date: "2025-01-10", description: "Eye Examination", doctor: "Dr. Lee" },
-      ]);
+      try {
+        const healthRecordsRes = await axios.get('/api/get-health-records', {
+          headers: { userId: res.data.data._id },
+        });
+      
+        if (healthRecordsRes.data && healthRecordsRes.data.records) {
+          setHealthRecords(healthRecordsRes.data.records);
+        } else {
+          console.log("No health records found");
+          setHealthRecords([]);
+        }
+      } catch (error:any) {
+        console.error("Error fetching health records:", error.response?.data || error.message);
+        toast.error(error.response?.data?.error || "Failed to fetch health records");
+      }
+      
     } catch (error: any) {
-      toast.error("Failed to fetch user details");
+      console.error("Error fetching user details or health records:", error);
+      toast.error("Failed to fetch user details or health records");
     } finally {
       setLoading(false);
     }
   };
+  
+  
   
 
   useEffect(() => {
@@ -185,6 +201,61 @@ export default function ProfilePage() {
     }
   };
 
+  const handleSubmitForHealthRecord = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  
+    if (!file) {
+      alert("No file uploaded");
+      return;
+    }
+  
+    if (!userDetails || !userDetails._id) {
+      alert("User details not available. Please try again later.");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("userId", userDetails._id);
+  
+    try {
+      setLoading(true);
+      const res = await fetch("/api/upload-health-record", {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!res.ok) {
+        // Handle HTTP errors
+        console.error("HTTP error:", res.status);
+        alert(`Upload failed: ${res.statusText}`);
+        return;
+      }
+  
+      try {
+        const result = await res.json(); // Attempt to parse JSON
+        console.log("Upload response:", result);
+  
+        if (result.success) {
+          alert("Successfully Uploaded Health Record");
+  
+          // Optionally update local state or UI with the uploaded health record details
+          setHealthRecords((prev) => [...(prev || []), result.record]);
+        } else {
+          alert("Failed to upload: " + result.message);
+        }
+      } catch (jsonError) {
+        console.error("Error parsing JSON response:", jsonError);
+        alert("The server returned an invalid response.");
+      }
+    } catch (error) {
+      console.error("Error uploading health record:", error);
+      alert("An error occurred during the upload process.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
     const fetchImages = async () => {
       if (!userDetails || !userDetails._id) {
@@ -316,8 +387,8 @@ export default function ProfilePage() {
               <p>Loading image...</p>
             ) : images.length > 0 ? (
               <img
-                src={`data:${images[0].contentType};base64,${btoa(
-                  new Uint8Array(images[0].data.data).reduce(
+                src={`data:${images[images.length-1].contentType};base64,${btoa(
+                  new Uint8Array(images[images.length-1].data.data).reduce(
                     (data, byte) => data + String.fromCharCode(byte),
                     ""
                   )
@@ -392,16 +463,55 @@ export default function ProfilePage() {
         </div>
       <div className="health-record-container">
         <h2>Health Records</h2>
-        <div className="health-record-list">
-          {healthRecords.map((record, index) => (
-            <div key={index} className="health-record-card">
-              <p className="record-date"><strong>Date:</strong> {record.date}</p>
-              <p className="record-description"><strong>Description:</strong> {record.description}</p>
-              <p className="record-doctor"><strong>Doctor:</strong> {record.doctor}</p>
-            </div>
-          ))}
+        {loading ? (
+          <p>Loading health records...</p>
+        ) : healthRecords.length > 0 ? (
+          <div className="health-records-list">
+            {healthRecords.length > 0 ? (
+              healthRecords.map((record, index) => (
+                <li key={index} className="health-record-item">
+                  {record.data ? (
+                    <a
+                      href={`data:${record.contentType};base64,${record.data}`}
+                      download={record.name}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="health-record-link"
+                    >
+                      {record.name}
+                    </a>
+                  ) : (
+                    <span>Invalid or Missing Data</span>
+                  )}
+                </li>
+              ))
+            ) : (
+              <p>No health records available</p>
+            )}
+          </div>
+
+        ) : (
+          <p>No health records available</p>
+        )}
+        <div className="profile-actions">
+          <label className="custom-file-upload">
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+            />
+            Choose File
+          </label>
+          <button
+            className="upload-btn"
+            onClick={handleSubmitForHealthRecord}
+            disabled={loading}
+          >
+            {loading ? "Uploading..." : "Upload Health Record"}
+          </button>
         </div>
       </div>
+
       </>
       )}
     </div>

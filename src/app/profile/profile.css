@@ -8,10 +8,11 @@ body {
 .profile-container {
   display: flex;
   justify-content: center; /* Center the cards horizontally */
-  align-items: center; /* Center the cards vertically */
-  min-height: 100vh;
+  align-items: stretch; /* Center the cards vertically */
+  min-height: 75vh;
   background-color: #eef1f7;
   padding: 20px;
+  padding-top: 90px;
   gap: 20px; /* Space between profile and records cards */
 }
 
@@ -87,12 +88,12 @@ body {
   transform: translateY(-2px);
 }
 
-.health-record-container h2 {
+/* .health-record-container h2 {
   font-size: 1.8rem;
   color: #6b43ff;
   margin-bottom: 15px;
   text-align: center;
-}
+} */
 
 .health-record-list {
   display: flex;
@@ -296,4 +297,53 @@ body {
 
 .logout-btn:hover {
   background: #ff7875;
+}
+
+.health-records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Reduce spacing for compact design */
+  max-height: 400px; /* Adjust for scrollable area */
+  overflow-y: auto;
+}
+
+.health-records-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.health-records-list::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 4px;
+}
+
+.health-records-list::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
+.health-record-item {
+  list-style: none;
+  padding: 10px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fefefe;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.health-record-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.health-record-link {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.health-record-link:hover {
+  color: #357abd;
 }

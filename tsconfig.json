@@ -23,6 +23,6 @@
   "@lib/*": ["./src/lib/*"]
 }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js", "src/app/api/get-health-records/route.js"],
   "exclude": ["node_modules"]
 }
