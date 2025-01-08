@@ -20,9 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@lib/*": ["./lib/*"] // This is for the 'lib' folder in the root
+      "@lib/*": ["src/lib/*"] // This is for the 'lib' folder in the root
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js", "src/lib/db.tsx"],
   "exclude": ["node_modules"]
 }

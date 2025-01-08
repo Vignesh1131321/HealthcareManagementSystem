@@ -67,6 +67,38 @@ export default function ProfilePage() {
       toast.error("Failed to Logout");
     }
   };
+
+  const fetchUserDetails = async () => {
+    try {
+      console.log("Ftrying..."); // Debug log
+      const res = await axios.get<{ data: UserDetails }>("/api/users/me");
+      // console.log("Raw API response:", res); // Debug log
+      console.log("User data:", res.data); // Debug log
+      
+      if (res.data && res.data.data) {
+        setUserDetails(res.data.data);
+        if (!res.data.data.isCompleteProfile) {
+          setShowCompleteProfileCard(true);
+        }
+      } else {
+        console.error("Invalid response structure:", res.data);
+        toast.error("Failed to get user details");
+      }
+
+      setHealthRecords([
+        { date: "2024-12-01", description: "Routine Checkup", doctor: "Dr. Smith" },
+        { date: "2024-12-15", description: "Dental Cleaning", doctor: "Dr. Adams" },
+        { date: "2025-01-10", description: "Eye Examination", doctor: "Dr. Lee" },
+      ]);
+    } catch (error: any) {
+      console.error("Failed to fetch user details:", error.message);
+      toast.error("Failed to fetch user details");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
   const getUserDetails = async () => {
     try {
       const res = await axios.get<{ data: UserDetails }>("/api/users/me");
