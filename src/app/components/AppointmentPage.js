@@ -96,6 +96,7 @@ const AppointmentPage = () => {
     setIsSubmitting(true);
 
     const appointmentDetails = {
+      identity: doctor.identity,
       doctorId: doctor.id,
       doctorName: doctor.name,
       specialty: doctor.specialty,
@@ -149,10 +150,18 @@ const AppointmentPage = () => {
       <div className="appointment-page-container">
         <div className="top-sections-container">
           <div className="doctor-details-section">
-            <h2>Doctor Details</h2>
+            {doctor.identity === "1" && (
+              <h2>Hospital Details</h2>
+            )}
+            {doctor.identity === "2" && (
+              <h2>Doctor Details</h2>
+            )}
             <div className="doctor-info">
               <h3>{doctor.name}</h3>
-              <p><strong>Specialty:</strong> {doctor.specialty}</p>
+              {doctor.identity === "2" && (
+                <p><strong>Specialty:</strong> {doctor.specialty}</p>
+              )}
+              
               <p><strong>Clinic Name:</strong> {doctor.clinicName}</p>
               <p><strong>Address:</strong> {doctor.clinicLocation?.address}</p>
               {/* <p>
