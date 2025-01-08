@@ -1,0 +1,113 @@
+.testimonialCard {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  color: rgba(82, 82, 82, 1);
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 100%;
+}
+
+.cardBackground {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.cardContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 40px;
+  width: 100%;
+  z-index: 1;
+}
+
+.cardContent::after {
+  content: '';
+  position: absolute;
+  bottom: -40px;
+  left: -20px;
+  right: -20px;
+  height: 100px;
+  /* background: #FF1493; */
+  transform: rotate(-5deg);
+  z-index: -1;
+}
+
+.avatar {
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.avatarSmall {
+  width: 76px;
+}
+
+.avatarLarge {
+  width: 102px;
+  margin-top: -33px;
+}
+
+.name {
+  font-weight: 700;
+  margin-top: 11px;
+  color: #333;
+}
+
+.nameSmall {
+  font-size: 18px;
+}
+
+.nameLarge {
+  font-size: 24px;
+  margin-top: 19px;
+}
+
+.role {
+  margin-top: 4px;
+  color: #666;
+  font-size: 14px;
+}
+
+.quote {
+  margin-top: 16px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #555;
+  position: relative;
+  padding: 0 10px;
+}
+
+.quote::before {
+  content: '"';
+  font-size: 40px;
+  /* color: #FF1493; */
+  position: absolute;
+  left: -15px;
+  top: -20px;
+  opacity: 0.3;
+}
+
+.quoteLarge {
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+@media (max-width: 991px) {
+  .cardContent {
+    padding: 20px 20px 60px;
+  }
+}

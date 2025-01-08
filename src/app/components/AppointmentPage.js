@@ -2,6 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import TestimonialSection from "./testimonials/TestimonialSection";
+import ReviewSlider from "./ReviewSlider"
+import AppointmentSuccessful from "./AppointmentSuccessful";
+import { TestimonialCard } from "./testimonials/TestimonialCard";
+import styles from "./testimonials/TestimonialSection.module.css";
 import "./AppointmentPage.css";
 
 const AppointmentPage = () => {
@@ -10,60 +15,75 @@ const AppointmentPage = () => {
   const [ratingDistribution, setRatingDistribution] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // For submit button state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [isError, setIsError] = useState(false);
+
+
   const searchParams = useSearchParams();
 
-  // Generate time slots from 9 AM to 4 PM
-  const timeSlots = Array.from({ length: 8 }, (_, i) => {
-    const hour = i + 9;
-    const formattedHour = hour > 12 ? hour - 12 : hour;
-    return {
-      time: `${formattedHour}:00 ${hour >= 12 ? 'PM' : 'AM'}`,
-      available: Math.random() > 0.3 // Randomly set availability for demo
-    };
-  });
+  // Generate time slots once when component mounts
+  useEffect(() => {
+    const generateTimeSlots = () => [
+      { time: "9:00 AM", available: Math.random() > 0.3 },
+      { time: "10:00 AM", available: Math.random() > 0.3 },
+      { time: "11:00 AM", available: Math.random() > 0.3 },
+      { time: "12:00 PM", available: Math.random() > 0.3 },
+      { time: "1:00 PM", available: Math.random() > 0.3 },
+      { time: "2:00 PM", available: Math.random() > 0.3 },
+      { time: "3:00 PM", available: Math.random() > 0.3 },
+      { time: "4:00 PM", available: Math.random() > 0.3 },
+    ];
+    setTimeSlots(generateTimeSlots());
+  }, []);
 
+  // Fetch doctor data from query params
   useEffect(() => {
     const doctorData = searchParams.get("doctor");
     if (doctorData) {
       try {
         const parsedDoctor = JSON.parse(doctorData);
         setDoctor(parsedDoctor);
-        if (parsedDoctor.reviews) {
-          setReviews(parsedDoctor.reviews);
-        }
+        setReviews(parsedDoctor.reviews || []);
       } catch (error) {
         console.error("Error parsing doctor details:", error);
       }
     }
   }, [searchParams]);
 
+  // Calculate rating distribution
   useEffect(() => {
     const calculateRatingDistribution = () => {
       const ratings = [5, 4, 3, 2, 1];
       const distribution = ratings.map((rating) => {
         const count = reviews.filter((review) => review.rating === rating).length;
         const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
-        return {
-          rating,
-          count,
-          percentage
-        };
+        return { rating, count, percentage };
       });
       setRatingDistribution(distribution);
     };
-
     calculateRatingDistribution();
   }, [reviews]);
 
+  // Cycle through reviews
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentReviewIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [reviews.length]);
+
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
-    setSelectedTimeSlot(null); // Reset time slot when date changes
+    setSelectedTimeSlot(null);
   };
 
   const handleTimeSlotSelect = (slot) => {
     if (slot.available) {
-      setSelectedTimeSlot(slot.time === selectedTimeSlot ? null : slot.time);
+      setSelectedTimeSlot(slot.time);
     }
   };
 
@@ -84,187 +104,221 @@ const AppointmentPage = () => {
     };
 
     try {
-        const response = await fetch("/api/users/appointment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(appointmentDetails),
-        });
-  
-        if (response.ok) {
-          alert("Appointment successfully booked!");
-          setSelectedDate("");
-          setSelectedTimeSlot(null);
-        } else {
-          const error = await response.json();
-          console.error("Error booking appointment:", error.message);
-          alert("Failed to book appointment.");
-        }
-      } catch (error) {
-        console.error("Error booking appointment:", error);
-        alert("An error occurred while booking the appointment.");
-      } finally {
-        setIsSubmitting(false);
+      const response = await fetch("/api/users/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(appointmentDetails),
+      });
+
+      if (response.ok) {
+        /* alert("Appointment successfully booked!"); */
+        setShowModal(true);
+        setSelectedDate("");
+        setSelectedTimeSlot(null);
+      } else {
+        const error = await response.json();
+        console.error("Error booking appointment:", error.message);
+        /* alert("Failed to book appointment.") */;
       }
-    };
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      /* alert("An error occurred while booking the appointment."); */
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
+    );
+  };
 
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+  };
 
   if (!doctor) {
     return <p className="loading-message">Loading doctor details...</p>;
   }
 
+  const currentReview = reviews[currentReviewIndex];
+
   return (
-    <div className="appointment-container">
-      {/* Left Section: Doctor Details and Ratings */}
-      <div className="doctor-details">
-        <h2>{doctor.name}</h2>
-        <p>
-          <strong>Specialty:</strong> {doctor.specialty}
-        </p>
-        <p>
-          <strong>Clinic Name:</strong> {doctor.clinicName}
-        </p>
-        <p>
-          <strong>Address:</strong> {doctor.clinicLocation?.address}
-        </p>
-        <p>
-          <strong>City:</strong> {doctor.clinicLocation?.city},{" "}
-          <strong>State:</strong> {doctor.clinicLocation?.state},{" "}
-          <strong>ZIP:</strong> {doctor.clinicLocation?.zip}
-        </p>
-        <p>
-          <strong>Contact:</strong> {doctor.contact?.phone},{" "}
-          {doctor.contact?.email}
-        </p>
-        
-        {/* Ratings Distribution Section */}
-        <h3>Ratings Distribution:</h3>
-        <ul className="rating-distribution-list">
-          {ratingDistribution.map(({ rating, count, percentage }) => (
-            <li key={rating} className="rating-item">
-              <span>{rating} Star{rating !== 1 ? 's' : ''}</span>
-              <div className="rating-bar-container">
-                <div 
-                  className="rating-bar" 
-                  style={{ width: `${percentage}%` }}
-                />
-              </div>
-              <span className="rating-count">
-                {count} review{count !== 1 ? 's' : ''}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <h3>Reviews:</h3>
-        {reviews.length > 0 ? (
-          <ul className="review-list">
-            {reviews.map((review, index) => (
-              <li key={index} className="review-item">
-                <p>
-                  <strong>{review.author_name}</strong>: {review.text}
-                </p>
-                <p>
-                  Rating: {review.rating} / 5
-                  {review.relative_time_description && (
-                    <> - {review.relative_time_description}</>
-                  )}
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No reviews available.</p>
-        )}
-      </div>
-
-      {/* Right Section: Appointment Booking */}
-      <div className="appointment-form">
-        <h2>Book an Appointment</h2>
-        
-        {/* Date Selection */}
-        <input
-          type="date"
-          className="date-input"
-          value={selectedDate}
-          onChange={handleDateChange}
-          min={new Date().toISOString().split('T')[0]}
-        />
-
-        {/* Time Slots */}
-        {selectedDate && (
-          <>
-            <h3>Available Time Slots</h3>
-            <div className="time-slots-container">
-              {timeSlots.map((slot, index) => (
-                <div
-                  key={index}
-                  className={`time-slot ${slot.available ? 'available' : 'booked'} ${
-                    selectedTimeSlot === slot.time ? 'selected' : ''
-                  }`}
-                  onClick={() => handleTimeSlotSelect(slot)}
-                >
-                  {slot.time}
-                </div>
-              ))}
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+      <div className="appointment-page-container">
+        <div className="top-sections-container">
+          <div className="doctor-details-section">
+            <h2>Doctor Details</h2>
+            <div className="doctor-info">
+              <h3>{doctor.name}</h3>
+              <p><strong>Specialty:</strong> {doctor.specialty}</p>
+              <p><strong>Clinic Name:</strong> {doctor.clinicName}</p>
+              <p><strong>Address:</strong> {doctor.clinicLocation?.address}</p>
+              {/* <p>
+                <strong>City:</strong> {doctor.clinicLocation?.city},{" "}
+                <strong>State:</strong> {doctor.clinicLocation?.state},{" "}
+                <strong>ZIP:</strong> {doctor.clinicLocation?.zip}
+              </p> */}
+              {/* <p>
+                <strong>Contact:</strong> {doctor.contact?.phone},{" "}
+                {doctor.contact?.email}
+              </p> */}
             </div>
-          </>
-        )}
-
-        {/* Legend */}
-        <div className="slot-legend">
-          <div className="legend-item">
-            <div className="legend-box available"></div>
-            <span>Free</span>
           </div>
-          <div className="legend-item">
-            <div className="legend-box booked"></div>
-            <span>Full</span>
+
+          <div className="appointment-section">
+            <h2>Book an Appointment</h2>
+            <input
+              type="date"
+              className="date-input"
+              value={selectedDate}
+              onChange={handleDateChange}
+              min={new Date().toISOString().split("T")[0]}
+            />
+
+            {selectedDate && (
+              <>
+                <h3>Available Time Slots</h3>
+                <div className="time-slots-container">
+                  {timeSlots.map((slot, index) => (
+                    <div
+                      key={index}
+                      className={`time-slot ${slot.available ? "available" : "booked"} ${
+                        selectedTimeSlot === slot.time ? "selected" : ""
+                      }`}
+                      onClick={() => handleTimeSlotSelect(slot)}
+                    >
+                      {slot.time}
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Show AppointmentSuccessful or AppointmentFailure modal */}
+            {showModal && (
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  {isError ? (
+                    <>
+                      <AppointmentFailure />
+                      <button
+                        className="close-button"
+                        onClick={() => setShowModal(false)}
+                      >
+                        Close
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <AppointmentSuccessful />
+                      <button
+                        className="close-button"
+                        onClick={() => setShowModal(false)}
+                      >
+                        Close
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+
+            <div className="slot-legend">
+              <div className="legend-item">
+                <div className="legend-box available"></div>
+                <span>Free</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-box booked"></div>
+                <span>Full</span>
+              </div>
+            </div>
+
+            <button
+              className="confirm-button"
+              disabled={!selectedDate || !selectedTimeSlot || isSubmitting}
+              onClick={handleAppointmentSubmit}
+            >
+              {isSubmitting ? "Booking..." : "Confirm Appointment"}
+            </button>
           </div>
         </div>
 
-        {/* Confirm Button */}
-        <button
-            className="confirm-button"
-            disabled={!selectedDate || !selectedTimeSlot}
-            onClick={async () => {
-                if (selectedDate && selectedTimeSlot) {
-                try {
-                    const response = await fetch("/api/users/appointment", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        doctorId: doctor.id,
-                        doctorName: doctor.name,
-                        specialty: doctor.specialty,
-                        date: selectedDate,
-                        time: selectedTimeSlot,
-                    }),
-                    });
+        {/* <div className="reviews-section">
+          <h2>Reviews</h2>
+          {currentReview ? (
+            <div className="review-content">
+              <p>
+                <strong>{currentReview.author || "Anonymous"}</strong>:{" "}
+                {currentReview.text || "No review text available"}
+              </p>
+              <p>
+                Rating:{" "}
+                <span className="stars">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span
+                      key={i}
+                      className={i < currentReview.rating ? "star filled" : "star"}
+                    />
+                  ))}
+                </span>
+                {currentReview.relative_time_description && (
+                  <> - {currentReview.relative_time_description}</>
+                )}
+              </p>
+            </div>
+          ) : (
+            <p>No reviews available.</p>
+          )} */}
+          {/* <TestimonialSection></TestimonialSection> */}
+          <ReviewSlider testimonials = {reviews}></ReviewSlider>
 
-                    if (response.ok) {
-                    alert(`Appointment scheduled for ${selectedDate} at ${selectedTimeSlot}`);
-                    } else {
-                    alert("Failed to schedule appointment. Please try again.");
-                    }
-                } catch (error) {
-                    console.error("Error:", error);
-                    alert("An error occurred while booking the appointment.");
-                }
-                } else {
-                alert("Please select both date and time.");
-                }
-            }}
-            >
-            Confirm Appointment
-        </button>
+  {/*         <section className={styles.testimonialSection}>
+            <div className={styles.navigationDots}>
+              {reviews.map((_, i) => (
+                <div
+                  key={i}
+                  className={`${styles.dot} ${
+                    i === currentIndex ? styles.active : ""
+                  }`}
+                  onClick={() => setCurrentIndex(i)}
+                />
+              ))}
+            </div>
 
+            <div className={styles.testimonialGrid}>
+              <div className={styles.navigationArrows}>
+                <div className={styles.arrow} onClick={handlePrev}>
+                  ←
+                </div>
+                <div className={styles.arrow} onClick={handleNext}>
+                  →
+                </div>
+              </div>
+
+              <div
+                className={styles.slider}
+                style={{
+                  transform: `translateX(-${currentIndex * 100}%)`,
+                  transition: "transform 0.5s ease-in-out",
+                }}
+              >
+                {reviews.map((review, i) => (
+                  <div key={i} className={styles.slide}>
+                    <TestimonialCard data={review} size="large" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section> */}
+        </div>
       </div>
-    </div>
+    
+
+
   );
 };
 

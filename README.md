@@ -38,3 +38,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 
 ## I installed multer (npm install multer)
 # npm install @google-cloud/storage multer next-connect mongoose
+# npm install fhirclient
+# npm install google-auth-library axios
+# npm install next@latest
+# npm install google-auth-library googleapis
+# npm install --save-dev @types/formidable
