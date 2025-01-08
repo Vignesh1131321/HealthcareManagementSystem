@@ -15,15 +15,15 @@ function Chatbot() {
 
   const fetchGeminiResponse = async (userInput) => {
     try {
-      const recentHistory = messages
-        .slice(-5)
+/*       const recentHistory = messages
+        .slice(-5) 
         .map((msg) => (msg.sender === "user" ? `User: ${msg.text}` : `Bot: ${msg.text}`))
-        .join("\n");
+        .join("\n"); */
 
-      const fullInput = `${recentHistory}\nUser: ${userInput}\nBot: This is the chat history between a medical chatbot and a patient. Respond as the chatbot.`;
+/*       const fullInput = `${recentHistory}`; */
 
-      const model = genAI.getGenerativeModel({ model: "tunedModels/fine-tuning-gs7z9b4bhxz9" });
-      const result = await model.generateContent(fullInput);
+      const model = genAI.getGenerativeModel({ model: "tunedModels/newtrainingdata-ewlskxr09m5j", });
+      const result = await model.generateContent(userInput);
 
       const botResponse = result.response.text().trim().replace(/^(User:|Bot:)/g, "").trim();
       return botResponse;
