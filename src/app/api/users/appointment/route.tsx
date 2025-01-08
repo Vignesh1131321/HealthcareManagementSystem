@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import clientPromise from "../../../../../lib/db";
+import clientPromise from "../../../../lib/db";
 import axios from "axios";
 
 // Replace this with your actual Google Places API Key
