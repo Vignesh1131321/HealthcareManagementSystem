@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import "./profile.css";
 import Header from "../components/Header";
 import { signOut } from "next-auth/react";
-
+import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 type UserDetails = {
   _id: string;
   username: string;
@@ -217,7 +217,7 @@ export default function ProfilePage() {
 
   return (
   <>
-    <Header />
+    <NavbarWrapper/>
     <div className="profile-container">
     {showCompleteProfileCard && (
         <div className="complete-profile-card">
