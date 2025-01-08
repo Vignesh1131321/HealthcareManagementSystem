@@ -322,7 +322,6 @@ const Doctor = ({ specialty }) => {
   
   return (
     <>
-      <Header />
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
         <h1 style={{ color: "#6b43ff", fontSize: "32px", marginBottom: "20px" }}>
           Specialist Locator

@@ -1,7 +1,7 @@
 .testimonial-slider {
   width: 100%;
   padding: 40px 0;
-  background-color: rgba(255, 239, 248, 1);
+  background-color: rgb(180, 215, 237);
   border-radius: 25px;
   position: relative;
   overflow: hidden;
@@ -116,7 +116,7 @@
 }
 
 .dot.active {
-  background: #FF1493;
+  background: #4f9cf2;
   width: 10px;
   height: 10px;
 }
