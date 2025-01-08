@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./TestimonialCard.module.css";
 import { TestimonialCardProps } from "./types";
-import { FaUser, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import { FaUserCircle, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";"react-icons/fa";
 
 export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   data,
@@ -39,18 +39,18 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
       <div className={styles.cardContent}>
         <div
           className={`${styles.avatarWrapper} ${
-            isLarge ? styles.avatarLarge : styles.avatarSmall
+            isLarge ? styles.avatarSmall : styles.avatarSmall
           }`}
         >
-          <FaUser
+          <FaUserCircle
             className={`${styles.avatarIcon} ${
-              isLarge ? styles.avatarLarge : styles.avatarSmall
+              isLarge ? styles.avatarLarge : styles.avatarLarge
             }`}
           />
         </div>
         <div
           className={`${styles.name} ${
-            isLarge ? styles.nameLarge : styles.nameSmall
+            isLarge ? styles.nameSmall : styles.nameSmall
           }`}
         >
           {data.author}

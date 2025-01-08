@@ -3,7 +3,7 @@
   flex-direction: column;
   position: relative;
   align-items: center;
-  color: rgba(82, 82, 82, 1);
+  color: rgba(82, 82, 82, .75);
   text-align: center;
   background: white;
   border-radius: 20px;
@@ -50,6 +50,18 @@
   border: 3px solid white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.avatarWrapper {
+  display:flex;
+  align-items: center;
+  margin-top: 20px; /* Adjust to align vertically */
+}
+
+.avatarIcon {
+  font-size: 30px; 
+  color: #4f9cf2; /* Makes the avatar icon blue */
+}
+
+
 
 .avatarSmall {
   width: 76px;
