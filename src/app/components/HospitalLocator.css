@@ -1,5 +1,4 @@
-/* Global Styles */
-body {
+/* body {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
@@ -103,7 +102,7 @@ body {
     background-color: #5632d6;
   }
   
-  /* Responsive Design */
+  
   @media (max-width: 1024px) {
     .hospitals-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -119,4 +118,115 @@ body {
       margin: 10px;
       padding: 15px;
     }
+  } */
+
+
+  /* Existing Styles Preserved */
+
+/* Custom Arrow Styling */
+.custom-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #6b43ff;
+  color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0
+  , 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.custom-arrow:hover {
+  background-color: #5632d6;
+  transform: scale(1.1);
+}
+
+.custom-arrow-left {
+  left: -20px; /* Adjust as needed for spacing */
+}
+
+.custom-arrow-right {
+  right: -20px; /* Adjust as needed for spacing */
+}
+
+/* Card Styling */
+.hospital-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hospital-card h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.hospital-card p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.hospital-card button {
+  background-color: #6b43ff;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.hospital-card button:hover {
+  background-color: #5632d6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hospital-card {
+    padding: 10px;
   }
+
+  .custom-arrow {
+    width: 30px;
+    height: 30px;
+  }
+
+  .custom-arrow-left {
+    left: -15px;
+  }
+
+  .custom-arrow-right {
+    right: -15px;
+  }
+}
+.hospitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Ensures 3 cards per row */
+  gap: 20px; /* Space between cards */
+  padding: 20px;
+  justify-content: center; /* Centers the grid */
+}
+
+@media (max-width: 768px) {
+  .hospitals-grid {
+    grid-template-columns: 1fr; /* Adjusts to one column for smaller screens */
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .hospitals-grid {
+    grid-template-columns: repeat(2, 1fr); /* Adjusts to two columns for medium screens */
+  }
+}
