@@ -1,13 +1,28 @@
 import React from "react";
 import styles from "./TestimonialCard.module.css";
 import { TestimonialCardProps } from "./types";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   data,
   size,
 }) => {
   const isLarge = size === "large";
+
+  // Helper function to render stars based on the rating
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        stars.push(<FaStar key={i} className={styles.star} />);
+      } else if (rating >= i - 0.5) {
+        stars.push(<FaStarHalfAlt key={i} className={styles.star} />);
+      } else {
+        stars.push(<FaRegStar key={i} className={styles.star} />);
+      }
+    }
+    return stars;
+  };
 
   return (
     <div className={styles.testimonialCard}>
@@ -22,9 +37,17 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         alt=""
       />
       <div className={styles.cardContent}>
-        <div className={`${styles.avatarWrapper} ${isLarge ? styles.avatarLarge : styles.avatarSmall}`}>
-          <FaUser className={`${styles.avatarIcon} ${isLarge ? styles.avatarLarge : styles.avatarSmall}`} />
-      </div>
+        <div
+          className={`${styles.avatarWrapper} ${
+            isLarge ? styles.avatarLarge : styles.avatarSmall
+          }`}
+        >
+          <FaUser
+            className={`${styles.avatarIcon} ${
+              isLarge ? styles.avatarLarge : styles.avatarSmall
+            }`}
+          />
+        </div>
         <div
           className={`${styles.name} ${
             isLarge ? styles.nameLarge : styles.nameSmall
@@ -33,16 +56,12 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
           {data.author}
         </div>
         <div className={styles.role}>{data.text}</div>
-        <img
-          loading="lazy"
-          src={data.rating}
+        <div
           className={`${styles.rating} ${
-            isLarge ? styles.ratingLarge : styles.ratingSmall
+            isLarge ? styles.ratingLarge : styles.ratingLarge
           }`}
-          alt="Rating stars"
-        />
-        <div className={`${styles.quote} ${isLarge ? styles.quoteLarge : ""}`}>
-         
+        >
+          {renderStars(parseFloat(data.rating))}
         </div>
       </div>
     </div>
