@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-import Header from "../components/Header";
+import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 
 const containerStyle = {
   width: "80%",
@@ -108,7 +108,8 @@ const HospitalLocator = () => {
 
   return (
     <>
-    <Header />
+    <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)" />
+
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center",backgroundImage :"url('/hospital-background.svg')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',

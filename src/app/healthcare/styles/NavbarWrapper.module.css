@@ -1,0 +1,29 @@
+/* Global reset for margins and paddings */
+:global(html), :global(body) {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;  /* Prevent horizontal scrolling */
+}
+
+/* Apply box-sizing globally */
+:global(*), :global(*::before), :global(*::after) {
+    box-sizing: border-box;
+}
+
+/* Local class for header content */
+.headerContent {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 20px;  /* Reduced padding */
+    align-items: center;  /* Ensures logo and navbar are vertically centered */
+    margin-top: 0px;
+}
+
+/* Optional: Media query for smaller screens */
+@media (max-width: 1024px) {
+    .headerContent {
+        padding: 10px 15px;  /* Reduce padding on smaller screens if needed */
+    }
+}

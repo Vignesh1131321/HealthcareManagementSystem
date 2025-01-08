@@ -1,0 +1,120 @@
+/* .contentWrapper {
+  display: flex;
+  flex-direction: column;
+  font-family: Muli, sans-serif;
+  font-weight: 700;
+}
+
+.title {
+  color: #000;
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.description {
+  color: rgba(125, 121, 135, 1);
+  font-size: 21px;
+  font-weight: 300;
+  line-height: 32px;
+  margin-top: 25px;
+}
+
+.ctaButton {
+  background-color: rgba(69, 143, 246, 1);
+  border-radius: 55px;
+  align-self: start;
+  margin-top: 48px;
+  font-size: 18px;
+  color: #fff;
+  line-height: 60px;
+  padding: 0 40px;
+  border: none;
+  cursor: pointer;
+}
+
+@media (max-width: 991px) {
+  .contentWrapper {
+    max-width: 100%;
+    margin-top: 40px;
+  }
+  .title {
+    max-width: 100%;
+    margin-right: 10px;
+    font-size: 40px;
+    line-height: 52px;
+  }
+  .description {
+    max-width: 100%;
+  }
+  .ctaButton {
+    margin-top: 40px;
+    padding: 0 20px;
+  }
+} */
+.contentWrapper {
+  flex: 1;
+  max-width: 500px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  left: 50px; /* Move the content slightly to the right */
+}
+
+.decorativeImage {
+  width: 50px;
+  height: auto;
+  position: absolute;
+  left: -90px; /* Move it further to the left */
+  top: -30px; /* Move it upwards */
+  margin-right: 10px;
+}
+
+.title {
+  font-size: 40px;
+  line-height: 36px;
+  color: #000;
+}
+
+.description {
+  font-size: 18px;
+  line-height: 24px;
+  color: rgba(125, 121, 135, 1);
+  margin-top: 20px;
+}
+
+.ctaButton {
+  font-size: 14px;
+  line-height: 40px;
+  padding: 0 20px;
+  background-color: rgba(69, 143, 246, 1);
+  border-radius: 55px;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  align-self: start;
+  margin-top: 30px;
+}
+
+@media (max-width: 991px) {
+  .contentWrapper {
+    max-width: 100%;
+    align-items: center;
+    left: 0; /* Reset the left offset for smaller screens */
+  }
+
+  .title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .ctaButton {
+    margin-top: 20px;
+  }
+}
