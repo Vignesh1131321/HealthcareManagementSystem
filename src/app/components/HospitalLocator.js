@@ -315,6 +315,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import { useRouter } from "next/navigation";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 
 const containerStyle = {
@@ -330,6 +331,7 @@ const HospitalLocator = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [hoveredHospital, setHoveredHospital] = useState(null);
   const [currentSlide, setCurrentSlide] = useState(0); // For slider functionality
+  const router = useRouter();
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",
@@ -429,6 +431,62 @@ const HospitalLocator = () => {
     setCurrentSlide((prev) => (prev - 3 + hospitals.length) % hospitals.length);
   };
 
+  const handleBookAppointment = (hospital) => {
+    if (!hospital || !hospital.name || !hospital.vicinity || !hospital.geometry) {
+      console.error("Invalid hospital data:", hospital);
+      return;
+    }
+  
+    const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+  
+    // Fetch reviews for the selected hospital
+    service.getDetails(
+      { placeId: hospital.place_id },
+      (place, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          const reviews = place.reviews || [];
+          console.log(hospital);
+          const doctorDetails = {
+            identity: "1",
+            id: hospital.place_id,
+            name: hospital.name,
+            specialty: "",
+            clinicName: hospital.name,
+            clinicLocation: {
+              address: hospital.vicinity,
+              city: "City Placeholder",
+              state: "State Placeholder",
+              zip: "Zip Placeholder",
+            },
+            contact: {
+              phone: "Phone Placeholder",
+              email: "Email Placeholder",
+            },
+            availableTimes: [
+              { day: "Monday", time: "9:00 AM - 5:00 PM" },
+              { day: "Tuesday", time: "9:00 AM - 5:00 PM" },
+            ],
+            reviews: reviews.map((review) => ({
+              author: review.author_name,
+              rating: review.rating,
+              text: review.text,
+            })),
+          };
+  
+          const queryString = encodeURIComponent(JSON.stringify(doctorDetails));
+          const url = `/appointment?doctor=${queryString}`;
+  
+          router.push(url);
+        } else {
+          console.error("Failed to fetch hospital details for reviews.");
+        }
+      }
+    );
+  };
+
+
+
+
   return (
     <>
       <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)" />
@@ -520,6 +578,7 @@ const HospitalLocator = () => {
                           <h3 style={{ color: "#333" }}>{hospital.name}</h3>
                           <p style={{ color: "#666" }}>{hospital.vicinity}</p>
                           <button
+                            onClick={() => handleBookAppointment(hospital)}
                             style={{
                               marginTop: "10px",
                               padding: "10px 20px",

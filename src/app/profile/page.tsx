@@ -44,6 +44,7 @@ export default function ProfilePage() {
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
+  const [activeTab, setActiveTab] = useState<"healthRecords" | "appointments">("healthRecords");
   
 
   const logout = async () => {
@@ -290,11 +291,11 @@ export default function ProfilePage() {
   <>
     <NavbarWrapper/>
     <div className="profile-container">
-    {showCompleteProfileCard && (
+      {showCompleteProfileCard && (
         <div className="complete-profile-card">
           <h2>Complete Your Profile</h2>
-          <form onSubmit={handleCompleteProfileSubmit}>
-          <input
+            <form onSubmit={handleCompleteProfileSubmit}>
+              <input
                 type="text"
                 placeholder="Username"
                 value={userDetails?.username || ""}
@@ -372,10 +373,10 @@ export default function ProfilePage() {
                 value={userDetails?.gender || ""}
                 onChange={(e) => setUserDetails((prev) => prev ? { ...prev, gender: e.target.value } : null)}
               />
-            <button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save"}
-            </button>
-          </form>
+              <button type="submit" disabled={loading}>
+                {loading ? "Saving..." : "Save"}
+              </button>
+            </form>
           <button onClick={() => setShowCompleteProfileCard(false)}>Close</button>
         </div>
       )}
@@ -461,56 +462,80 @@ export default function ProfilePage() {
             <p>No profile data available</p>
           )}
         </div>
-      <div className="health-record-container">
-        <h2>Health Records</h2>
-        {loading ? (
-          <p>Loading health records...</p>
-        ) : healthRecords.length > 0 ? (
-          <div className="health-records-list">
-            {healthRecords.length > 0 ? (
-              healthRecords.map((record, index) => (
-                <li key={index} className="health-record-item">
-                  {record.data ? (
-                    <a
-                      href={`data:${record.contentType};base64,${record.data}`}
-                      download={record.name}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="health-record-link"
-                    >
-                      {record.name}
-                    </a>
-                  ) : (
-                    <span>Invalid or Missing Data</span>
-                  )}
-                </li>
-              ))
-            ) : (
-              <p>No health records available</p>
-            )}
+        <div className="health-record-container">
+          <h2>Manage Records</h2>
+          {/* Tab Selector */}
+          <div className="tabs">
+            <button
+              className={`tab-btn ${activeTab === "healthRecords" ? "active" : ""}`}
+              onClick={() => setActiveTab("healthRecords")}
+            >
+              Health Records
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "appointments" ? "active" : ""}`}
+              onClick={() => setActiveTab("appointments")}
+            >
+              Appointments
+            </button>
           </div>
 
-        ) : (
-          <p>No health records available</p>
-        )}
-        <div className="profile-actions">
-          <label className="custom-file-upload">
-            <input
-              type="file"
-              accept=".pdf"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
-            />
-            Choose File
-          </label>
-          <button
-            className="upload-btn"
-            onClick={handleSubmitForHealthRecord}
-            disabled={loading}
-          >
-            {loading ? "Uploading..." : "Upload Health Record"}
-          </button>
+          {/* Conditional Rendering */}
+          {activeTab === "healthRecords" && (
+            <>
+              {loading ? (
+                <p>Loading health records...</p>
+              ) : healthRecords.length > 0 ? (
+                <div className="health-records-list">
+                  {healthRecords.map((record, index) => (
+                    <li key={index} className="health-record-item">
+                      {record.data ? (
+                        <a
+                          href={`data:${record.contentType};base64,${record.data}`}
+                          download={record.name}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="health-record-link"
+                        >
+                          {record.name}
+                        </a>
+                      ) : (
+                        <span>Invalid or Missing Data</span>
+                      )}
+                    </li>
+                  ))}
+                </div>
+              ) : (
+                <p>No health records available</p>
+              )}
+              <div className="profile-actions">
+                <label className="custom-file-upload">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  />
+                  Choose File
+                </label>
+                <button
+                  className="upload-btn"
+                  onClick={handleSubmitForHealthRecord}
+                  disabled={loading}
+                >
+                  {loading ? "Uploading..." : "Upload Health Record"}
+                </button>
+              </div>
+            </>
+          )}
+
+          {activeTab === "appointments" && (
+            <div className="appointments">
+              <p>Appointments will appear here.</p>
+              {/* Future feature: Add appointment data fetching and display */}
+            </div>
+          )}
         </div>
-      </div>
+
 
       </>
       )}

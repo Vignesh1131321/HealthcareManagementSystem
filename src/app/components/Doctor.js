@@ -283,6 +283,7 @@ const Doctor = ({ specialty }) => {
           const reviews = place.reviews || [];
   
           const doctorDetails = {
+            identity: "2",
             id: hospital.place_id,
             name: hospital.name,
             specialty: specialty,
