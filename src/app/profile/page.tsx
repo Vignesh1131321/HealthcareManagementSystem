@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import "./profile.css";
 import Header from "../components/Header";
 import { signOut } from "next-auth/react";
+// import . from "../api/u";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 type UserDetails = {
   _id: string;
@@ -45,7 +46,7 @@ export default function ProfilePage() {
   const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
   const [activeTab, setActiveTab] = useState<"healthRecords" | "appointments">("healthRecords");
-  
+  const [appointments, setAppointments] = useState([]); // State for appointments
 
   const logout = async () => {
     try {
@@ -286,6 +287,44 @@ export default function ProfilePage() {
 
     fetchImages();
   }, [userDetails]);
+
+  const fetchAppointments = async () => {
+    if (!userDetails || !userDetails._id) {
+      console.warn("User details not available yet.");
+      return;
+    }
+
+  
+    try {
+      setLoading(true);
+  
+      const response = await axios.get('/api/get-appointments', {
+        headers: {
+          userId: userDetails._id,
+        },
+      });
+  
+      if (response.data.success) {
+        setAppointments(response.data.appointments);
+        
+      } else {
+        toast.error("Failed to fetch appointments");
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      toast.error("Failed to fetch appointments");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+// Trigger fetch when activeTab is "appointments"
+useEffect(() => {
+  if (activeTab === "appointments") {
+    fetchAppointments();
+  }
+}, [activeTab]);
 
   return (
   <>
@@ -529,11 +568,27 @@ export default function ProfilePage() {
           )}
 
           {activeTab === "appointments" && (
-            <div className="appointments">
-              <p>Appointments will appear here.</p>
-              {/* Future feature: Add appointment data fetching and display */}
+            <div className="appointments-list">
+              {loading ? (
+                <p>Loading appointments...</p>
+              ) : appointments.length > 0 ? (
+                <ul>
+                  {appointments.map((appointment) => (
+                    <li key={appointment._id} className="appointment-item">
+                      <h3>{appointment.doctorName.split('|')[0]}</h3>
+                      {appointment.identity=="2" && (<p>Specialty: {appointment.specialty}</p>)}
+                      
+                      <p>Date: {appointment.appointmentDate}</p>
+                      <p>Time: {appointment.appointmentTime}</p>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No appointments available</p>
+              )}
             </div>
           )}
+
         </div>
 
 
