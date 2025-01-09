@@ -5,7 +5,7 @@ export default function ChatbotPage() {
     return (
       <div>
         <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)"/>
-        <Doctor specialty="Cardiologist"/>
+        <Doctor specialty={"cardiologist"}/>
         {/* <AppointmentFailure></AppointmentFailure> */}
       </div>
   

@@ -1,22 +1,37 @@
 import React from "react";
+import { useRouter } from "next/navigation"; // Replace useNavigate with useRouter
 import styles from "./DoctorModal.module.css";
-import { FaStethoscope, FaTooth, FaHeart, FaUserMd,FaBrain,FaBone,FaBaby,FaEye,FaLungs} from "react-icons/fa"; // Use appropriate icons
-import { MdPersonPin } from "react-icons/md"; // Dermatologist
+import {
+  FaStethoscope,
+  FaTooth,
+  FaHeart,
+  FaUserMd,
+  FaBrain,
+  FaBone,
+  FaBaby,
+  FaEye,
+} from "react-icons/fa";
+import { MdPersonPin } from "react-icons/md";
 
 const doctorTypes = [
-    { name: "Dermatologist", icon: <MdPersonPin size={40} /> },
-    { name: "Dentist", icon: <FaTooth size={40} /> },
-    { name: "Cardiologist", icon: <FaHeart size={40} /> },
-    { name: "Urologist", icon: <FaUserMd size={40} /> },
-    { name: "General Physician", icon: <FaStethoscope size={40} /> },
-    { name: "Neurologist", icon: <FaBrain size={40} /> },
-    { name: "Pediatrician", icon: <FaBaby size={40} /> },
-    { name: "Orthopedic", icon: <FaBone size={40} /> },
-    { name: "Ophthalmologist", icon: <FaEye size={40} /> },
-    // { name: "Pulmonologist", icon: <FaLungs size={40} /> },
-  ];
+  { name: "Dermatologist", icon: <MdPersonPin size={40} /> },
+  { name: "Dentist", icon: <FaTooth size={40} /> },
+  { name: "Cardiologist", icon: <FaHeart size={40} /> },
+  { name: "Urologist", icon: <FaUserMd size={40} /> },
+  { name: "General Physician", icon: <FaStethoscope size={40} /> },
+  { name: "Neurologist", icon: <FaBrain size={40} /> },
+  { name: "Pediatrician", icon: <FaBaby size={40} /> },
+  { name: "Orthopedic", icon: <FaBone size={40} /> },
+  { name: "Ophthalmologist", icon: <FaEye size={40} /> },
+];
 
 export const DoctorModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const router = useRouter();
+
+  const handleNavigate = (specialty: string) => {
+    router.push(`/doctor?specialty=${encodeURIComponent(specialty)}`);
+  };
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
@@ -26,7 +41,7 @@ export const DoctorModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <div
               key={index}
               className={styles.doctorBox}
-              onClick={() => alert(`You selected ${doctor.name}`)}
+              onClick={() => handleNavigate(doctor.name)}
             >
               <div className={styles.icon}>{doctor.icon}</div>
               <p>{doctor.name}</p>

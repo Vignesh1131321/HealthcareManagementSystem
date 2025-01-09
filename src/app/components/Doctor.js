@@ -159,7 +159,7 @@ export default Doctor;  */
 
 "use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams  } from "next/navigation";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import Header from "../components/Header";
 
@@ -176,6 +176,9 @@ const Doctor = ({ specialty }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [hoveredHospital, setHoveredHospital] = useState(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const specialty1 = searchParams.get('specialty');
+  
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",
@@ -212,12 +215,14 @@ const Doctor = ({ specialty }) => {
     const request = {
       location,
       radius: 5000,
-      keyword: specialty || "doctor", // Search by specialty
+      keyword:  specialty1 || specialty, // Search by specialty
     };
 
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         setHospitals(results);
+        console.log(specialty);
+        console.log(specialty1);
         setErrorMessage("");
       } else {
         setHospitals([]);
