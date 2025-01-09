@@ -240,9 +240,9 @@ const Doctor = ({ specialty }) => {
                     </div>
 
                     {hospital.rating ? (
-  <div className="info-row rating-row">
-    <div className="info-icon-wrapper">
-      <Star className="info-icon star-icon" size={24} />
+  <div className="info-row ">
+    <div className="info-icon">
+      <Star className="info-icon" size={18} fill="#FFD700" />
     </div>
     <p className="hospital-rating">
       <span className="rating-value">{hospital.rating}</span>
@@ -250,9 +250,9 @@ const Doctor = ({ specialty }) => {
     </p>
   </div>
 ) : (
-  <div className="info-row rating-row">
-    <div className="info-icon-wrapper">
-      <Star className="info-icon star-icon" size={24} />
+  <div className="info-row">
+    <div className="info-icon">
+     <Star className="info-icon" size={18} fill="#FFD700" />
     </div>
     <p className="hospital-rating">Rating not available</p>
   </div>
