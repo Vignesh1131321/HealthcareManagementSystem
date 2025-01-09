@@ -1,39 +1,272 @@
-/* Style for the list of doctors */
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+.doctor-locator-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #EBF4FF 0%, #E0EAFC 100%);
+}
+
+.main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  color: #2B6CB0;
+  margin-bottom: 2rem;
+}
+
+.search-container {
+  max-width: 300px;
+  margin: 0 auto 2rem;
+  position: relative;
+}
+
+.search-input-wrapper {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #4299E1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4299E1;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  width: 100%;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.suggestion-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background-color: #EBF8FF;
+}
+
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.doctor-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  border: 1px solid #E2E8F0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.doctor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  border-color: #4299E1;
+}
+
+.doctor-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+.card-icon {
+  color: #4299E1;
+  flex-shrink: 0;
+}
+
+.doctor-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2D3748;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.doctor-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.info-icon-wrapper {
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-icon {
+  color: #4299E1;
+  flex-shrink: 0;
+}
+
+.star-icon {
+  color: #FFD700;
+}
+
+.doctor-rating {
+  color: #2D3748;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.doctor-address,
+.doctor-hours,
+.contact-text {
+  color: #718096;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.contact-info {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #E2E8F0;
+}
+
+.book-button {
+  background: linear-gradient(135deg, #4299E1 0%, #2B6CB0 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.book-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 153, 225, 0.3);
+}
+
+.loading-message {
+  text-align: center;
+  color: #718096;
+  font-size: 1.125rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.error-message {
+  text-align: center;
+  color: #E53E3E;
+  margin-bottom: 1rem;
+  background: #FFF5F5;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.specialty-tag {
+  display: inline-block;
+  background: #EBF8FF;
+  color: #2B6CB0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 2rem;
   }
   
-  li {
-    position: relative;
-    margin: 10px 0;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    transition: background-color 0.3s, box-shadow 0.3s;
+  .doctors-grid {
+    grid-template-columns: 1fr;
   }
-  
-  li:hover {
-    background-color: #e9f5ff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .doctor-card {
+    margin-bottom: 1rem;
   }
-  
-  /* Style for the Book Appointment button */
-  .book-appointment-btn {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .doctors-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-  
-  .book-appointment-btn:hover {
-    background-color: #0056b3;
+}
+
+/* Map Container Styles */
+.map-container {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  height: 400px;
+}
+
+/* Content Layout */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-card {
+  animation: fadeIn 0.3s ease-out;
+}

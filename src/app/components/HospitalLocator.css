@@ -18,7 +18,7 @@
 }
 
 .search-container {
-  max-width: 600px;
+  max-width: 300px;
   margin: 0 auto 2rem;
   position: relative;
 }
@@ -61,7 +61,11 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
-
+.star-icon {
+  font-size: 26px; /* Increase star size */
+  color: #FFD700;
+  margin-top: 0; /* Ensure stars align well with text */
+}
 .suggestion-item {
   padding: 0.75rem 1rem;
   cursor: pointer;
@@ -198,17 +202,7 @@
   gap: 1rem;
 }
 
-.info-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
 
-.info-icon {
-  color: #4299E1;
-  flex-shrink: 0;
-  margin-top: 0.25rem;
-}
 
 .hospital-address {
   color: #718096;
@@ -216,10 +210,35 @@
   line-height: 1.5;
   margin: 0;
 }
+/* Update just the icon-related styles */
 
+
+.info-row {
+  display: flex;
+  align-items: center; /* Ensures icons and text are vertically aligned */
+  gap: 0.75rem;
+}
+
+.info-icon-wrapper {
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0; /* Ensure proper alignment */
+}
+
+.info-icon {
+  color: #4299E1;
+  flex-shrink: 0;
+  font-size: 20px; /* Slightly larger icon size for better visibility */
+}
+
+.rating-row {
+  align-items: center; /* Special alignment for rating row */
+}
 .hospital-rating {
   color: #2D3748;
-  font-size: 0.875rem;
+  font-size: 1rem; /* Increase the text size of the rating slightly */
   font-weight: 500;
   margin: 0;
 }
