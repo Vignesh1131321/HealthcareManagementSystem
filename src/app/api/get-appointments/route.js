@@ -23,12 +23,12 @@ export async function GET(req) {
             .toArray();
 
         console.log("Appointments found:", appointments);
-        if (!appointments || appointments.length === 0) {
-            return NextResponse.json(
-                { message: "No appointments found for the given user." },
-                { status: 404 }
-            );
-        }
+        // if (!appointments || appointments.length === 0) {
+        //     return NextResponse.json(
+        //         { message: "No appointments found for the given user." },
+        //         { status: 404 }
+        //     );
+        // }
         return NextResponse.json(
             { success: true, appointments },
             { status: 200 }

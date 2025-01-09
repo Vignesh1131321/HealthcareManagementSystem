@@ -9,6 +9,48 @@
   border-radius: 20px;
   overflow: hidden;
   height: 100%;
+  transition: all 0.3s ease-in-out;
+}
+.testimonialCard.expanded {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  z-index: 1000;
+  margin: 0;
+}
+
+.expandedText {
+  max-height: none;
+  overflow: visible;
+}
+
+.readMoreButton {
+  margin-top: 12px;
+  color: #4f9cf2;
+  font-size: 14px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.readMoreButton:hover {
+  background: rgba(79, 156, 242, 0.1);
+}
+/* Modify your existing role class */
+.role {
+  margin-top: 4px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+  transition: max-height 0.3s ease-in-out;
 }
 
 .cardBackground {

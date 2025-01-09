@@ -1,13 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./TestimonialCard.module.css";
-import { TestimonialCardProps } from "./types";
-import { FaUserCircle, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";"react-icons/fa";
+import { FaUserCircle, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+
+interface TestimonialCardProps {
+  data: {
+    author: string;
+    text: string;
+    rating: string;
+  };
+  size: "large" | "small";
+}
 
 export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   data,
   size,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const isLarge = size === "large";
+  const maxLength = 150;
+  
+  const needsReadMore = data.text.length > maxLength;
+  const displayText = isExpanded 
+    ? data.text 
+    : data.text.slice(0, maxLength) + (needsReadMore ? '...' : '');
 
   // Helper function to render stars based on the rating
   const renderStars = (rating: number) => {
@@ -25,7 +40,13 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   };
 
   return (
-    <div className={styles.testimonialCard}>
+    <div 
+      className={`${styles.testimonialCard} ${isExpanded ? styles.expanded : ''}`}
+      style={{
+        height: isExpanded ? 'auto' : '100%',
+        zIndex: isExpanded ? 10 : 1
+      }}
+    >
       <img
         loading="lazy"
         src={
@@ -55,7 +76,9 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         >
           {data.author}
         </div>
-        <div className={styles.role}>{data.text}</div>
+        <div className={`${styles.role} ${isExpanded ? styles.expandedText : ''}`}>
+          {displayText}
+        </div>
         <div
           className={`${styles.rating} ${
             isLarge ? styles.ratingLarge : styles.ratingLarge
@@ -63,6 +86,15 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         >
           {renderStars(parseFloat(data.rating))}
         </div>
+        
+        {needsReadMore && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className={styles.readMoreButton}
+          >
+            {isExpanded ? 'Read Less' : 'Read More'}
+          </button>
+        )}
       </div>
     </div>
   );
