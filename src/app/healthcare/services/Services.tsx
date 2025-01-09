@@ -69,7 +69,8 @@ import styles from "./Services.module.css";
 import { ServiceCard } from "./ServiceCard";
 import { ServiceCardProps } from "./types";
 import { DoctorModal } from "./DoctorModal";
-import  Emergency  from "../../components/Emergency"
+import  Emergency  from "../../components/Emergency";
+import EmergencyConfirm from "../../components/EmergencyConfirm"; // Import EmergencyConfirm
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 
 
@@ -127,11 +128,13 @@ export const Services: React.FC = () => {
 
   const currentDate = new Date();
   const [mapCenter, setMapCenter] = useState<google.maps.LatLng | null>(null);
-const [errorMessage, setErrorMessage] = useState("");
-const [hospitals, setHospitals] = useState<google.maps.places.PlaceResult[]>([]);
-const [userDetails, setUserDetails] = useState(null);
-const [loading, setLoading] = useState(true);
-const [showModal, setShowModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [hospitals, setHospitals] = useState<google.maps.places.PlaceResult[]>([]);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [showEmergencyConfirm, setShowEmergencyConfirm] = useState(false);
+  const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
 
 const date = currentDate.toLocaleDateString('en-GB').replace(/\//g, '-');  // Format: "MM/DD/YYYY" or based on locale
 const time = `${currentDate.getHours()}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
@@ -256,36 +259,24 @@ useEffect(() => {
 
 
 // Function to handle "Emergency care" card click
-const handleEmergencyCareClick = () => {
+/* const handleEmergencyCareClick = () => {
   try {
     if (hospitals.length > 0) {
-      // Find the nearest hospital (assuming the first hospital is the nearest)
       const nearestHospital = hospitals[0];
-
-      // Get the current date and time
       const currentDate = new Date();
       const appointmentDate = currentDate.toLocaleDateString();
       const appointmentTime = currentDate.toLocaleTimeString();
-
-      // Book an appointment (simulated)
-      /* alert(
-        `Appointment booked at ${nearestHospital.name} on ${appointmentDate} at ${appointmentTime}.`
-      ); */
       handleAppointmentSubmit();
       
       setShowModal(true);
 
-      // Simulate ambulance alert
-      /* setTimeout(() => {
-        alert("An ambulance is on its way to your location.");
-      }, 2000); */
     } else {
       alert("No hospitals found nearby.");
     }
   } catch (error) {
     console.error("Error handling emergency care click:", error);
   }
-};
+}; */
 
 
 /*   const findNearbyHospitals = async (lat: number, lng: number) => {
@@ -296,7 +287,7 @@ const handleEmergencyCareClick = () => {
     return data.results;
   }; */
   
-  const handleAppointmentSubmit = async () => {
+/*   const handleAppointmentSubmit = async () => {
 
     const appointmentDetails = {
       userId : userDetails._id,
@@ -314,49 +305,103 @@ const handleEmergencyCareClick = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentDetails),
       });
-      console.log("Appointment details:", appointmentDetails);
       
       if (response.ok) {
-        /* alert("Appointment successfully booked!"); */
+        
         setShowModal(true);
       } else {
         const error = await response.json();
         console.error("Error booking appointment:", error.message);
-        /* alert("Failed to book appointment.") */;
+        
       }
     } catch (error) {
       console.error("Error booking appointment:", error);
-      /* alert("An error occurred while booking the appointment."); */
+      
+    }
+  }; */
+
+  const handleEmergencyCareClick = () => {
+    setShowEmergencyConfirm(true); // Show EmergencyConfirm popup
+  };
+
+  const handleConfirmEmergency = async () => {
+    setShowEmergencyConfirm(false); // Hide EmergencyConfirm popup
+    await handleAppointmentSubmit(); // Book appointment
+    setShowEmergencyPopup(true); // Show Emergency popup
+  };
+
+  const handleAppointmentSubmit = async () => {
+    if (!hospitals.length) {
+      alert("No hospitals found nearby.");
+      return;
+    }
+
+    const appointmentDetails = {
+      userId: userDetails._id,
+      identity: "1",
+      doctorId: hospitals[0].place_id,
+      doctorName: hospitals[0].name,
+      specialty: "",
+      date: date,
+      time: time,
+    };
+
+    try {
+      const response = await fetch("/api/users/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(appointmentDetails),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Error booking appointment:", error.message);
+        alert("Failed to book appointment.");
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      alert("An error occurred while booking the appointment.");
     }
   };
 
   return (
     <div className={styles.servicesContainer}>
       {servicesData.map((service, index) => (
-        <div key={index} className={styles.serviceColumn}>
-          <ServiceCard
-            {...service}
-            onClick={service.title === "Search doctor" ? handleFindDoctorClick : service.title === "Emergency care"
-              ? handleEmergencyCareClick
-              : undefined} 
-          />
-          
-        </div>
+       <div key={index} className={styles.serviceColumn}>
+       <ServiceCard
+         {...service}
+         onClick={
+           service.title === "Search doctor"
+             ? handleFindDoctorClick
+             : service.title === "Emergency care"
+             ? handleEmergencyCareClick
+             : undefined
+         }
+       />
+     </div>
       ))}
       {isModalOpen && <DoctorModal onClose={() => setIsModalOpen(false)} />}
-      {showModal && (
+      {showEmergencyConfirm && (
+        <EmergencyConfirm
+            isOpen={showEmergencyConfirm}
+          onConfirm={handleConfirmEmergency}
+          onClose={() => setShowEmergencyConfirm(false)}
+        />
+      )}
+      {showEmergencyPopup && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-          <Emergency/>
-          <button
-            className={styles.closeButton}
-            onClick={() => setShowModal(false)}
-          >
-            Close
-          </button>
+            <Emergency />
+            <button
+              className={styles.closeButton}
+              onClick={() => setShowEmergencyPopup(false)}
+            >
+              Close
+            </button>
           </div>
         </div>
-      ) }
+      )}
     </div>
+    
   );
 };
