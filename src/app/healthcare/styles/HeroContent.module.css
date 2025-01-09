@@ -53,41 +53,41 @@
 } */
 .contentWrapper {
   flex: 1;
-  max-width: 500px;
+  max-width: 800px; /* Increased max width for larger screens */
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin: 0 auto; /* Center content on the page */
   position: relative;
-  left: 50px; /* Move the content slightly to the right */
 }
 
 .decorativeImage {
-  width: 50px;
+  width: 50px; /* Small size for decorative purposes */
   height: auto;
   position: absolute;
-  left: -90px; /* Move it further to the left */
-  top: -30px; /* Move it upwards */
-  margin-right: 10px;
+  left: -20px; /* Keep the image at the extreme left */
+  top: -20px; /* Adjust to align with the content visually */
+  margin: 0; /* Remove additional margins */
 }
 
 .title {
-  font-size: 40px;
-  line-height: 36px;
+  font-size: 48px;
+  line-height: 56px;
   color: #000;
 }
 
 .description {
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 20px;
+  line-height: 28px;
   color: rgba(125, 121, 135, 1);
   margin-top: 20px;
 }
 
 .ctaButton {
-  font-size: 14px;
-  line-height: 40px;
-  padding: 0 20px;
+  font-size: 18px;
+  line-height: 44px;
+  padding: 0 30px;
   background-color: rgba(69, 143, 246, 1);
   border-radius: 55px;
   color: #fff;
@@ -97,24 +97,76 @@
   margin-top: 30px;
 }
 
-@media (max-width: 991px) {
+/* Large screens */
+@media (min-width: 1400px) {
   .contentWrapper {
-    max-width: 100%;
-    align-items: center;
-    left: 0; /* Reset the left offset for smaller screens */
+    max-width: 1000px; /* Expand max width for very large screens */
+    padding: 40px; /* Add extra padding */
   }
 
   .title {
+    font-size: 56px;
+    line-height: 64px;
+  }
+
+  .description {
     font-size: 24px;
     line-height: 32px;
   }
 
+  .ctaButton {
+    font-size: 20px;
+  }
+}
+
+/* Medium screens */
+@media (max-width: 1200px) {
+  .contentWrapper {
+    max-width: 90%;
+  }
+
+  .title {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
   .description {
-    font-size: 14px;
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .ctaButton {
+    font-size: 16px;
+  }
+}
+
+/* Small screens */
+@media (max-width: 991px) {
+  .contentWrapper {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .description {
+    font-size: 16px;
     line-height: 22px;
   }
 
   .ctaButton {
+    font-size: 14px;
     margin-top: 20px;
+  }
+
+  .decorativeImage {
+    width: 50px; /* Keep the size small */
+    position: absolute; /* Stay at the extreme left */
+    left: 0;
+    top: 10px;
   }
 }

@@ -123,7 +123,7 @@ export const HealthcarePage: React.FC = () => {
         <div className={styles.heroSection}>
           <HeroContent
             title="Virtual healthcare for you"
-            description="Trafalgar provides progressive, and affordable healthcare, accessible on mobile and online for everyone"
+            description="Medilink provides progressive, and affordable healthcare, accessible on mobile and online for everyone"
             buttonText="Learn More"
           />
           <div className={styles.heroImageWrapper}>
