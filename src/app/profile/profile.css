@@ -26,7 +26,33 @@ body {
   background-color: #ffffff; /* Solid white background */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   text-align: center;
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  gap: 15px; /* Add spacing between elements inside */
+  
+  max-height: 600px;
 }
+
+/* Content inside health-record-container becomes scrollable */
+.health-record-container .scrollable-content {
+  max-height: 500px; /* Adjust the scrollable height */
+  overflow-y: auto; /* Enable scrolling only for this part */
+}
+
+/* Custom scrollbar styling for scrollable content */
+.health-record-container .scrollable-content::-webkit-scrollbar {
+  width: 8px; /* Scrollbar width */
+}
+
+.health-record-container .scrollable-content::-webkit-scrollbar-thumb {
+  background-color: #4a90e2; /* Scrollbar thumb color */
+  border-radius: 4px; /* Rounded scrollbar thumb for aesthetics */
+}
+
+.health-record-container .scrollable-content::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* Scrollbar track color */
+}
+
 
 .profile-image-container {
   position: absolute; /* Position the image relative to the container */
@@ -95,28 +121,28 @@ body {
   text-align: center;
 } */
 
-.health-record-list {
+/* .health-record-list {
   display: flex;
-  flex-direction: column; /* Stack items vertically */
-  gap: 15px; /* Space between records */
-  max-height: 500px; /* Limit height to show 4 items */
-  overflow-y: auto; /* Enable vertical scrolling */
-}
+  flex-direction: column;
+  gap: 15px; 
+  max-height: 500px; 
+  overflow-y: auto;
+} */
 
-.health-record-card {
+/* .health-record-card {
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 12px;
-  background-color: #ffffff; /* Solid background */
+  background-color: #ffffff; 
   text-align: left;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+} */
 
-.health-record-card p {
+/* .health-record-card p {
   margin: 5px 0;
   color: #444;
   font-size: 1rem;
-}
+} */
 
 /* Hide scrollbar but keep scrolling functional */
 .health-record-list::-webkit-scrollbar {
@@ -301,25 +327,31 @@ body {
 
 .health-records-list {
   display: flex;
-  flex-direction: column;
-  gap: 10px; /* Reduce spacing for compact design */
-  max-height: 400px; /* Adjust for scrollable area */
-  overflow-y: auto;
+  flex-direction: column; /* Stack items vertically */
+  gap: 10px; /* Space between health record items */
+  max-height: 400px; /* Set a maximum height to enable scrolling when content exceeds */
+  overflow-y: auto; /* Enable vertical scrolling */
+  background-color: #ffffff; /* Match other card backgrounds */
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Consistent shadow for styling */
 }
 
+/* Custom scrollbar styling */
 .health-records-list::-webkit-scrollbar {
-  width: 8px;
+  width: 8px; /* Scrollbar width */
 }
 
 .health-records-list::-webkit-scrollbar-thumb {
-  background-color: #4a90e2;
-  border-radius: 4px;
+  background-color: #4a90e2; /* Scrollbar thumb color */
+  border-radius: 4px; /* Rounded scrollbar thumb for aesthetics */
 }
 
 .health-records-list::-webkit-scrollbar-track {
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; /* Scrollbar track color */
 }
 
+/* Styling individual health record items */
 .health-record-item {
   list-style: none;
   padding: 10px 15px;
@@ -329,14 +361,15 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.3s ease; /* Smooth hover effects */
 }
 
 .health-record-item:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Slight elevation on hover */
 }
 
+/* Add a link or text style for each record, if necessary */
 .health-record-link {
   color: #4a90e2;
   text-decoration: none;
@@ -375,19 +408,69 @@ body {
 }
 
 .appointments-list {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  gap: 15px; /* Add space between appointments */
+  max-height: 400px; /* Limit height for scrolling */
+  overflow-y: auto; /* Enable scrolling */
+  background-color: #ffffff; /* Match other card backgrounds */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.appointments-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.appointments-list::-webkit-scrollbar-thumb {
+  background-color: #4a90e2;
+  border-radius: 4px;
+}
+
+.appointments-list::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
 }
 
 .appointment-item {
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Add spacing between content */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #fefefe;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.appointment-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .appointment-item h3 {
-  margin: 0 0 5px;
+  margin: 0;
+  color: #4a90e2; /* Consistent color with links and buttons */
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .appointment-item p {
-  margin: 5px 0;
+  margin: 0;
+  color: #555; /* Slightly darker text for readability */
+  font-size: 1rem;
+}
+
+.appointment-link {
+  margin-top: 10px;
+  align-self: flex-start; /* Align link to the left */
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.appointment-link:hover {
+  color: #357abd;
 }

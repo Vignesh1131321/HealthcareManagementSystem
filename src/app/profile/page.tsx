@@ -572,7 +572,7 @@ useEffect(() => {
               {loading ? (
                 <p>Loading appointments...</p>
               ) : appointments.length > 0 ? (
-                <ul>
+                <ul style={{padding: "0px"}}>
                   {appointments.map((appointment) => (
                     <li key={appointment._id} className="appointment-item">
                       <h3>{appointment.doctorName.split('|')[0]}</h3>

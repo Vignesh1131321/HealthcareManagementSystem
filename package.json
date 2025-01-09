@@ -23,7 +23,7 @@
     "bcryptjs": "^2.4.3",
     "bootstrap": "^5.3.3",
     "boxicons": "^2.1.4",
-    "date-fns": "^4.1.0",
+    "date-fns": "^2.30.0",
     "fhirclient": "^2.5.4",
     "font-awesome": "^4.7.0",
     "formidable": "^3.5.2",
