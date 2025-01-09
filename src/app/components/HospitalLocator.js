@@ -1,327 +1,11 @@
-// "use client";
-// import React, { useState, useEffect } from "react";
-// import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-// import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-
-// const containerStyle = {
-//   width: "80%",
-//   height: "500px",
-// };
-
-// const HospitalLocator = () => {
-//   const [hospitals, setHospitals] = useState([]);
-//   const [mapCenter, setMapCenter] = useState(null);
-//   const [manualLocation, setManualLocation] = useState("");
-//   const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
-//   const [errorMessage, setErrorMessage] = useState("");
-//   const [hoveredHospital, setHoveredHospital] = useState(null);
-
-//   const { isLoaded } = useJsApiLoader({
-//     googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4", // Use your API key here
-//     libraries: ["places"],
-//   });
-
-//   useEffect(() => {
-//     if (isLoaded) {
-//       getUserLocation();
-//     }
-//   }, [isLoaded]);
-
-//   const getUserLocation = () => {
-//     if (navigator.geolocation) {
-//       navigator.geolocation.getCurrentPosition(
-//         (position) => {
-//           const { latitude, longitude } = position.coords;
-//           const currentLocation = { lat: latitude, lng: longitude };
-//           setMapCenter(currentLocation);
-//           fetchHospitals(currentLocation);
-//         },
-//         () => {
-//           setErrorMessage("Unable to fetch your location. Please enter manually.");
-//         }
-//       );
-//     } else {
-//       setErrorMessage("Geolocation is not supported by this browser.");
-//     }
-//   };
-
-//   const fetchHospitals = (location) => {
-//     const service = new window.google.maps.places.PlacesService(document.createElement("div"));
-
-//     const request = {
-//       location,
-//       radius: 5000, 
-//       type: "hospital",
-//     };
-
-//     service.nearbySearch(request, (results, status) => {
-//       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-//         setHospitals(results);
-//         setErrorMessage("");
-//       } else {
-//         setHospitals([]);
-//         setErrorMessage("No hospitals found near the selected location.");
-//       }
-//     });
-//   };
-
-//   const handleAutocomplete = (query) => {
-//     setManualLocation(query);
-//     if (!query) {
-//       setAutocompleteSuggestions([]);
-//       return;
-//     }
-
-//     const service = new window.google.maps.places.AutocompleteService();
-//     service.getPlacePredictions({ input: query }, (predictions, status) => {
-//       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-//         setAutocompleteSuggestions(predictions);
-//       } else {
-//         setAutocompleteSuggestions([]);
-//       }
-//     });
-//   };
-
-//   const handlePlaceSelect = (placeId) => {
-//     const geocoder = new window.google.maps.Geocoder();
-//     geocoder.geocode({ placeId }, (results, status) => {
-//       if (status === "OK" && results.length > 0) {
-//         const location = results[0].geometry.location;
-//         const newLocation = { lat: location.lat(), lng: location.lng() };
-//         setMapCenter(newLocation);
-//         fetchHospitals(newLocation);
-//         setAutocompleteSuggestions([]);
-//         setErrorMessage("");
-//       } else {
-//         setErrorMessage("Invalid location selected.");
-//       }
-//     });
-//   };
-
-//   const handleSearch = () => {
-//     if (autocompleteSuggestions.length > 0) {
-//       handlePlaceSelect(autocompleteSuggestions[0].place_id);
-//     } else {
-//       setErrorMessage("Please select a valid location from the suggestions.");
-//     }
-//   };
-
-//   return (
-//     <>
-//     <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)" />
-
-//     <div style={{ display: "flex", flexDirection: "column", alignItems: "center",backgroundImage :"url('/hospital-background.svg')",
-//       backgroundSize: 'cover',
-//       backgroundPosition: 'center',
-//       backgroundRepeat: 'no-repeat', }}>
-//       <h1 style={{ color: "#6b43ff", fontSize: "32px", marginBottom: "20px" ,}}>
-//       Hospital Locator
-//     </h1>
-//     <div
-//       style={{
-//         marginBottom: "30px",
-//         textAlign: "center",
-//         position: "relative",
-//         width: "100%",
-//         maxWidth: "500px",
-        
-//       }}
-//     >
-//       <p style={{ marginBottom: "10px", fontSize: "16px", color: "#555" }}>
-//         Enter your location manually
-//       </p>
-//       <div
-//         style={{
-//           display: "flex",
-//           alignItems: "center",
-//           position: "relative",
-//           width: "100%",
-//         }}
-//       >
-//         <input
-//           type="text"
-//           value={manualLocation}
-//           onChange={(e) => handleAutocomplete(e.target.value)}
-//           placeholder="Enter your location"
-//           style={{
-//             padding: "12px",
-//             borderRadius: "8px 0 0 8px",
-//             border: "1px solid #ccc",
-//             width: "calc(100% - 60px)",
-//             outline: "none",
-//             fontSize: "14px",
-//           }}
-//         />
-//         <button
-//           onClick={handleSearch}
-//           style={{
-//             padding: "12px 20px",
-//             backgroundColor: "#6b43ff",
-//             color: "white",
-//             border: "none",
-//             borderRadius: "0 8px 8px 0",
-//             cursor: "pointer",
-//             fontWeight: "bold",
-//             transition: "background-color 0.3s ease",
-//           }}
-//           onMouseOver={(e) => (e.target.style.backgroundColor = "#5a37d1")}
-//           onMouseOut={(e) => (e.target.style.backgroundColor = "#6b43ff")}
-//         >
-//           Enter
-//         </button>
-//       </div>
-//       {autocompleteSuggestions.length > 0 && (
-//         <ul
-//           style={{
-//             position: "absolute",
-//             top: "110%",
-//             left: 0,
-//             right: 0,
-//             listStyle: "none",
-//             margin: 0,
-//             padding: "10px",
-//             backgroundColor: "white",
-//             border: "1px solid #ccc",
-//             borderRadius: "8px",
-//             zIndex: 1000,
-//             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-//           }}
-//         >
-//           {autocompleteSuggestions.map((suggestion) => (
-//             <li
-//               key={suggestion.place_id}
-//               onClick={() => handlePlaceSelect(suggestion.place_id)}
-//               style={{
-//                 padding: "10px",
-//                 cursor: "pointer",
-//                 fontSize: "14px",
-//                 transition: "background-color 0.3s ease",
-//               }}
-//               onMouseOver={(e) => (e.target.style.backgroundColor = "#f1f1f1")}
-//               onMouseOut={(e) => (e.target.style.backgroundColor = "white")}
-//             >
-//               {suggestion.description}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//     {errorMessage && (
-//       <p style={{ color: "red", marginBottom: "20px" }}>{errorMessage}</p>
-//     )}
-//     {isLoaded ? (
-//       mapCenter ? (
-//         <>
-       
-//           <GoogleMap
-//             mapContainerStyle={containerStyle}
-//             center={mapCenter}
-//             zoom={13}
-            
-//           >
-//             {hospitals.map((hospital) => (
-//               <Marker
-//                 key={hospital.place_id}
-//                 position={{
-//                   lat: hospital.geometry.location.lat(),
-//                   lng: hospital.geometry.location.lng(),
-//                 }}
-//                 title={hospital.name}
-//               />
-//             ))}
-//           </GoogleMap>
-       
-//           <div
-//   className="hospitals-grid-container"
-//   style={{
-//     display: "flex",
-//     flexDirection: "column",
-//     justifyContent: "center",
-//     alignItems: "center",
-//     minHeight: "100vh", // Full viewport height for vertical centering
-//     padding: "20px",
-//   }}
-// >
-//   <h2 style={{ marginBottom: "20px", color: "#333" }}>Nearby Hospitals:</h2>
-//   <div
-//     className="hospitals-grid"
-//     style={{
-//       display: "grid",
-//       gridTemplateColumns: "repeat(3, 1fr)",
-//       gap: "20px",
-//       paddingLeft: "75px",
-//       paddingRight: "75px",
-//     }}
-//   >
-//     {hospitals.map((hospital) => (
-//       <div
-//         key={hospital.place_id}
-//         style={{
-//           display: "flex",
-//           flexDirection: "column",
-//           justifyContent: "space-between",
-//           alignItems: "center",
-//           padding: "20px",
-//           borderRadius: "10px",
-//           backgroundColor: "#ffffff",
-//           boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-//         }}
-//         onMouseEnter={() => setHoveredHospital(hospital.place_id)}
-//         onMouseLeave={() => setHoveredHospital(null)}
-//       >
-//         <div style={{ textAlign: "center" }}>
-//           <strong style={{ fontSize: "16px", color: "#333" }}>
-//             {hospital.name}
-//           </strong>
-//           <p style={{ fontSize: "14px", color: "#666", marginTop: "8px" }}>
-//             {hospital.vicinity}
-//           </p>
-//         </div>
-//         <button
-//           style={{
-//             marginTop: "15px",
-//             padding: "10px 20px",
-//             borderRadius: "8px",
-//             backgroundColor: "rgba(107,67,255,0.75)",
-//             color: "white",
-//             border: "none",
-//             cursor: "pointer",
-//             fontSize: "14px",
-//           }}
-//         >
-//           Book Appointment
-//         </button>
-//       </div>
-//     ))}
-//   </div>
-// </div>
-
-//           </>
-//         ) : (
-//           <p>Fetching your location...</p>
-//         )
-//       ) : (
-//         <p>Loading map...</p>
-//       )}
-//     </div>
-//     </>
-//   );
-// };
-
-// export default HospitalLocator;
-
-
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { useRouter } from "next/navigation";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-
-const containerStyle = {
-  width: "80%",
-  height: "500px",
-};
+import { Search } from "lucide-react";
+import "./HospitalLocator.css";
+import { Building2, Phone, MapPin,Star,Clock } from 'lucide-react';
 
 const HospitalLocator = () => {
   const [hospitals, setHospitals] = useState([]);
@@ -329,8 +13,6 @@ const HospitalLocator = () => {
   const [manualLocation, setManualLocation] = useState("");
   const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-  const [hoveredHospital, setHoveredHospital] = useState(null);
-  const [currentSlide, setCurrentSlide] = useState(0); // For slider functionality
   const router = useRouter();
 
   const { isLoaded } = useJsApiLoader({
@@ -349,37 +31,79 @@ const HospitalLocator = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const currentLocation = { lat: latitude, lng: longitude };
-          setMapCenter(currentLocation);
-          fetchHospitals(currentLocation);
+          setMapCenter({ lat: latitude, lng: longitude });
+          fetchHospitals({ lat: latitude, lng: longitude });
         },
-        () => {
-          setErrorMessage("Unable to fetch your location. Please enter manually.");
-        }
+        () => setErrorMessage("Unable to fetch your location. Please enter manually.")
       );
     } else {
       setErrorMessage("Geolocation is not supported by this browser.");
     }
   };
 
-  const fetchHospitals = (location) => {
-    const service = new window.google.maps.places.PlacesService(document.createElement("div"));
-
-    const request = {
-      location,
-      radius: 5000,
-      type: "hospital",
-    };
-
-    service.nearbySearch(request, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setHospitals(results);
-        setErrorMessage("");
-      } else {
-        setHospitals([]);
-        setErrorMessage("No hospitals found near the selected location.");
+  const fetchHospitalDetails = async (hospital) => {
+    return new Promise((resolve, reject) => {
+      // Only fetch details for operational hospitals
+      if (hospital.business_status !== 'OPERATIONAL') {
+        resolve(null);
+        return;
       }
+
+      const service = new window.google.maps.places.PlacesService(
+        document.createElement("div")
+      );
+      
+      service.getDetails(
+        {
+          placeId: hospital.place_id,
+          fields: ['formatted_phone_number', 'opening_hours', 'reviews', 'business_status']
+        },
+        (place, status) => {
+          if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            resolve({
+              ...hospital,
+              formatted_phone_number: place.formatted_phone_number,
+              opening_hours: place.opening_hours,
+              detailed_reviews: place.reviews,
+              business_status: place.business_status || hospital.business_status
+            });
+          } else {
+            resolve(hospital);
+          }
+        }
+      );
     });
+  };
+
+  const fetchHospitals = async (location) => {
+    const service = new window.google.maps.places.PlacesService(
+      document.createElement("div")
+    );
+    
+    service.nearbySearch(
+      {
+        location,
+        radius: 5000,
+        type: "hospital",
+      },
+      async (results, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          // Filter and fetch details for operational hospitals only
+          const hospitalsWithDetails = await Promise.all(
+            results
+              .filter(hospital => hospital.business_status === 'OPERATIONAL')
+              .map(hospital => fetchHospitalDetails(hospital))
+          );
+          
+          // Remove any null results and set the hospitals
+          setHospitals(hospitalsWithDetails.filter(hospital => hospital !== null));
+          setErrorMessage("");
+        } else {
+          setHospitals([]);
+          setErrorMessage("No hospitals found nearby.");
+        }
+      }
+    );
   };
 
   const handleAutocomplete = (query) => {
@@ -390,62 +114,46 @@ const HospitalLocator = () => {
     }
 
     const service = new window.google.maps.places.AutocompleteService();
-    service.getPlacePredictions({ input: query }, (predictions, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setAutocompleteSuggestions(predictions);
-      } else {
-        setAutocompleteSuggestions([]);
+    service.getPlacePredictions(
+      { input: query },
+      (predictions, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          setAutocompleteSuggestions(predictions);
+        } else {
+          setAutocompleteSuggestions([]);
+        }
       }
-    });
+    );
   };
 
   const handlePlaceSelect = (placeId) => {
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ placeId }, (results, status) => {
-      if (status === "OK" && results.length > 0) {
+      if (status === "OK" && results[0]) {
         const location = results[0].geometry.location;
         const newLocation = { lat: location.lat(), lng: location.lng() };
         setMapCenter(newLocation);
         fetchHospitals(newLocation);
         setAutocompleteSuggestions([]);
-        setErrorMessage("");
-      } else {
-        setErrorMessage("Invalid location selected.");
+        setManualLocation(results[0].formatted_address);
       }
     });
   };
 
-  const handleSearch = () => {
-    if (autocompleteSuggestions.length > 0) {
-      handlePlaceSelect(autocompleteSuggestions[0].place_id);
-    } else {
-      setErrorMessage("Please select a valid location from the suggestions.");
-    }
-  };
-
-  const handleNextSlide = () => {
-    setCurrentSlide((prev) => (prev + 3) % hospitals.length);
-  };
-
-  const handlePrevSlide = () => {
-    setCurrentSlide((prev) => (prev - 3 + hospitals.length) % hospitals.length);
-  };
-
   const handleBookAppointment = (hospital) => {
-    if (!hospital || !hospital.name || !hospital.vicinity || !hospital.geometry) {
-      console.error("Invalid hospital data:", hospital);
-      return;
-    }
-  
-    const service = new window.google.maps.places.PlacesService(document.createElement("div"));
-  
-    // Fetch reviews for the selected hospital
+    if (!hospital?.place_id || hospital.business_status !== 'OPERATIONAL') return;
+
+    const service = new window.google.maps.places.PlacesService(
+      document.createElement("div")
+    );
+
     service.getDetails(
-      { placeId: hospital.place_id },
+      { 
+        placeId: hospital.place_id,
+        fields: ['formatted_phone_number', 'opening_hours', 'reviews', 'business_status']
+      },
       (place, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-          const reviews = place.reviews || [];
-          console.log(hospital);
           const doctorDetails = {
             identity: "1",
             id: hospital.place_id,
@@ -454,66 +162,86 @@ const HospitalLocator = () => {
             clinicName: hospital.name,
             clinicLocation: {
               address: hospital.vicinity,
-              city: "City Placeholder",
-              state: "State Placeholder",
-              zip: "Zip Placeholder",
+              city: "City",
+              state: "State",
+              zip: "Zip",
             },
             contact: {
-              phone: "Phone Placeholder",
-              email: "Email Placeholder",
+              phone: place.formatted_phone_number || "Not available",
+              email: "contact@hospital.com",
             },
             availableTimes: [
               { day: "Monday", time: "9:00 AM - 5:00 PM" },
               { day: "Tuesday", time: "9:00 AM - 5:00 PM" },
             ],
-            reviews: reviews.map((review) => ({
+            reviews: (place.reviews || []).map(review => ({
               author: review.author_name,
               rating: review.rating,
               text: review.text,
             })),
           };
-  
-          const queryString = encodeURIComponent(JSON.stringify(doctorDetails));
-          const url = `/appointment?doctor=${queryString}`;
-  
-          router.push(url);
-        } else {
-          console.error("Failed to fetch hospital details for reviews.");
+
+          router.push(`/appointment?doctor=${encodeURIComponent(JSON.stringify(doctorDetails))}`);
         }
       }
     );
   };
 
-
-
-
+  const getBusinessStatusLabel = (status) => {
+    const statusMap = {
+      'OPERATIONAL': 'Open',
+      'CLOSED_TEMPORARILY': 'Temporarily Closed',
+      'CLOSED_PERMANENTLY': 'Permanently Closed'
+    };
+    return statusMap[status] || 'Status Unknown';
+  };
+  
   return (
-    <>
+    <div className="hospital-locator-container">
       <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)" />
+      
+      <div className="main-container">
+        <h1 className="page-title">Find Hospitals Near You</h1>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundImage: "url('/hospital-background.svg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <h1 style={{ color: "#6b43ff", fontSize: "32px", marginBottom: "20px" }}>
-          Hospital Locator
-        </h1>
-        <div style={{ marginBottom: "30px", textAlign: "center", position: "relative", width: "100%", maxWidth: "500px" }}>
-          {/* Manual Location Input */}
-          {/* Existing input and autocomplete logic */}
+        <div className="search-container">
+          <div className="search-input-wrapper">
+            <input
+              type="text"
+              value={manualLocation}
+              onChange={(e) => handleAutocomplete(e.target.value)}
+              placeholder="Enter location..."
+              className="search-input"
+            />
+            <Search className="search-icon" size={20} />
+          </div>
+
+          {autocompleteSuggestions.length > 0 && (
+            <div className="suggestions-dropdown">
+              {autocompleteSuggestions.map((suggestion) => (
+                <div
+                  key={suggestion.place_id}
+                  onClick={() => handlePlaceSelect(suggestion.place_id)}
+                  className="suggestion-item"
+                >
+                  {suggestion.description}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {isLoaded ? (
-          mapCenter ? (
-            <>
-              <GoogleMap mapContainerStyle={containerStyle} center={mapCenter} zoom={13}>
+        {errorMessage && (
+          <div className="error-message">{errorMessage}</div>
+        )}
+
+        {isLoaded && mapCenter ? (
+          <div className="content-container">
+            <div className="map-container">
+              <GoogleMap
+                mapContainerStyle={{ width: "100%", height: "500px" }}
+                center={mapCenter}
+                zoom={13}
+              >
                 {hospitals.map((hospital) => (
                   <Marker
                     key={hospital.place_id}
@@ -525,108 +253,61 @@ const HospitalLocator = () => {
                   />
                 ))}
               </GoogleMap>
+            </div>
 
-              {/* Slider for hospitals */}
-              <div className="slider-container" style={{ marginTop: "30px", position: "relative", width: "100%" }}>
-                <button
-                  className="prev-btn"
-                  onClick={handlePrevSlide}
-                  style={{
-                    position: "absolute",
-                    left: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    backgroundColor: "#6b43ff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    cursor: "pointer",
-                  }}
-                >
-                  &#8249;
-                </button>
+            <div className="hospitals-grid">
+              {hospitals.map((hospital, index) => (
+                <div key={index} className="hospital-card">
+                  <div className="hospital-card-header">
+                    <Building2 className="card-icon" size={24} />
+                    <h3 className="hospital-name">{hospital.name}</h3>
+                  </div>
 
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 1fr)",
-                    gap: "20px",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "300px",
-                    width: "80%",
-                    margin: "0 auto",
-                  }}
-                >
-                  {hospitals.length > 0 ? (
-                    hospitals
-                      .slice(currentSlide, currentSlide + 3) // Show only 3 cards
-                      .map((hospital, index) => (
-                        <div
-                          key={index}
-                          style={{
-                            padding: "20px",
-                            textAlign: "center",
-                            border: "1px solid #ddd",
-                            borderRadius: "10px",
-                            backgroundColor: "white",
-                            boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-                          }}
-                        >
-                          <h3 style={{ color: "#333" }}>{hospital.name}</h3>
-                          <p style={{ color: "#666" }}>{hospital.vicinity}</p>
-                          <button
-                            onClick={() => handleBookAppointment(hospital)}
-                            style={{
-                              marginTop: "10px",
-                              padding: "10px 20px",
-                              backgroundColor: "#6b43ff",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "5px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Book Appointment
-                          </button>
-                        </div>
-                      ))
-                  ) : (
-                    <p>No hospitals to display.</p>
-                  )}
+                  <div className="hospital-info">
+                    <div className="info-row">
+                      <MapPin className="info-icon" size={18} />
+                      <p className="hospital-address">{hospital.vicinity}</p>
+                    </div>
+
+                    {hospital.rating && (
+                      <div className="info-row">
+                        <Star className="info-icon" size={18} fill="#FFD700" />
+                        <p className="hospital-rating">{hospital.rating} / 5</p>
+                      </div>
+                    )}
+
+                    <div className="info-row">
+                      <Clock className="info-icon" size={18} />
+                      <p className="hospital-hours">
+                        {hospital.opening_hours ? 
+                          hospital.opening_hours.weekday_text[0] : 
+                          "Hours not available"}
+                      </p>
+                    </div>
+
+                    <div className="contact-info">
+                      <div className="info-row">
+                        <Phone className="info-icon" size={18} />
+                        <p>{hospital.formatted_phone_number || "Phone not available"}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => handleBookAppointment(hospital)}
+                    className="book-button"
+                  >
+                    Book Appointment
+                  </button>
                 </div>
-
-                <button
-                  className="next-btn"
-                  onClick={handleNextSlide}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    backgroundColor: "#6b43ff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "40px",
-                    height: "40px",
-                    cursor: "pointer",
-                  }}
-                >
-                  &#8250;
-                </button>
-              </div>
-            </>
-          ) : (
-            <p>Fetching your location...</p>
-          )
+              ))}
+            </div>
+          </div>
         ) : (
-          <p>Loading map...</p>
+          <div className="loading-message">Loading map...</div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
