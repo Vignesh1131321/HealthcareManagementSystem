@@ -9,6 +9,30 @@ import { TestimonialCard } from "./testimonials/TestimonialCard";
 import styles from "./testimonials/TestimonialSection.module.css";
 import "./AppointmentPage.css";
 
+let UserDetails = {
+  _id: "", // String value
+  username: "", // String value
+  email: "", // String value
+  firstName: "", // String value
+  lastName: "", // String value
+  phoneNumber: "", // String value
+  emergencyContact: {
+    name: "", // String value
+    phoneNumber: "", // String value
+  },
+  address: {
+    street: "", // String value
+    city: "", // String value
+    state: "", // String value
+    zipCode: "", // String value
+  },
+  age: 0, // Number value
+  gender: "", // String value
+  profilePhotoUrl: "", // String value (URL)
+  isCompleteProfile: false, // Boolean value
+};
+
+
 const AppointmentPage = () => {
   const [doctor, setDoctor] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -21,6 +45,8 @@ const AppointmentPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false); // State for modal visibility
   const [isError, setIsError] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
 
   const searchParams = useSearchParams();
@@ -96,6 +122,7 @@ const AppointmentPage = () => {
     setIsSubmitting(true);
 
     const appointmentDetails = {
+      userId : userDetails._id,
       identity: doctor.identity,
       doctorId: doctor.id,
       doctorName: doctor.name,
@@ -110,7 +137,8 @@ const AppointmentPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentDetails),
       });
-
+      console.log("Appointment details:", appointmentDetails);
+      
       if (response.ok) {
         /* alert("Appointment successfully booked!"); */
         setShowModal(true);
@@ -138,6 +166,40 @@ const AppointmentPage = () => {
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
   };
+
+  const fetchUserDetails = async () => {
+    try {
+      console.log("Fetching user details... from appointment");
+      
+      const response = await fetch("/../api/users/me");
+      
+      if (response.ok) {
+        const resData = await response.json();
+        
+        if (resData && resData.data) {
+          setUserDetails(resData.data);
+          
+          if (!resData.data.isCompleteProfile) {
+            setShowCompleteProfileCard(true);
+          }
+        } else {
+          toast.error("Failed to get user details");
+        }
+      } else {
+        toast.error("Failed to fetch user details. Server returned an error.");
+      }
+    } 
+    catch (error) {
+      console.error("Error fetching user details or health records:", error);
+      toast.error("Failed to fetch user details or health records");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
 
   if (!doctor) {
     return <p className="loading-message">Loading doctor details...</p>;

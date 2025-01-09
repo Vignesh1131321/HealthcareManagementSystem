@@ -8,9 +8,9 @@ const GOOGLE_PLACES_API_KEY = "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4";
 // Handler for POST requests
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { doctorId, doctorName, specialty, date, time } = body;
+    const { userId, identity, doctorId, doctorName, specialty, date, time } = body;
 
-    if (!doctorId || !doctorName || !specialty || !date || !time) {
+    if (!doctorId || !doctorName || !date || !time) {
         return NextResponse.json(
             { message: "Missing required fields." },
             { status: 400 }
@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
         const appointmentsCollection = db.collection("appointments");
 
         await appointmentsCollection.insertOne({
+            userId,
+            identity,
             doctorId,
             doctorName,
             specialty,
