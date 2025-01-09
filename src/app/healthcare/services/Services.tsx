@@ -272,7 +272,8 @@ const handleEmergencyCareClick = () => {
         `Appointment booked at ${nearestHospital.name} on ${appointmentDate} at ${appointmentTime}.`
       ); */
       handleAppointmentSubmit();
-      setIsModalOpen(true);
+      
+      setShowModal(true);
 
       // Simulate ambulance alert
       /* setTimeout(() => {
@@ -342,13 +343,14 @@ const handleEmergencyCareClick = () => {
           
         </div>
       ))}
-      {isModalOpen && (
+      {isModalOpen && <DoctorModal onClose={() => setIsModalOpen(false)} />}
+      {showModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
           <Emergency/>
           <button
             className={styles.closeButton}
-            onClick={() => setIsModalOpen(false)}
+            onClick={() => setShowModal(false)}
           >
             Close
           </button>
