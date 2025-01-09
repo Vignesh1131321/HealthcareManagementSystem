@@ -297,17 +297,13 @@ export default function ProfilePage() {
       if (result.success) {
         toast.success("Successfully uploaded health record");
         
-        // Format the new record properly
-        const newRecord = {
-          _id: result.record._id,
-          name: result.record.name,
-          uploadedAt: result.record.uploadedAt,
-          contentType: result.record.contentType,
-          data: result.record.data // This should already be base64 encoded from the server
-        };
+        const healthRecordsRes = await axios.get('/api/get-health-records', {
+          headers: { userId: userDetails._id },
+        });
         
-        // Update records state with the new record
-        setHealthRecords(prev => [...prev, newRecord]);
+        if (healthRecordsRes.data && healthRecordsRes.data.records) {
+          setHealthRecords(healthRecordsRes.data.records);
+        }
         
         // Clear the form
         clearSelectedFile();

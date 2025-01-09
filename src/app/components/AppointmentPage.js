@@ -146,6 +146,18 @@ const AppointmentPage = () => {
       time: selectedTimeSlot,
     };
 
+    const appointmentDate = new Date(appointmentDetails.date);
+
+    const day = String(appointmentDate.getDate()).padStart(2, '0'); // Add leading zero if necessary
+    const month = String(appointmentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = appointmentDate.getFullYear();
+
+    const formattedDate = `${day}-${month}-${year}`;
+    console.log("Appointment date:", formattedDate); // Output: DD-MM-YYYY
+    
+    console.log("Appointment date", appointmentDetails.date);
+    appointmentDetails.date = formattedDate;
+
     try {
       const response = await fetch("/api/users/appointment", {
         method: "POST",
