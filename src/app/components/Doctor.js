@@ -286,7 +286,7 @@ const Doctor = ({ specialty }) => {
       (place, status) => {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
           const reviews = place.reviews || [];
-  
+          /* console.log("Phone:", place.formatted_phone_number); */
           const doctorDetails = {
             identity: "2",
             id: hospital.place_id,
@@ -300,8 +300,8 @@ const Doctor = ({ specialty }) => {
               zip: "Zip Placeholder",
             },
             contact: {
-              phone: "Phone Placeholder",
-              email: "Email Placeholder",
+              phone: place.formatted_phone_number,
+              email: place.website,
             },
             availableTimes: [
               { day: "Monday", time: "9:00 AM - 5:00 PM" },
@@ -313,7 +313,7 @@ const Doctor = ({ specialty }) => {
               text: review.text,
             })),
           };
-  
+          /* console.log(doctorDetails.contact.phone); */
           const queryString = encodeURIComponent(JSON.stringify(doctorDetails));
           const url = `/appointment?doctor=${queryString}`;
   

@@ -7,7 +7,41 @@ import ReviewSlider from "./ReviewSlider"
 import AppointmentSuccessful from "./AppointmentSuccessful";
 import { TestimonialCard } from "./testimonials/TestimonialCard";
 import styles from "./testimonials/TestimonialSection.module.css";
+import { Building2, Phone, Mail } from 'lucide-react';
 import "./AppointmentPage.css";
+
+let UserDetails = {
+  _id: "", // String value
+  username: "", // String value
+  email: "", // String value
+  firstName: "", // String value
+  lastName: "", // String value
+  phoneNumber: "", // String value
+  emergencyContact: {
+    name: "", // String value
+    phoneNumber: "", // String value
+  },
+  address: {
+    street: "", // String value
+    city: "", // String value
+    state: "", // String value
+    zipCode: "", // String value
+  },
+  age: 0, // Number value
+  gender: "", // String value
+  profilePhotoUrl: "", // String value (URL)
+  isCompleteProfile: false, // Boolean value
+};
+
+
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const AppointmentPage = () => {
   const [doctor, setDoctor] = useState(null);
@@ -21,6 +55,8 @@ const AppointmentPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showModal, setShowModal] = useState(false); // State for modal visibility
   const [isError, setIsError] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
 
   const searchParams = useSearchParams();
@@ -76,9 +112,14 @@ const AppointmentPage = () => {
     return () => clearInterval(interval);
   }, [reviews.length]);
 
-  const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
     setSelectedTimeSlot(null);
+  };
+  const getTimeSlotClass = (slot) => {
+    if (!selectedDate) return "time-slot disabled";
+    if (selectedTimeSlot === slot.time) return "time-slot selected";
+    return `time-slot ${slot.available ? "available" : "booked"}`;
   };
 
   const handleTimeSlotSelect = (slot) => {
@@ -96,6 +137,7 @@ const AppointmentPage = () => {
     setIsSubmitting(true);
 
     const appointmentDetails = {
+      userId : userDetails._id,
       identity: doctor.identity,
       doctorId: doctor.id,
       doctorName: doctor.name,
@@ -110,7 +152,8 @@ const AppointmentPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentDetails),
       });
-
+      console.log("Appointment details:", appointmentDetails);
+      
       if (response.ok) {
         /* alert("Appointment successfully booked!"); */
         setShowModal(true);
@@ -134,10 +177,45 @@ const AppointmentPage = () => {
       prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
     );
   };
+  
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
   };
+
+  const fetchUserDetails = async () => {
+    try {
+      console.log("Fetching user details... from appointment");
+      
+      const response = await fetch("/../api/users/me");
+      
+      if (response.ok) {
+        const resData = await response.json();
+        
+        if (resData && resData.data) {
+          setUserDetails(resData.data);
+          
+          if (!resData.data.isCompleteProfile) {
+            setShowCompleteProfileCard(true);
+          }
+        } else {
+          toast.error("Failed to get user details");
+        }
+      } else {
+        toast.error("Failed to fetch user details. Server returned an error.");
+      }
+    } 
+    catch (error) {
+      console.error("Error fetching user details or health records:", error);
+      toast.error("Failed to fetch user details or health records");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
 
   if (!doctor) {
     return <p className="loading-message">Loading doctor details...</p>;
@@ -147,55 +225,107 @@ const AppointmentPage = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
-      <div className="appointment-page-container">
-        <div className="top-sections-container">
-          <div className="doctor-details-section">
-            {doctor.identity === "1" && (
-              <h2>Hospital Details</h2>
-            )}
-            {doctor.identity === "2" && (
-              <h2>Doctor Details</h2>
-            )}
-            <div className="doctor-info">
-              <h3>{doctor.name}</h3>
-              {doctor.identity === "2" && (
-                <p><strong>Specialty:</strong> {doctor.specialty}</p>
-              )}
+    <div className="appointment-page-container">
+      <div className="top-sections-container">
+        <div className="doctor-details-section">
+          <div className="doctor-card">
+            <div className="doctor-card-header">
               
-              <p><strong>Clinic Name:</strong> {doctor.clinicName}</p>
-              <p><strong>Address:</strong> {doctor.clinicLocation?.address}</p>
-              {/* <p>
-                <strong>City:</strong> {doctor.clinicLocation?.city},{" "}
-                <strong>State:</strong> {doctor.clinicLocation?.state},{" "}
-                <strong>ZIP:</strong> {doctor.clinicLocation?.zip}
-              </p> */}
-              {/* <p>
-                <strong>Contact:</strong> {doctor.contact?.phone},{" "}
-                {doctor.contact?.email}
-              </p> */}
+              <div className="doctor-header-info">
+                <Typography variant="h4" className="doctor-name">
+                  {doctor.name}
+                </Typography>
+                {doctor.identity === "2" && (
+                  <div className="specialty-badge">
+                    <AccessTimeIcon className="specialty-icon" />
+                    <Typography variant="body1" className="specialty-text">
+                      {doctor.specialty}
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="doctor-card-content">
+              <div className="info-row">
+                <Building2 className="info-icon" />
+                <div className="info-text">
+                  <Typography variant="subtitle2" className="info-label">
+                    Clinic Name
+                  </Typography>
+                  <Typography variant="body1">
+                    {doctor.clinicName}
+                  </Typography>
+                </div>
+              </div>
+
+              <div className="info-row">
+                <LocationOnIcon className="info-icon" />
+                <div className="info-text">
+                  <Typography variant="subtitle2" className="info-label">
+                    Location
+                  </Typography>
+                  <Typography variant="body1">
+                    {doctor.clinicLocation?.address}
+                  </Typography>
+                </div>
+              </div>
+
+              {doctor.contact && (
+                <>
+                  <div className="info-row">
+                    <Phone className="info-icon" />
+                    <div className="info-text">
+                      <Typography variant="subtitle2" className="info-label">
+                        Contact
+                      </Typography>
+                      <Typography variant="body1">
+                        {doctor.contact.phone}
+                      </Typography>
+                    </div>
+                  </div>
+
+                  <div className="info-row">
+                    <Mail className="info-icon" />
+                    <div className="info-text">
+                      <Typography variant="subtitle2" className="info-label">
+                        Website
+                      </Typography>
+                      <Typography variant="body1">
+                        {doctor.contact.email}
+                      </Typography>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
+        </div>
 
           <div className="appointment-section">
             <h2>Book an Appointment</h2>
-            <input
-              type="date"
-              className="date-input"
-              value={selectedDate}
-              onChange={handleDateChange}
-              min={new Date().toISOString().split("T")[0]}
-            />
+            
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+  <DatePicker
+    label="Select Date"
+    value={selectedDate}
+    onChange={handleDateChange}
+    renderInput={(params) => (
+      <TextField {...params} className="date-input" />
+    )}
+  />
+</LocalizationProvider>
 
-            {selectedDate && (
+           
+
+            
               <>
                 <h3>Available Time Slots</h3>
                 <div className="time-slots-container">
                   {timeSlots.map((slot, index) => (
                     <div
                       key={index}
-                      className={`time-slot ${slot.available ? "available" : "booked"} ${
-                        selectedTimeSlot === slot.time ? "selected" : ""
-                      }`}
+                      className={getTimeSlotClass(slot)}
                       onClick={() => handleTimeSlotSelect(slot)}
                     >
                       {slot.time}
@@ -203,7 +333,7 @@ const AppointmentPage = () => {
                   ))}
                 </div>
               </>
-            )}
+            
 
             {/* Show AppointmentSuccessful or AppointmentFailure modal */}
             {showModal && (
@@ -233,27 +363,33 @@ const AppointmentPage = () => {
                 </div>
               </div>
             )}
-
+            
 
             <div className="slot-legend">
-              <div className="legend-item">
-                <div className="legend-box available"></div>
-                <span>Free</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-box booked"></div>
-                <span>Full</span>
-              </div>
+            <div className="legend-item">
+              <div className="legend-box available"></div>
+              <span>Free</span>
             </div>
-
-            <button
-              className="confirm-button"
-              disabled={!selectedDate || !selectedTimeSlot || isSubmitting}
-              onClick={handleAppointmentSubmit}
-            >
-              {isSubmitting ? "Booking..." : "Confirm Appointment"}
-            </button>
+            <div className="legend-item">
+              <div className="legend-box booked"></div>
+              <span>Full</span>
+            </div>
+            {!selectedDate && (
+              <div className="legend-item">
+                <div className="legend-box disabled"></div>
+                <span>Select a date first</span>
+              </div>
+            )}
           </div>
+
+          <button
+            className="confirm-button"
+            disabled={!selectedDate || !selectedTimeSlot || isSubmitting}
+            onClick={handleAppointmentSubmit}
+          >
+            {isSubmitting ? "Booking..." : "Confirm Appointment"}
+          </button>
+        </div>
         </div>
 
         {/* <div className="reviews-section">
