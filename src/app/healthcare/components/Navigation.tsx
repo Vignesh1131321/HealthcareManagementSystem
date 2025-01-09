@@ -6,7 +6,7 @@ import { NavigationItemProps } from "../types";
 
 const navigationItems: NavigationItemProps[] = [
   { text: "Home", link: "/" },
-  { text: "Find Doctor", link: "/doctor" },
+  /* { text: "Find Doctor", link: "/doctor" }, */
   { text: "Find Hospitals", link: "/hospitals" },
   { text: "ManasMaitri", link: "/chatbot" },
   { text: "Profile", link: "/profile" },
