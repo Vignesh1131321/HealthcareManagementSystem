@@ -195,8 +195,8 @@ const HospitalLocator = () => {
     };
     return statusMap[status] || 'Status Unknown';
   };
-
-   return (
+  
+  return (
     <div className="hospital-locator-container">
       <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)" />
       
@@ -279,7 +279,9 @@ const HospitalLocator = () => {
                     <div className="info-row">
                       <Clock className="info-icon" size={18} />
                       <p className="hospital-hours">
-                        {hospital.opening_hours?.weekday_text?.[0] || "Hours not available"}
+                        {hospital.opening_hours ? 
+                          hospital.opening_hours.weekday_text[0] : 
+                          "Hours not available"}
                       </p>
                     </div>
 
@@ -294,9 +296,8 @@ const HospitalLocator = () => {
                   <button
                     onClick={() => handleBookAppointment(hospital)}
                     className="book-button"
-                    disabled={hospital.business_status !== 'OPERATIONAL'}
                   >
-                    {hospital.business_status === 'OPERATIONAL' ? 'Book Appointment' : getBusinessStatusLabel(hospital.business_status)}
+                    Book Appointment
                   </button>
                 </div>
               ))}
