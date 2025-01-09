@@ -221,8 +221,6 @@ const Doctor = ({ specialty }) => {
     service.nearbySearch(request, (results, status) => {
       if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         setHospitals(results);
-        console.log(specialty);
-        console.log(specialty1);
         setErrorMessage("");
       } else {
         setHospitals([]);
