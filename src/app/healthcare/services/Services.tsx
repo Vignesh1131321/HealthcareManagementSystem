@@ -64,11 +64,14 @@
 //   );
 // };
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Services.module.css";
 import { ServiceCard } from "./ServiceCard";
 import { ServiceCardProps } from "./types";
 import { DoctorModal } from "./DoctorModal";
+import  Emergency  from "../../components/Emergency"
+import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
+import { FaRobot, FaHospital } from "react-icons/fa"; // Importing React Icons
 
 const servicesData: ServiceCardProps[] = [
   {
@@ -90,10 +93,10 @@ const servicesData: ServiceCardProps[] = [
   {
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/9669e28a94a0712decf9cf2aea791a4844a0b2ba5275c0d4c287673faf5bcd92?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
-    imageAlt: "Consultation icon",
-    title: "Consultation",
+    imageAlt: "MediAid",
+    title: "MediAid",
     description:
-      "Free consultation with our trusted doctors and get the best recommendations",
+      "Free consultation with our in built Ai",
   },
   {
     imageSrc:
@@ -121,11 +124,210 @@ const servicesData: ServiceCardProps[] = [
 ];
 
 export const Services: React.FC = () => {
+
+  const currentDate = new Date();
+  const [mapCenter, setMapCenter] = useState<google.maps.LatLng | null>(null);
+const [errorMessage, setErrorMessage] = useState("");
+const [hospitals, setHospitals] = useState<google.maps.places.PlaceResult[]>([]);
+const [userDetails, setUserDetails] = useState(null);
+const [loading, setLoading] = useState(true);
+const [showModal, setShowModal] = useState(false);
+
+const date = currentDate.toLocaleDateString('en-GB').replace(/\//g, '-');  // Format: "MM/DD/YYYY" or based on locale
+const time = `${currentDate.getHours()}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
+
+type EmergencyContact = {
+  name: string;
+  phoneNumber: string;
+};
+
+type Address = {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+};
+
+type UserDetails = {
+  _id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  emergencyContact: EmergencyContact;
+  address: Address;
+  age: number;
+  gender: string;
+  profilePhotoUrl: string;
+  isCompleteProfile: boolean;
+};
+
+const fetchUserDetails = async () => {
+  try {
+    console.log("Fetching user details... from appointment");
+    
+    const response = await fetch("/../api/users/me");
+    
+    if (response.ok) {
+      const resData = await response.json();
+      
+      if (resData && resData.data) {
+        setUserDetails(resData.data);
+
+      } else {
+        console.log("Failed to get user details");
+      }
+    } else {
+      console.log("Failed to fetch user details. Server returned an error.");
+    }
+  } 
+  catch (error) {
+    console.error("Error fetching user details or health records:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  // Define the type for the location
+  type Location = {
+    lat: number;
+    lng: number;
+  } | null;
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",
+    libraries: ["places"],
+  });
+
+    useEffect(() => {
+      if (isLoaded) {
+        getUserLocation();
+      }
+    }, [isLoaded]);
+
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const currentLocation = new google.maps.LatLng(latitude, longitude);
+            setMapCenter(currentLocation);
+            fetchHospitals(currentLocation);
+          },
+          () => {
+            setErrorMessage("Unable to fetch your location. Please enter manually.");
+          }
+        );
+      } else {
+        setErrorMessage("Geolocation is not supported by this browser.");
+      }
+    };
+
+    const fetchHospitals = (location: google.maps.LatLng) => {
+      const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+  
+      const request = {
+        location,
+        radius: 5000,
+        keyword:  "Nearest Hospital", // Search by specialty
+      };
+  
+      service.nearbySearch(request, (results, status) => {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+          setHospitals(results ?? []);
+          setErrorMessage("");
+        } else {
+          setHospitals([]);
+          setErrorMessage("No specialists found near the selected location.");
+        }
+      });
+    };
+    
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Function to handle "Search doctor" card click
   const handleFindDoctorClick = () => {
     setIsModalOpen(true);
+  };
+
+
+// Function to handle "Emergency care" card click
+const handleEmergencyCareClick = () => {
+  try {
+    if (hospitals.length > 0) {
+      // Find the nearest hospital (assuming the first hospital is the nearest)
+      const nearestHospital = hospitals[0];
+
+      // Get the current date and time
+      const currentDate = new Date();
+      const appointmentDate = currentDate.toLocaleDateString();
+      const appointmentTime = currentDate.toLocaleTimeString();
+
+      // Book an appointment (simulated)
+      /* alert(
+        `Appointment booked at ${nearestHospital.name} on ${appointmentDate} at ${appointmentTime}.`
+      ); */
+      handleAppointmentSubmit();
+      
+      setShowModal(true);
+
+      // Simulate ambulance alert
+      /* setTimeout(() => {
+        alert("An ambulance is on its way to your location.");
+      }, 2000); */
+    } else {
+      alert("No hospitals found nearby.");
+    }
+  } catch (error) {
+    console.error("Error handling emergency care click:", error);
+  }
+};
+
+
+/*   const findNearbyHospitals = async (lat: number, lng: number) => {
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&type=hospital&key=AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4`
+    );
+    const data = await response.json();
+    return data.results;
+  }; */
+  
+  const handleAppointmentSubmit = async () => {
+
+    const appointmentDetails = {
+      userId : userDetails._id,
+      identity: "1",
+      doctorId: hospitals[0].place_id,
+      doctorName: hospitals[0].name,
+      specialty: "",
+      date: date,
+      time: time,
+    };
+
+    try {
+      const response = await fetch("/api/users/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(appointmentDetails),
+      });
+      console.log("Appointment details:", appointmentDetails);
+      
+      if (response.ok) {
+        /* alert("Appointment successfully booked!"); */
+        setShowModal(true);
+      } else {
+        const error = await response.json();
+        console.error("Error booking appointment:", error.message);
+        /* alert("Failed to book appointment.") */;
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      /* alert("An error occurred while booking the appointment."); */
+    }
   };
 
   return (
@@ -134,11 +336,27 @@ export const Services: React.FC = () => {
         <div key={index} className={styles.serviceColumn}>
           <ServiceCard
             {...service}
-            onClick={service.title === "Search doctor" ? handleFindDoctorClick : undefined} 
+            onClick={service.title === "Search doctor" ? handleFindDoctorClick : service.title === "Emergency care"
+              ? handleEmergencyCareClick
+              : undefined} 
           />
+          
         </div>
       ))}
       {isModalOpen && <DoctorModal onClose={() => setIsModalOpen(false)} />}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+          <Emergency/>
+          <button
+            className={styles.closeButton}
+            onClick={() => setShowModal(false)}
+          >
+            Close
+          </button>
+          </div>
+        </div>
+      ) }
     </div>
   );
 };

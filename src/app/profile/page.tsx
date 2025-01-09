@@ -8,6 +8,7 @@ import Header from "../components/Header";
 import { signOut } from "next-auth/react";
 // import . from "../api/u";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
+import { X, FileText, Upload, Eye } from 'lucide-react';
 type UserDetails = {
   _id: string;
   username: string;
@@ -40,13 +41,82 @@ type HealthRecord = {
 export default function ProfilePage() {
   const router = useRouter();
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
-  const [healthRecords, setHealthRecords] = useState<HealthRecord[]>([]);
+  const [healthRecords, setHealthRecords] = useState<Array<{
+    _id: string;
+    name: string;
+    uploadedAt: string;
+    contentType: string;
+    data: string;
+  }>>([]);
   const [loading, setLoading] = useState(true);
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
   const [activeTab, setActiveTab] = useState<"healthRecords" | "appointments">("healthRecords");
   const [appointments, setAppointments] = useState([]); // State for appointments
+  const [selectedFileName, setSelectedFileName] = useState<string>("");
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewRecord, setPreviewRecord] = useState<{
+    name: string;
+    url: string;
+    type: string;
+  } | null>(null);
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setSelectedFileName(selectedFile.name);
+      
+      // Create preview URL for PDFs
+      if (selectedFile.type === 'application/pdf') {
+        const url = URL.createObjectURL(selectedFile);
+        setPreviewUrl(url);
+      } else {
+        setPreviewUrl(null);
+      }
+    }
+  };
+
+  // Clear selected file
+  const clearSelectedFile = () => {
+    setFile(null);
+    setSelectedFileName("");
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  };
+
+  // Handle record preview
+  const handleRecordPreview = (record: any) => {
+    // Ensure we have the correct data format
+    const base64Data = record.data instanceof Uint8Array 
+      ? btoa(String.fromCharCode.apply(null, record.data))
+      : record.data;
+
+    setPreviewRecord({
+      name: record.name,
+      url: `data:${record.contentType};base64,${base64Data}`,
+      type: record.contentType
+    });
+    setShowPreview(true);
+  };
+
+  // Close preview modal
+  const closePreview = () => {
+    setShowPreview(false);
+    setPreviewRecord(null);
+  };
+
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const logout = async () => {
     try {
@@ -206,13 +276,8 @@ export default function ProfilePage() {
   const handleSubmitForHealthRecord = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    if (!file) {
-      alert("No file uploaded");
-      return;
-    }
-  
-    if (!userDetails || !userDetails._id) {
-      alert("User details not available. Please try again later.");
+    if (!file || !userDetails?._id) {
+      toast.error("Please select a file and ensure you're logged in");
       return;
     }
   
@@ -227,37 +292,35 @@ export default function ProfilePage() {
         body: formData,
       });
   
-      if (!res.ok) {
-        // Handle HTTP errors
-        console.error("HTTP error:", res.status);
-        alert(`Upload failed: ${res.statusText}`);
-        return;
-      }
+      const result = await res.json();
   
-      try {
-        const result = await res.json(); // Attempt to parse JSON
-        console.log("Upload response:", result);
-  
-        if (result.success) {
-          alert("Successfully Uploaded Health Record");
-  
-          // Optionally update local state or UI with the uploaded health record details
-          setHealthRecords((prev) => [...(prev || []), result.record]);
-        } else {
-          alert("Failed to upload: " + result.message);
-        }
-      } catch (jsonError) {
-        console.error("Error parsing JSON response:", jsonError);
-        alert("The server returned an invalid response.");
+      if (result.success) {
+        toast.success("Successfully uploaded health record");
+        
+        // Format the new record properly
+        const newRecord = {
+          _id: result.record._id,
+          name: result.record.name,
+          uploadedAt: result.record.uploadedAt,
+          contentType: result.record.contentType,
+          data: result.record.data // This should already be base64 encoded from the server
+        };
+        
+        // Update records state with the new record
+        setHealthRecords(prev => [...prev, newRecord]);
+        
+        // Clear the form
+        clearSelectedFile();
+      } else {
+        toast.error(result.message || "Failed to upload health record");
       }
     } catch (error) {
       console.error("Error uploading health record:", error);
-      alert("An error occurred during the upload process.");
+      toast.error("Failed to upload health record");
     } finally {
       setLoading(false);
     }
   };
-  
   useEffect(() => {
     const fetchImages = async () => {
       if (!userDetails || !userDetails._id) {
@@ -527,42 +590,67 @@ useEffect(() => {
               ) : healthRecords.length > 0 ? (
                 <div className="health-records-list">
                   {healthRecords.map((record, index) => (
-                    <li key={index} className="health-record-item">
-                      {record.data ? (
-                        <a
-                          href={`data:${record.contentType};base64,${record.data}`}
-                          download={record.name}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="health-record-link"
-                        >
-                          {record.name}
-                        </a>
-                      ) : (
-                        <span>Invalid or Missing Data</span>
-                      )}
-                    </li>
+                    <div key={index} className="health-record-item">
+                      <div className="record-info">
+                        <FileText className="file-icon" />
+                        <span>{record.name}</span>
+                      </div>
+                      <button 
+                        className="preview-btn"
+                        onClick={() => handleRecordPreview(record)}
+                      >
+                        <Eye className="preview-icon" />
+                        Preview
+                      </button>
+                    </div>
                   ))}
                 </div>
               ) : (
                 <p>No health records available</p>
               )}
-              <div className="profile-actions">
-                <label className="custom-file-upload">
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    onChange={(e) => setFile(e.target.files?.[0] || null)}
-                  />
-                  Choose File
-                </label>
-                <button
-                  className="upload-btn"
-                  onClick={handleSubmitForHealthRecord}
-                  disabled={loading}
-                >
-                  {loading ? "Uploading..." : "Upload Health Record"}
-                </button>
+              
+              <div className="upload-section">
+                {selectedFileName && (
+                  <div className="selected-file">
+                    <div className="file-info">
+                      <FileText className="file-icon" />
+                      <span>{selectedFileName}</span>
+                    </div>
+                    <button 
+                      className="clear-file" 
+                      onClick={clearSelectedFile}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                )}
+                
+                <div className="upload-controls">
+                  <label className="custom-file-upload">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileSelect}
+                    />
+                    Choose File
+                  </label>
+                  <button
+                    className="upload-btn"
+                    onClick={handleSubmitForHealthRecord}
+                    disabled={!file || loading}
+                  >
+                    {loading ? (
+                      "Uploading..."
+                    ) : (
+                      <>
+                        <Upload className="upload-icon" />
+                        Upload Health Record
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                
               </div>
             </>
           )}
@@ -572,7 +660,7 @@ useEffect(() => {
               {loading ? (
                 <p>Loading appointments...</p>
               ) : appointments.length > 0 ? (
-                <ul>
+                <ul style={{padding: "0px"}}>
                   {appointments.map((appointment) => (
                     <li key={appointment._id} className="appointment-item">
                       <h3>{appointment.doctorName.split('|')[0]}</h3>
@@ -590,7 +678,43 @@ useEffect(() => {
           )}
 
         </div>
-
+          {/* Preview Modal */}
+      {showPreview && previewRecord && (
+        <div className="preview-modal-overlay">
+          <div className="preview-modal">
+            <div className="preview-modal-header">
+              <h3>{previewRecord.name}</h3>
+              <button 
+                className="close-preview" 
+                onClick={closePreview}
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <div className="preview-modal-content">
+  { previewRecord.type && previewRecord.type.includes('pdf') ? (
+    <iframe 
+      src={previewRecord.url}
+      className="pdf-preview"
+      title="PDF preview"
+    />
+  ) : (
+    <div className="unsupported-format">
+      <FileText size={48} />
+      <p>Preview not available for this file format</p>
+      <a 
+        href={previewRecord?.url} 
+        download={previewRecord?.name}
+        className="download-btn"
+      >
+        Download File
+      </a>
+    </div>
+  )}
+</div>
+          </div>
+        </div>
+      )}
 
       </>
       )}
