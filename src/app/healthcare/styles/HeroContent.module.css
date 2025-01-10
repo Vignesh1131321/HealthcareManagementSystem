@@ -1,120 +1,157 @@
-/* .contentWrapper {
-  display: flex;
-  flex-direction: column;
-  font-family: Muli, sans-serif;
-  font-weight: 700;
-}
-
-.title {
-  color: #000;
-  font-size: 48px;
-  line-height: 56px;
-}
-
-.description {
-  color: rgba(125, 121, 135, 1);
-  font-size: 21px;
-  font-weight: 300;
-  line-height: 32px;
-  margin-top: 25px;
-}
-
-.ctaButton {
-  background-color: rgba(69, 143, 246, 1);
-  border-radius: 55px;
-  align-self: start;
-  margin-top: 48px;
-  font-size: 18px;
-  color: #fff;
-  line-height: 60px;
-  padding: 0 40px;
-  border: none;
-  cursor: pointer;
-}
-
-@media (max-width: 991px) {
-  .contentWrapper {
-    max-width: 100%;
-    margin-top: 40px;
-  }
-  .title {
-    max-width: 100%;
-    margin-right: 10px;
-    font-size: 40px;
-    line-height: 52px;
-  }
-  .description {
-    max-width: 100%;
-  }
-  .ctaButton {
-    margin-top: 40px;
-    padding: 0 20px;
-  }
-} */
+/* HeroContent.module.css */
 .contentWrapper {
   flex: 1;
-  max-width: 500px;
-  padding: 20px;
+  max-width: 600px; /* Increased from 500px */
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 2rem;
   position: relative;
-  left: 50px; /* Move the content slightly to the right */
+  left: 3rem; /* Converted to rem for better scaling */
 }
 
 .decorativeImage {
-  width: 50px;
+  width: 60px; /* Slightly larger */
   height: auto;
   position: absolute;
-  left: -90px; /* Move it further to the left */
-  top: -30px; /* Move it upwards */
-  margin-right: 10px;
+  left: -4rem;
+  top: -2rem;
+  animation: float 6s ease-in-out infinite;
 }
 
 .title {
-  font-size: 40px;
-  line-height: 36px;
+  font-size: 3.5rem; /* Increased size */
+  line-height: 1.2;
   color: #000;
+  font-weight: bold;
+  letter-spacing: -0.02em;
 }
 
 .description {
-  font-size: 18px;
-  line-height: 24px;
-  color: rgba(125, 121, 135, 1);
-  margin-top: 20px;
+  font-size: 1.25rem; /* Increased size */
+  line-height: 1.6;
+  color: #7d7987;
+  margin-top: 1.5rem;
+  max-width: 90%;
 }
 
 .ctaButton {
-  font-size: 14px;
-  line-height: 40px;
-  padding: 0 20px;
-  background-color: rgba(69, 143, 246, 1);
-  border-radius: 55px;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 1rem 2rem;
+  background-color: #458ff6;
+  border-radius: 2rem;
   color: #fff;
   border: none;
   cursor: pointer;
   align-self: start;
-  margin-top: 30px;
+  margin-top: 2rem;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(69, 143, 246, 0.2);
 }
 
+.ctaButton:hover {
+  background-color: #3c7fe2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(69, 143, 246, 0.3);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+/* Large screens */
+@media (min-width: 1440px) {
+  .contentWrapper {
+    max-width: 700px; /* Even larger for big screens */
+  }
+
+  .title {
+    font-size: 4rem;
+  }
+
+  .description {
+    font-size: 1.375rem;
+  }
+}
+
+/* Medium screens */
+@media (max-width: 1200px) {
+  .contentWrapper {
+    max-width: 550px;
+    left: 2rem;
+  }
+
+  .title {
+    font-size: 3rem;
+  }
+
+  .description {
+    font-size: 1.125rem;
+  }
+}
+
+/* Tablet screens */
 @media (max-width: 991px) {
   .contentWrapper {
     max-width: 100%;
     align-items: center;
-    left: 0; /* Reset the left offset for smaller screens */
+    left: 0;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .decorativeImage {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-bottom: 1rem;
   }
 
   .title {
-    font-size: 24px;
-    line-height: 32px;
+    font-size: 2.5rem;
+    line-height: 1.3;
   }
 
   .description {
-    font-size: 14px;
-    line-height: 22px;
+    font-size: 1rem;
+    max-width: 100%;
+    margin-top: 1rem;
   }
 
   .ctaButton {
-    margin-top: 20px;
+    align-self: center;
+    margin-top: 1.5rem;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  .contentWrapper {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .description {
+    font-size: 0.875rem;
+  }
+
+  .ctaButton {
+    width: 100%; /* Full width button on mobile */
+    text-align: center;
+    padding: 0.875rem 1.5rem;
   }
 }

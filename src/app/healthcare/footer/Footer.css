@@ -1,146 +1,171 @@
-/* Footer container */
 .footer {
-    background-color: #4f9cf2; /* Lighter Blue */
+    background: linear-gradient(to right, #3b82f6, #2563eb);
     color: white;
-    padding: 10px 0; /* Reduced height by reducing padding */
-    font-size: 0.75rem; /* Further reduced font size for a more compact look */
-    width: 100%; /* Ensure footer spans the full width */
-    position: relative; /* Ensure proper positioning */
-    margin: 0; /* Remove margin to avoid space around the footer */
-}
-
-/* Container to center content */
-.footer-container {
+    width: 100%;
+    padding: 3rem 0;
+  }
+  
+  .footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+  }
+  
+  /* Brand Section Styles */
+  .brand-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    max-width: 1200px;
-    margin: 0; /* Remove any margin */
-    width: 100%; /* Full width */
-    padding: 5px 0; /* Reduce padding */
-}
-
-/* Brand section */
-.brand-section {
-    text-align: center;
-    margin-bottom: 5px; /* Reduced bottom margin */
-}
-
-.brand-logo {
+    gap: 1rem;
+  }
+  
+  .brand-logo {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 5px; /* Reduced gap */
-    font-size: 1.125rem; /* Slightly reduced font size */
-}
-
-.logo-circle {
-    width: 25px; /* Reduced size */
-    height: 25px; /* Reduced size */
+    gap: 0.5rem;
+  }
+  
+  .logo-circle {
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: white;
-    color: #4f9cf2;
     border-radius: 50%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+  }
+  
+  .logo-circle span {
+    color: #3b82f6;
+    font-size: 1.5rem;
     font-weight: bold;
-}
-
-.logo-text {
-    font-size: 14px; /* Reduced font size */
-    color: #4f9cf2;
-}
-
-.brand-name {
-    font-size: 1.25rem; /* Reduced font size */
+  }
+  
+  .brand-name {
+    font-size: 1.5rem;
     font-weight: bold;
-}
-
-.footer-description {
-    font-size: 0.75rem; /* Reduced font size */
-    opacity: 0.8;
-    max-width: 600px;
-    margin: 5px auto; /* Reduced margin */
-}
-
-.footer-rights {
-    font-size: 0.625rem; /* Further reduced font size */
-    opacity: 0.75;
-}
-
-/* Footer links */
-.footer-links {
+  }
+  
+  .brand-description {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+  }
+  
+  .copyright {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Footer Sections Styles */
+  .footer-section {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin-top: 5px; /* Reduced top margin */
-}
-
-.footer-links-section {
-    text-align: center;
-}
-
-.section-title {
-    font-size: 0.875rem; /* Reduced font size */
-    font-weight: bold;
-    margin-bottom: 5px; /* Reduced bottom margin */
-}
-
-.section-items {
-    list-style-type: none;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .section-list {
+    list-style: none;
     padding: 0;
     margin: 0;
-}
-
-.section-item {
-    margin: 3px 0; /* Reduced margin */
-}
-
-.section-item a {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .section-link {
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+  }
+  
+  .section-link:hover {
     color: white;
-    font-size: 0.75rem; /* Reduced font size */
-    opacity: 0.7;
-}
-
-.section-item a:hover {
-    opacity: 1;
-    transition: opacity 0.2s;
-}
-
-/* Social links */
-.footer-social {
-    text-align: center;
-    margin-top: 10px; /* Reduced top margin */
-}
-
-.social-icon {
-    font-size: 1rem; /* Reduced icon size */
-    margin: 0 6px; /* Reduced margin */
+  }
+  
+  /* Social Section Styles */
+  .social-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  
+  .social-link {
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.2s ease;
+  }
+  
+  .social-link:hover {
     color: white;
-}
-
-.social-icon:hover {
-    color: #4f9cf2;
-    transition: color 0.2s;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-    .footer-container {
-        padding: 10px;
+  }
+  
+  .social-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  /* Responsive Styles */
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
-
-    .footer-links {
-        flex-direction: column;
-        align-items: center;
+  }
+  
+  @media (min-width: 1024px) {
+    .footer-grid {
+      grid-template-columns: repeat(4, 1fr);
     }
-
-    .footer-links-section {
-        margin-bottom: 15px;
+  
+    .brand-section {
+      grid-column: span 1;
     }
-
-    .footer-social {
-        margin-top: 15px;
-    }
-}
+  }
+  
+  /* Hover Effects */
+  .section-link {
+    position: relative;
+  }
+  
+  .section-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: -2px;
+    left: 0;
+    background-color: white;
+    transition: width 0.3s ease;
+  }
+  
+  .section-link:hover::after {
+    width: 100%;
+  }
+  
+  /* Animation for social icons */
+  .social-link {
+    display: inline-block;
+    transform: translateY(0);
+    transition: transform 0.2s ease;
+  }
+  
+  .social-link:hover {
+    transform: translateY(-2px);
+  }
