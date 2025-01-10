@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import TestimonialSection from "./testimonials/TestimonialSection";
 import ReviewSlider from "./ReviewSlider"
 import AppointmentSuccessful from "./AppointmentSuccessful";
+import Emergency from "./Emergency";
 import { TestimonialCard } from "./testimonials/TestimonialCard";
 import styles from "./testimonials/TestimonialSection.module.css";
 import { Building2, Phone, Mail } from 'lucide-react';
@@ -363,7 +364,7 @@ const AppointmentPage = () => {
                     </>
                   ) : (
                     <>
-                      <AppointmentSuccessful />
+                      <Emergency num = "1"/>
                       <button
                         className="close-button"
                         onClick={() => setShowModal(false)}
