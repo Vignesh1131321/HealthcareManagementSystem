@@ -391,7 +391,7 @@ useEffect(() => {
       {showEmergencyPopup && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <Emergency />
+            <Emergency num = "2"/>
             <button
               className={styles.closeButton}
               onClick={() => setShowEmergencyPopup(false)}

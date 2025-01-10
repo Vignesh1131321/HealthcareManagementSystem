@@ -486,7 +486,7 @@
 .close-button {
   margin-bottom: 20px;
   padding: 10px 20px;
-  background: #f44336;
+  background: #475569;
   color: white;
   border: none;
   border-radius: 5px;
@@ -496,5 +496,5 @@
 }
 
 .close-button:hover {
-  background: #d32f2f;
+  background: #475569;
 }

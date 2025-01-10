@@ -8,7 +8,7 @@ const AppointmentSuccessful = () => {
   const router = useRouter();
 
   const handleBackToDashboard = () => {
-    router.push('/dashboard');
+    router.push('/');
   };
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const AppointmentSuccessful = () => {
         </p>
         <button 
           className={styles.button} 
-          onClick={handleBackToDashboard}
+          onClick={handleBackToDashboard()}
           aria-label="Return to dashboard"
         >
           Back to Dashboard
