@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { Building2, Phone, MapPin, Star, Clock ,Search} from 'lucide-react';
-import "./HospitalLocator.css";
+import "./Doctor.css";
 
 const Doctor = ({ specialty }) => {
   const [hospitals, setHospitals] = useState([]);
