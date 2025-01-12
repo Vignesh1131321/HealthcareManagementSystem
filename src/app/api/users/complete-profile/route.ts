@@ -6,45 +6,43 @@ export async function POST(request: NextRequest) {
   try {
     await connect();
 
-    const formData = await request.formData();
+    const requestData = await request.json();
     const data: any = {};
 
-    // Parse form data
-    for (const [key, value] of formData.entries()) {
-      switch(key) {
-        case "age":
-          data[key] = parseInt(value as string, 10);
-          break;
-        case "emergencyContactName":
-          if (!data.emergencyContact) data.emergencyContact = {};
-          data.emergencyContact.name = value;
-          break;
-        case "emergencyContactPhone":
-          if (!data.emergencyContact) data.emergencyContact = {};
-          data.emergencyContact.phoneNumber = value;
-          break;
-        case "street":
-          if (!data.address) data.address = {};
-          data.address.street = value;
-          break;
-        case "city":
-          if (!data.address) data.address = {};
-          data.address.city = value;
-          break;
-        case "state":
-          if (!data.address) data.address = {};
-          data.address.state = value;
-          break;
-        case "zipCode":
-          if (!data.address) data.address = {};
-          data.address.zipCode = value;
-          break;
-        default:
-          data[key] = value;
-      }
-    }
+    // Map the request data to match the user model structure
+    data.firstName = requestData.firstName;
+    data.lastName = requestData.lastName;
+    data.phoneNumber = requestData.phoneNumber;
+    data.gender = requestData.gender;
 
-    const username = data.username;
+    // Handle address
+    data.address = {
+      street: requestData.address.street,
+      city: requestData.address.city,
+      state: requestData.address.state,
+      zipCode: requestData.address.zipCode
+    };
+
+    // Handle emergency contact
+    data.emergencyContact = {
+      name: requestData.emergencyContact.name,
+      phoneNumber: requestData.emergencyContact.phoneNumber
+    };
+
+    // Handle vital stats
+    data.vitalStats = {
+      weight: requestData.vitalStats.weight,
+      height: requestData.vitalStats.height,
+      bloodGroup: requestData.vitalStats.bloodGroup,
+      bloodPressure: requestData.vitalStats.bloodPressure
+    };
+
+    // Set profile completion flag
+    data.isCompleteProfile = true;
+
+    console.log("Updating user with data:", data);
+
+    const username = requestData.username;
     if (!username) {
       return NextResponse.json(
         { success: false, message: "Username is required" },
@@ -52,19 +50,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Updating user with username:", username, "with data:", data);
-
     const user = await User.findOneAndUpdate(
       { username },
-      {
-        ...data,
-        isCompleteProfile: true,
-      },
+      { ...data },
       { new: true }
     );
 
     if (!user) {
-      console.error("User not found with username:", username);
       return NextResponse.json(
         { success: false, message: "User not found" },
         { status: 404 }
@@ -73,8 +65,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: user,
+      data: user
     });
+
   } catch (error: any) {
     console.error("Complete profile error:", error);
     return NextResponse.json(
