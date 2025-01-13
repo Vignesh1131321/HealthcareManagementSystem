@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { User, Home, Phone, Activity, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { User, Home, Phone, Activity, Check, ChevronLeft, ChevronRight, AlertCircle, Pill, FileText, Upload } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import './ProfileForm.css';
+import {  Eye,  X } from 'lucide-react';
+import axios from 'axios';
 
 type UserDetails = {
   _id: string;
@@ -34,6 +36,9 @@ type ProfileFormProps = {
 const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, setShowCompleteProfileCard }) => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null); // <-- Add this state
+  const [selectedFileName, setSelectedFileName] = useState<string>('');
+  const [healthRecords, setHealthRecords] = useState<any[]>([]); // Define state for health records
 
   const [formData, setFormData] = useState<{
     firstName: string;
@@ -50,6 +55,15 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     height: string;
     bloodGroup: string;
     bloodPressure: string;
+    allergies: {
+      type: string;
+      severity: string;
+      reaction: string;
+    }[];
+    medications: {  name: string;
+      dosage: string;
+      frequency: string;
+      startDate: string;}[];
   }>({
     firstName: userDetails?.firstName || '',
     lastName: userDetails?.lastName || '',
@@ -65,6 +79,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     height: '',
     bloodGroup: '',
     bloodPressure: '',
+    allergies: [],
+    medications: [],
   });
 
   const steps = [
@@ -72,6 +88,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     { name: 'Address Details', icon: <Home />, completed: false },
     { name: 'Emergency Contact', icon: <Phone />, completed: false },
     { name: 'Vital Statistics', icon: <Activity />, completed: false },
+    { name: 'Allergies', icon: <AlertCircle />, completed: false },
+    { name: 'Medications', icon: <Pill />, completed: false },
+    { name: 'Health Records', icon: <FileText />, completed: false },
   ];
 
   const handleInputChange = (field: keyof typeof formData, value: string) => {
@@ -85,6 +104,76 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
   const handleNext = () => {
     setActiveStep((prev) => Math.min(steps.length - 1, prev + 1));
   };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      setSelectedFileName(e.target.files[0].name);
+    }
+  };
+  
+  const clearSelectedFile = () => {
+    setFile(null);
+    setSelectedFileName('');
+  };
+
+  const handleSubmitForHealthRecord = async (e: React.MouseEvent) => {
+    e.preventDefault();
+  
+    if (!file || !userDetails?._id) {
+      toast.error("Please select a file and ensure you're logged in");
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("userId", userDetails._id);
+  
+    try {
+      setLoading(true);
+      const res = await fetch("/api/upload-health-record", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await res.json();
+  
+      if (result.success) {
+        toast.success("Successfully uploaded health record");
+        
+        const healthRecordsRes = await axios.get('/api/get-health-records', {
+          headers: { userId: userDetails._id },
+        });
+        
+        if (healthRecordsRes.data && healthRecordsRes.data.records) {
+          setHealthRecords(healthRecordsRes.data.records);
+        }
+        
+        clearSelectedFile();
+      } else {
+        toast.error(result.message || "Failed to upload health record");
+      }
+    } catch (error) {
+      console.error("Error uploading health record:", error);
+      toast.error("Failed to upload health record");
+    } finally {
+      setLoading(false);
+    }
+  };
+  // const handleRecordPreview = (record: any) => {
+  //   // Ensure we have the correct data format
+  //   const base64Data = record.data instanceof Uint8Array 
+  //     ? btoa(String.fromCharCode.apply(null, record.data))
+  //     : record.data;
+
+  //   setPreviewRecord({
+  //     name: record.name,
+  //     url: `data:${record.contentType};base64,${base64Data}`,
+  //     type: record.contentType
+  //   });
+  //   setShowPreview(true);
+  // };
+  
 
   const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -121,7 +210,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
           height: formData.height,
           bloodGroup: formData.bloodGroup,
           bloodPressure: formData.bloodPressure
-        }
+        },
+        allergies: formData.allergies,
+    medications: formData.medications,
       };
 
       const response = await fetch('/api/users/complete-profile', {
@@ -148,6 +239,57 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
       setLoading(false);
     }
   };
+
+  const handleAllergyChange = (index: number, field: keyof typeof formData['allergies'][0], value: string) => {
+    console.log('Before update:', formData.allergies); // Debug log
+    setFormData((prev) => {
+      const updatedAllergies = [...prev.allergies];
+      if (!updatedAllergies[index]) {
+        updatedAllergies[index] = { type: '', severity: '', reaction: '' };
+      }
+      updatedAllergies[index] = {
+        ...updatedAllergies[index],
+        [field]: value,
+      };
+      console.log('After update:', updatedAllergies); // Debug log
+      return { ...prev, allergies: updatedAllergies };
+    });
+  };
+
+  const addAllergy = () => {
+    setFormData((prev) => ({
+      ...prev,
+      allergies: [...prev.allergies, { type: '', severity: '', reaction: '' }],
+    }));
+  };
+
+  const handleMedicationChange = (
+    index: number,
+    field: keyof typeof formData['medications'][0],
+    value: string
+  ) => {
+    setFormData((prev) => {
+      const updatedMedications = [...prev.medications];
+      updatedMedications[index] = {
+        ...updatedMedications[index],
+        [field]: value,
+      };
+      return { ...prev, medications: updatedMedications };
+    });
+  };
+
+  const addMedication = () => {
+    setFormData((prev) => ({
+      ...prev,
+      medications: [
+        ...prev.medications,
+        { name: '', dosage: '', frequency: '', startDate: '' },
+      ],
+    }));
+  };
+  
+  
+  
 
   const renderStepContent = () => {
   switch (activeStep) {
@@ -326,7 +468,152 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
           </div>
         </div>
       );
-    default:
+      case 4:
+        return (
+          <div className="form-fields card-grid">
+            {formData.allergies.map((allergy, index) => (
+              <div key={index} className="info-card">
+                <h3>Allergy {index + 1}</h3>
+                <div className="card-content">
+                  <input
+                    type="text"
+                    placeholder="Allergy Type"
+                    value={allergy.type}
+                    onChange={(e) => handleAllergyChange(index, 'type', e.target.value)}
+                  />
+                  <select
+                    value={allergy.severity}
+                    onChange={(e) => handleAllergyChange(index, 'severity', e.target.value)}
+                  >
+                    <option value="">Select Severity</option>
+                    <option value="mild">Mild</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="severe">Severe</option>
+                  </select>
+                  <input
+                    type="text"
+                    placeholder="Reaction"
+                    value={allergy.reaction}
+                    onChange={(e) => handleAllergyChange(index, 'reaction', e.target.value)}
+                  />
+                </div>
+              </div>
+            ))}
+            <button type="button" onClick={addAllergy} className="add-card-btn">
+              Add Allergy
+            </button>
+          </div>
+        );
+      case 5:
+        return (
+          <div className="form-fields card-grid">
+            {formData.medications.map((medication, index) => (
+              <div key={index} className="info-card">
+                <h3>Medication {index + 1}</h3>
+                <div className="card-content">
+                  <input
+                    type="text"
+                    placeholder="Medication Name"
+                    value={medication.name}
+                    onChange={(e) => handleMedicationChange(index, 'name', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Dosage"
+                    value={medication.dosage}
+                    onChange={(e) => handleMedicationChange(index, 'dosage', e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Frequency"
+                    value={medication.frequency}
+                    onChange={(e) => handleMedicationChange(index, 'frequency', e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    placeholder="Start Date"
+                    value={medication.startDate}
+                    onChange={(e) => handleMedicationChange(index, 'startDate', e.target.value)}
+                  />
+                </div>
+              </div>
+            ))}
+            <button type="button" onClick={addMedication} className="add-card-btn">
+              Add Medication
+            </button>
+          </div>
+        );    
+        case 6:
+          return (
+            <div className="form-fields">
+              <div className="health-records-section">
+                {healthRecords.length > 0 ? (
+                  <div className="health-records-list">
+                    {healthRecords.map((record, index) => (
+                      <div key={index} className="health-record-item">
+                        <div className="record-info">
+                          <FileText className="file-icon" />
+                          <span>{record.name}</span>
+                        </div>
+                        {/* <button 
+                          className="preview-btn"
+                          onClick={() => handleRecordPreview(record)}
+                        >
+                          <Eye className="preview-icon" />
+                          Preview
+                        </button> */}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No health records available</p>
+                )}
+                
+                <div className="upload-section">
+                  {selectedFileName && (
+                    <div className="selected-file">
+                      <div className="file-info">
+                        <FileText className="file-icon" />
+                        <span>{selectedFileName}</span>
+                      </div>
+                      <button 
+                        className="clear-file" 
+                        onClick={clearSelectedFile}
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  )}
+                  
+                  <div className="upload-controls">
+                    <label className="custom-file-upload">
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileSelect}
+                      />
+                      Choose File
+                    </label>
+                    <button
+                      className="upload-btn"
+                      onClick={handleSubmitForHealthRecord}
+                      disabled={!file || loading}
+                    >
+                      {loading ? (
+                        "Uploading..."
+                      ) : (
+                        <>
+                          <Upload className="upload-icon" />
+                          Upload Health Record
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );      
+      default:
       return null;
   }
 };
@@ -366,29 +653,29 @@ return (
               <ChevronLeft /> Back
             </button>
             {activeStep === steps.length - 1 ? (
-  <button 
-    type="button" // Change from submit to button
-    onClick={(e) => {
-      e.preventDefault();
-      handleCompleteProfileSubmit(e as React.FormEvent<HTMLFormElement>);
-    }}
-    disabled={loading}
-    className="submit-button"
-  >
-    {loading ? 'Submitting...' : 'Submit'}
-  </button>
-) : (
-  <button 
-    type="button"
-    onClick={(e) => {
-      e.preventDefault();
-      handleNext();
-    }}
-    className="next-button"
-  >
-    Next <ChevronRight />
-  </button>
-)}
+              <button 
+                type="button" // Change from submit to button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCompleteProfileSubmit(e as React.FormEvent<HTMLFormElement>);
+                }}
+                disabled={loading}
+                className="submit-button"
+              >
+                {loading ? 'Submitting...' : 'Submit'}
+              </button>
+            ) : (
+              <button 
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNext();
+                }}
+                className="next-button"
+              >
+                Next <ChevronRight />
+              </button>
+            )}
           </div>
         </form>
       </div>

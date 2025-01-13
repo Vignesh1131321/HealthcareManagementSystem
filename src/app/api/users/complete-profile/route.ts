@@ -37,6 +37,25 @@ export async function POST(request: NextRequest) {
       bloodPressure: requestData.vitalStats.bloodPressure
     };
 
+    // Handle allergies
+    data.allergies = Array.isArray(requestData.allergies) 
+  ? requestData.allergies.map((allergy: any) => ({
+      type: allergy?.type || '',
+      severity: allergy?.severity || '',
+      reaction: allergy?.reaction || ''
+    }))
+  : [];
+
+// Handle medications with safety checks
+data.medications = Array.isArray(requestData.medications)
+  ? requestData.medications.map((medication: any) => ({
+      name: medication?.name || '',
+      dosage: medication?.dosage || '',
+      frequency: medication?.frequency || '',
+      startDate: medication?.startDate || ''
+    }))
+  : [];
+
     // Set profile completion flag
     data.isCompleteProfile = true;
 

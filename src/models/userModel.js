@@ -75,6 +75,39 @@ const userSchema = new mongoose.Schema({
       required: false,
     },
   },
+  allergies: [{
+    type: {
+      type: String,
+      required: false,
+    },
+    severity: {
+      type: String,
+      enum: ['mild', 'moderate', 'severe'],
+      required: false,
+    },
+    reaction: {
+      type: String,
+      required: false,
+    }
+  }],
+  medications: [{
+    name: {
+      type: String,
+      required: false,
+    },
+    dosage: {
+      type: String,
+      required: false,
+    },
+    frequency: {
+      type: String,
+      required: false,
+    },
+    startDate: {
+      type: String,
+      required: false,
+    }
+  }],
   profilePhotoUrl: {
     type: String,
     required: false,

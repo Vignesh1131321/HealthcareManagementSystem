@@ -51,7 +51,7 @@ export default function ProfilePage() {
     contentType: string;
     data: string;
   }>>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
