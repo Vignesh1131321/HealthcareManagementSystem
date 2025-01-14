@@ -1,14 +1,13 @@
 "use client";
+import React, { useState, useEffect } from 'react';
+import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, ChevronLeft } from 'lucide-react';
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import "./profile.css";
-import Header from "../components/Header";
 import { signOut } from "next-auth/react";
-// import . from "../api/u";
-import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye } from 'lucide-react';
+import ProfileStepsForm from './ProfileForm';
+import "./profile.css";
 type UserDetails = {
   _id: string;
   username: string;
@@ -26,20 +25,24 @@ type UserDetails = {
     state: string;
     zipCode: string;
   };
-  age: number;
   gender: string;
+  vitalStats: {
+    weight: string;
+    height: string;
+    bloodGroup: string;
+    bloodPressure: string;
+  };
   profilePhotoUrl?: string;
+  isVerified: boolean;
   isCompleteProfile: boolean;
 };
 
-type HealthRecord = {
-  name: string;
-  uploadedAt: string;
-};
+
 
 
 export default function ProfilePage() {
   const router = useRouter();
+  const [activeStep, setActiveStep] = useState(0);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [healthRecords, setHealthRecords] = useState<Array<{
     _id: string;
@@ -48,7 +51,7 @@ export default function ProfilePage() {
     contentType: string;
     data: string;
   }>>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
@@ -62,6 +65,14 @@ export default function ProfilePage() {
     url: string;
     type: string;
   } | null>(null);
+  const steps = [
+    { name: 'Basic Information', icon: <User className="step-icon" /> },
+    { name: 'Address Details', icon: <Home className="step-icon" /> },
+    { name: 'Emergency Contact', icon: <Phone className="step-icon" /> },
+    { name: 'Vital Statistics', icon: <Activity className="step-icon" /> },
+    { name: 'Allergies', icon: <AlertCircle className="step-icon" /> },
+    { name: 'Current Medications', icon: <Heart className="step-icon" /> }
+  ];
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
@@ -177,52 +188,58 @@ export default function ProfilePage() {
   const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   
-    if (!userDetails) {
-      toast.error("User details not available");
+    if (!userDetails?._id) {
+      toast.error('User ID not found');
       return;
     }
   
     try {
       setLoading(true);
-  
-      const formData = new FormData();
-      formData.append("username", userDetails.username);
-      formData.append("email", userDetails.email);
-      formData.append("firstName", userDetails.firstName);
-      formData.append("lastName", userDetails.lastName);
-      formData.append("phoneNumber", userDetails.phoneNumber);
-      formData.append("age", String(userDetails.age || ""));
-      formData.append("gender", userDetails.gender || "");
-  
-      if (userDetails.emergencyContact?.name && userDetails.emergencyContact?.phoneNumber) {
-        formData.append("emergencyContactName", userDetails.emergencyContact.name);
-        formData.append("emergencyContactPhone", userDetails.emergencyContact.phoneNumber);
-      }
-
-      if (userDetails.address) {
-        formData.append("street", userDetails.address.street || '');
-        formData.append("city", userDetails.address.city || '');
-        formData.append("state", userDetails.address.state || '');
-        formData.append("zipCode", userDetails.address.zipCode || '');
-      }
       
-      const response = await fetch("/api/users/complete-profile", {
-        method: "POST",
-        body: formData, // Send form data
+      const formData = new FormData();
+      
+      // Append all form fields
+      formData.append('userId', userDetails._id);
+      formData.append('username', userDetails.username);
+      formData.append('email', userDetails.email);
+      formData.append('firstName', formData.firstName);
+      formData.append('lastName', formData.lastName);
+      formData.append('phoneNumber', formData.phoneNumber);
+      formData.append('gender', formData.gender);
+      
+      // Address
+      formData.append('street', formData.street);
+      formData.append('city', formData.city);
+      formData.append('state', formData.state);
+      formData.append('zipCode', formData.zipCode);
+      
+      // Emergency Contact
+      formData.append('emergencyContactName', formData.emergencyName);
+      formData.append('emergencyContactPhone', formData.emergencyContact);
+      
+      // Vital Stats
+      formData.append('weight', formData.weight);
+      formData.append('height', formData.height);
+      formData.append('bloodGroup', formData.bloodGroup);
+      formData.append('bloodPressure', formData.bloodPressure);
+  
+      const response = await fetch('/api/users/complete-profile', {
+        method: 'POST',
+        body: formData,
       });
   
       const data = await response.json();
   
-      if (data.success) {
-        toast.success("Profile completed successfully");
-        setShowCompleteProfileCard(false);
+      if (response.ok) {
+        toast.success('Profile completed successfully');
         setUserDetails(data.data);
+        setShowCompleteProfileCard(false);
       } else {
-        toast.error(data.error || "Failed to complete profile");
+        throw new Error(data.error || 'Failed to complete profile');
       }
     } catch (error: any) {
-      console.error("Error completing profile:", error);
-      toast.error(error.message || "An error occurred");
+      console.error('Error completing profile:', error);
+      toast.error(error.message || 'An error occurred while updating profile');
     } finally {
       setLoading(false);
     }
@@ -387,96 +404,14 @@ useEffect(() => {
 
   return (
   <>
-    <NavbarWrapper/>
+
     <div className="profile-container">
       {showCompleteProfileCard && (
-        <div className="complete-profile-card">
-          <h2>Complete Your Profile</h2>
-            <form onSubmit={handleCompleteProfileSubmit}>
-              <input
-                type="text"
-                placeholder="Username"
-                value={userDetails?.username || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, username: e.target.value } : null)}
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={userDetails?.email || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, email: e.target.value } : null)}
-              />
-              <input
-                type="text"
-                placeholder="First Name"
-                value={userDetails?.firstName || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, firstName: e.target.value } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={userDetails?.lastName || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, lastName: e.target.value } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Phone Number"
-                value={userDetails?.phoneNumber || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, phoneNumber: e.target.value } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Emergency Contact Name"
-                value={userDetails?.emergencyContact?.name || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, emergencyContact: { ...prev.emergencyContact, name: e.target.value } } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Emergency Contact Phone"
-                value={userDetails?.emergencyContact?.phoneNumber || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, emergencyContact: { ...prev.emergencyContact, phoneNumber: e.target.value } } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Street"
-                value={userDetails?.address?.street || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, address: { ...prev.address, street: e.target.value } } : null)}
-              />
-              <input
-                type="text"
-                placeholder="City"
-                value={userDetails?.address?.city || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, address: { ...prev.address, city: e.target.value } } : null)}
-              />
-              <input
-                type="text"
-                placeholder="State"
-                value={userDetails?.address?.state || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, address: { ...prev.address, state: e.target.value } } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Zip Code"
-                value={userDetails?.address?.zipCode || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, address: { ...prev.address, zipCode: e.target.value } } : null)}
-              />
-              <input
-                type="number"
-                placeholder="Age"
-                value={userDetails?.age || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, age: parseInt(e.target.value) } : null)}
-              />
-              <input
-                type="text"
-                placeholder="Gender"
-                value={userDetails?.gender || ""}
-                onChange={(e) => setUserDetails((prev) => prev ? { ...prev, gender: e.target.value } : null)}
-              />
-              <button type="submit" disabled={loading}>
-                {loading ? "Saving..." : "Save"}
-              </button>
-            </form>
-          <button onClick={() => setShowCompleteProfileCard(false)}>Close</button>
-        </div>
+       <ProfileStepsForm
+       userDetails={userDetails}
+          setUserDetails={setUserDetails}
+          setShowCompleteProfileCard={setShowCompleteProfileCard}
+       />
       )}
       {!showCompleteProfileCard && userDetails && (
         <>
