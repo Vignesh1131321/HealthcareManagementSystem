@@ -20,7 +20,7 @@
 
 .icon {
   font-size: 60px;
-  color: #4caf50;
+  color: #3b82f6;
   margin-bottom: 20px;
 }
 
@@ -40,7 +40,7 @@
 
 .button {
   margin-top: 20px;
-  background-color: #4caf50;
+  background-color: #3b82f6;
   color: #ffffff;
   padding: 12px 20px;
   font-size: 16px;
@@ -51,5 +51,5 @@
 }
 
 .button:hover {
-  background-color: #45a049;
+  background-color: #2563eb;
 }

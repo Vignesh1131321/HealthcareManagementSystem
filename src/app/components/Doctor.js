@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
 import { Building2, Phone, MapPin, Star, Clock ,Search} from 'lucide-react';
-import "./HospitalLocator.css";
+import "./Doctor.css";
 
 const Doctor = ({ specialty }) => {
   const [hospitals, setHospitals] = useState([]);
@@ -240,9 +240,9 @@ const Doctor = ({ specialty }) => {
                     </div>
 
                     {hospital.rating ? (
-  <div className="info-row rating-row">
-    <div className="info-icon-wrapper">
-      <Star className="info-icon star-icon" size={24} />
+  <div className="info-row ">
+    <div className="info-icon">
+      <Star className="info-icon" size={18} fill="#FFD700" />
     </div>
     <p className="hospital-rating">
       <span className="rating-value">{hospital.rating}</span>
@@ -250,9 +250,9 @@ const Doctor = ({ specialty }) => {
     </p>
   </div>
 ) : (
-  <div className="info-row rating-row">
-    <div className="info-icon-wrapper">
-      <Star className="info-icon star-icon" size={24} />
+  <div className="info-row">
+    <div className="info-icon">
+     <Star className="info-icon" size={18} fill="#FFD700" />
     </div>
     <p className="hospital-rating">Rating not available</p>
   </div>

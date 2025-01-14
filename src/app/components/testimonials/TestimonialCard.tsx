@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./TestimonialCard.module.css";
 import { FaUserCircle, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
@@ -15,14 +15,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
   data,
   size,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const isLarge = size === "large";
-  const maxLength = 150;
-  
-  const needsReadMore = data.text.length > maxLength;
-  const displayText = isExpanded 
-    ? data.text 
-    : data.text.slice(0, maxLength) + (needsReadMore ? '...' : '');
 
   // Helper function to render stars based on the rating
   const renderStars = (rating: number) => {
@@ -41,10 +34,10 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
 
   return (
     <div 
-      className={`${styles.testimonialCard} ${isExpanded ? styles.expanded : ''}`}
+      className={styles.testimonialCard}
       style={{
-        height: isExpanded ? 'auto' : '100%',
-        zIndex: isExpanded ? 10 : 1
+        height: '100%',
+        zIndex: 1
       }}
     >
       <img
@@ -76,8 +69,8 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         >
           {data.author}
         </div>
-        <div className={`${styles.role} ${isExpanded ? styles.expandedText : ''}`}>
-          {displayText}
+        <div className={styles.role}>
+          {data.text}
         </div>
         <div
           className={`${styles.rating} ${
@@ -86,15 +79,6 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
         >
           {renderStars(parseFloat(data.rating))}
         </div>
-        
-        {needsReadMore && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className={styles.readMoreButton}
-          >
-            {isExpanded ? 'Read Less' : 'Read More'}
-          </button>
-        )}
       </div>
     </div>
   );

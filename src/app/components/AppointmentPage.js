@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import TestimonialSection from "./testimonials/TestimonialSection";
 import ReviewSlider from "./ReviewSlider"
 import AppointmentSuccessful from "./AppointmentSuccessful";
+import Emergency from "./Emergency";
 import { TestimonialCard } from "./testimonials/TestimonialCard";
 import styles from "./testimonials/TestimonialSection.module.css";
 import { Building2, Phone, Mail } from 'lucide-react';
@@ -145,6 +146,18 @@ const AppointmentPage = () => {
       date: selectedDate,
       time: selectedTimeSlot,
     };
+
+    const appointmentDate = new Date(appointmentDetails.date);
+
+    const day = String(appointmentDate.getDate()).padStart(2, '0'); // Add leading zero if necessary
+    const month = String(appointmentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = appointmentDate.getFullYear();
+
+    const formattedDate = `${day}-${month}-${year}`;
+    console.log("Appointment date:", formattedDate); // Output: DD-MM-YYYY
+    
+    console.log("Appointment date", appointmentDetails.date);
+    appointmentDetails.date = formattedDate;
 
     try {
       const response = await fetch("/api/users/appointment", {
@@ -351,7 +364,7 @@ const AppointmentPage = () => {
                     </>
                   ) : (
                     <>
-                      <AppointmentSuccessful />
+                      <Emergency num = "1"/>
                       <button
                         className="close-button"
                         onClick={() => setShowModal(false)}
