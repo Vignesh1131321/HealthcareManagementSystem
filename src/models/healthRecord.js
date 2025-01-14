@@ -1,18 +1,20 @@
 import mongoose from "mongoose";
 
+// Check if the model exists before defining it
 const healthRecordSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  data: { type: Buffer }, // Optional, used if data is stored directly in the DB
-  filePath: { type: String }, // Path for external file storage
+  data: { type: Buffer, required: true },
   contentType: { type: String, required: true },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  version: { type: Number, default: 1 }, // For versioning health records
-  tags: { type: [String], default: [] }, // Tags for categorization
-  encrypted: { type: Boolean, default: false }, // Flag for encrypted data
+  userId: { type: String, required: true },
   uploadedAt: { type: Date, default: Date.now },
+  textContent: { type: String },
+  version: { type: Number, default: 1 }
+}, {
+  timestamps: true
 });
 
-// Ensure the combination of userId, name, and version is unique
+// Create compound index
 healthRecordSchema.index({ userId: 1, name: 1, version: 1 }, { unique: true });
 
-export const HealthRecord = mongoose.model("HealthRecord", healthRecordSchema);
+// Check if the model exists before compiling it
+export const HealthRecord = mongoose.models.HealthRecord || mongoose.model("HealthRecord", healthRecordSchema);

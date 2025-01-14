@@ -7,17 +7,18 @@ export const GET = async (request) => {
     await mongoose.connect(process.env.MONGO_URI);
 
     const userId = request.headers.get("userId");
-    console.log("Received userId:", userId);
 
     if (!userId) {
       return NextResponse.json({ success: false, error: "UserId missing" });
     }
 
-    const healthRecords = await HealthRecord.find({ userId }).select("name data contentType uploadedAt");
+    const healthRecords = await HealthRecord.find({ userId }).select("name data contentType uploadedAt textContent");
+
     const formattedRecords = healthRecords.map(record => ({
       name: record.name,
-      contentType: record.contentType  || "application/octet-stream",
+      contentType: record.contentType || "application/octet-stream",
       uploadedAt: record.uploadedAt,
+      textContent: record.textContent,
       data: record.data.toString("base64"),
     }));
 
