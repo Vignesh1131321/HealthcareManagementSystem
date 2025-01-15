@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./Chatbot.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import  Emergency  from "./Emergency";
+import EmergencyConfirm from "./EmergencyConfirm";
 import { FaUserMd, FaMicrophone, FaPaperPlane, FaRobot, FaUser, FaTrash, FaAmbulance } from "react-icons/fa";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useRouter } from 'next/navigation';
@@ -15,13 +16,7 @@ function Chatbot() {
   const [isLoading, setIsLoading] = useState(false);
   const [showEmergencyPrompt, setShowEmergencyPrompt] = useState(false);
 
-  const [showEmergencyPopup, setShowEmergencyPopup] = useState(false);
-  const [userDetails, setUserDetails] = useState(null);
-  const [hospitals, setHospitals] = useState([]);
 
-  const currentDate = new Date();
-  const date = currentDate.toLocaleDateString('en-GB').replace(/\//g, '-');  // Format: "MM/DD/YYYY" or based on locale
-  const time = `${currentDate.getHours()}:${currentDate.getMinutes().toString().padStart(2, '0')}`;
 
   const chatBodyRef = useRef(null);
   const router = useRouter();
@@ -268,8 +263,7 @@ Emergency Level: ${contextMemory.emergencyLevel}
 
   const handleEmergencyAction = (action) => {
     if (action === 'book') {
-      /* router.push('/emergency-appointment'); */
-      {/* <Emergency num = "2"/> */}
+      router.push('/emergency-appointment');
     } else if (action === 'call') {
       window.location.href = 'tel:911';
     }
@@ -368,129 +362,6 @@ Emergency Level: ${contextMemory.emergencyLevel}
     recognition.start();
   };
 
-  const fetchUserDetails = async () => {
-    try {
-      console.log("Fetching user details... from appointment");
-      
-      const response = await fetch("/../api/users/me");
-      
-      if (response.ok) {
-        const resData = await response.json();
-        
-        if (resData && resData.data) {
-          setUserDetails(resData.data);
-  
-        } else {
-          console.log("Failed to get user details");
-        }
-      } else {
-        console.log("Failed to fetch user details. Server returned an error.");
-      }
-    } 
-    catch (error) {
-      console.error("Error fetching user details or health records:", error);
-    }
-    
-  };
-  useEffect(() => {
-      fetchUserDetails();
-    }, []);
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",      
-    libraries: ["places"],
-  });
-
-    useEffect(() => {
-      if (isLoaded) {
-        getUserLocation();
-      }
-    }, [isLoaded]);
-
-    const getUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const currentLocation = new google.maps.LatLng(latitude, longitude);
-            /* setMapCenter(currentLocation); */
-            fetchHospitals(currentLocation);
-            console.log(currentLocation);
-          },
-          () => {
-            /* setErrorMessage("Unable to fetch your location. Please enter manually."); */
-          }
-        );
-      } else {
-        /* setErrorMessage("Geolocation is not supported by this browser."); */
-      }
-    };
-
-        const fetchHospitals = (location) => {
-          const service = new window.google.maps.places.PlacesService(document.createElement("div"));
-      
-          const request = {
-            location,
-            radius: 5000,
-            keyword:  "Nearest Hospital", // Search by specialty
-          };
-      
-          service.nearbySearch(request, (results, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-              setHospitals(results ?? []);
-              /* setErrorMessage(""); */
-            } else {
-              setHospitals([]);
-/*               setErrorMessage("No specialists found near the selected location.");
- */            }
-          });
-        };
-        
-      const [isModalOpen, setIsModalOpen] = useState(false);
-
-      const handleFindDoctorClick = () => {
-        setIsModalOpen(true);
-      };
-
-      const handleConfirmEmergency = async () => {
-        await handleAppointmentSubmit(); // Book appointment
-        setShowEmergencyPopup(true); // Show Emergency popup
-      };
-
-      const handleAppointmentSubmit = async () => {
-        if (!hospitals.length) {
-          alert("No hospitals found nearby.");
-          return;
-        }
-    
-        const appointmentDetails = {
-          userId: userDetails._id,
-          identity: "1",
-          doctorId: hospitals[0].place_id,
-          doctorName: hospitals[0].name,
-          specialty: "",
-          date: date,
-          time: time,
-        };
-    
-        try {
-          const response = await fetch("/api/users/appointment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(appointmentDetails),
-          });
-    
-          if (!response.ok) {
-            const error = await response.json();
-            console.error("Error booking appointment:", error.message);
-            alert("Failed to book appointment.");
-          }
-        } catch (error) {
-          console.error("Error booking appointment:", error);
-          alert("An error occurred while booking the appointment.");
-        }
-      };
-
   const EmergencyPrompt = () => (
     <div className="emergency-prompt">
       <div className="emergency-content">
@@ -500,10 +371,7 @@ Emergency Level: ${contextMemory.emergencyLevel}
         <p>Based on your symptoms, immediate medical attention may be required.</p>
         <div className="emergency-buttons">
           <button 
-            onClick={() => {
-              handleEmergencyAction('book'); // Call the first function
-              handleConfirmEmergency(); // Call the second function
-            }}
+            onClick={() => handleEmergencyAction('book')}
             className="emergency-button book"
           >
             Book Emergency Appointment
@@ -511,6 +379,7 @@ Emergency Level: ${contextMemory.emergencyLevel}
           <button 
             onClick={() => {
               setShowEmergencyPrompt(false);
+              handleAppointmentSubmit; 
             }
             }
             className="emergency-button cancel"
@@ -604,19 +473,7 @@ Emergency Level: ${contextMemory.emergencyLevel}
           </form>
         </div>
       </div>
-      {showEmergencyPopup && (
-        <div className="modalOverlay">
-          <div className="modalContent">
-            <Emergency num = "2"/>
-            <button
-              className="closeButton"
-              onClick={() => setShowEmergencyPopup(false)}
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }

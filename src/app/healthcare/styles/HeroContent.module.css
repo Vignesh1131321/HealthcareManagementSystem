@@ -15,7 +15,7 @@
   height: auto;
   position: absolute;
   left: -4rem;
-  top: -2rem;
+  top: 0rem;
   animation: float 6s ease-in-out infinite;
 }
 
