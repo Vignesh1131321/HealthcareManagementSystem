@@ -10,6 +10,8 @@ import { TestimonialCard } from "./testimonials/TestimonialCard";
 import styles from "./testimonials/TestimonialSection.module.css";
 import { Building2, Phone, Mail } from 'lucide-react';
 import "./AppointmentPage.css";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 let UserDetails = {
   _id: "", // String value
@@ -58,24 +60,82 @@ const AppointmentPage = () => {
   const [isError, setIsError] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [appointments, setAppointments] = useState([]);
 
 
   const searchParams = useSearchParams();
 
-  // Generate time slots once when component mounts
-  useEffect(() => {
-    const generateTimeSlots = () => [
-      { time: "9:00 AM", available: Math.random() > 0.3 },
-      { time: "10:00 AM", available: Math.random() > 0.3 },
-      { time: "11:00 AM", available: Math.random() > 0.3 },
-      { time: "12:00 PM", available: Math.random() > 0.3 },
-      { time: "1:00 PM", available: Math.random() > 0.3 },
-      { time: "2:00 PM", available: Math.random() > 0.3 },
-      { time: "3:00 PM", available: Math.random() > 0.3 },
-      { time: "4:00 PM", available: Math.random() > 0.3 },
+  const fetchAppointments = async ( newDate ) => {
+    if (!userDetails || !userDetails._id) {
+      console.warn("User details not available yet.");
+      return;
+    }
+
+  
+    try {
+      setLoading(true);
+
+      const appointmentDate = new Date(newDate);
+
+      const day = String(appointmentDate.getDate()).padStart(2, '0'); // Add leading zero if necessary
+      const month = String(appointmentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+      const year = appointmentDate.getFullYear();
+  
+      const formattedDate = `${day}-${month}-${year}`;
+      const response = await axios.get('/api/get-booked-appointment', {
+        params: {
+          doctorId: doctor.id,
+          date: formattedDate,
+        },
+      });
+
+      if (response.request.status === 200) {
+        setAppointments(response.data.appointments);
+
+        
+      } else {
+        toast.error("Failed to fetch appointments");
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      toast.error("Failed to fetch appointments");
+    } finally {
+      setLoading(false);
+    }
+  };
+useEffect(() => {
+  console.log("Updated appointments state:", appointments);
+}, [appointments]);
+console.log(appointments);
+
+useEffect(() => {
+  const generateTimeSlots = () => {
+    // Define default time slots
+    const defaultTimeSlots = [
+      { time: "9:00 AM", available: true },
+      { time: "10:00 AM", available: true },
+      { time: "11:00 AM", available: true },
+      { time: "12:00 PM", available: true },
+      { time: "1:00 PM", available: true },
+      { time: "2:00 PM", available: true },
+      { time: "3:00 PM", available: true },
+      { time: "4:00 PM", available: true },
     ];
-    setTimeSlots(generateTimeSlots());
-  }, []);
+
+    // Mark time slots as unavailable if they match booked appointment times
+    const updatedTimeSlots = defaultTimeSlots.map((slot) => {
+      const isBooked = appointments.some(
+        (appointment) => appointment.appointmentTime === slot.time
+      );
+      return { ...slot, available: !isBooked };
+    });
+
+    return updatedTimeSlots;
+  };
+
+  // Update time slots when appointments change
+  setTimeSlots(generateTimeSlots());
+}, [appointments]); // Recompute when appointments change
 
   // Fetch doctor data from query params
   useEffect(() => {
@@ -105,6 +165,10 @@ const AppointmentPage = () => {
     calculateRatingDistribution();
   }, [reviews]);
 
+/*   useEffect(() => {
+    fetchAppointments();
+  }, [selectedDate]); */
+
   // Cycle through reviews
   useEffect(() => {
     const interval = setInterval(() => {
@@ -115,6 +179,7 @@ const AppointmentPage = () => {
 
   const handleDateChange = (newDate) => {
     setSelectedDate(newDate);
+    fetchAppointments(newDate);
     setSelectedTimeSlot(null);
   };
   const getTimeSlotClass = (slot) => {
@@ -154,9 +219,7 @@ const AppointmentPage = () => {
     const year = appointmentDate.getFullYear();
 
     const formattedDate = `${day}-${month}-${year}`;
-    console.log("Appointment date:", formattedDate); // Output: DD-MM-YYYY
     
-    console.log("Appointment date", appointmentDetails.date);
     appointmentDetails.date = formattedDate;
 
     try {
@@ -165,7 +228,7 @@ const AppointmentPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentDetails),
       });
-      console.log("Appointment details:", appointmentDetails);
+      
       
       if (response.ok) {
         /* alert("Appointment successfully booked!"); */
@@ -235,6 +298,7 @@ const AppointmentPage = () => {
   }
 
   const currentReview = reviews[currentReviewIndex];
+
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
