@@ -2,3 +2,5 @@ npm install react-slick slick-carousel
 npm install date-fns@2
 npm install
 npm install lucide-react
+npm install pdf-parse
+npm install --save groq-sdk
