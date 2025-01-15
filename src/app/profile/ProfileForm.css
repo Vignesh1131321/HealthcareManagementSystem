@@ -1,3 +1,10 @@
+/* .profile-page{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f9f9f9;
+} */
 .profile-steps-container {
   max-width: 1000px;
   width: 95%;
@@ -8,6 +15,15 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
+.steps-header {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .steps-progress {
   display: flex;
   justify-content: space-between;
@@ -16,7 +32,7 @@
   padding: 0 30px;
   --progress-width: 0%;
   
-  width: 80%; 
+  width: 100%; 
 }
 
 .steps-progress::before {
@@ -49,6 +65,8 @@
   flex-direction: column;
   align-items: center;
   z-index: 3;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .step-icon {
@@ -66,8 +84,8 @@
 }
 
 .step-icon.active {
-  border-color: #4CAF50;
-  background: #4CAF50;
+  border-color: #3b82f6; /* current running step */
+  background: #3b82f6;
   color: white;
 }
 
@@ -83,16 +101,31 @@
   text-align: center;
 }
 
-.step-name.active {
-  color: #4CAF50;
+.step-name.active {   /* For name like basic information */
+  color: #3b82f6;
   font-weight: 600;
 }
 
+.custom-select {
+  appearance: none; /* Removes default browser styling */
+  padding-right: 2rem; /* Add padding to the right for the arrow */
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M8 10l4 4 4-4"/></svg>')
+    no-repeat right 0.75rem center;
+  background-size: 1rem;
+}
+
+.custom-select:focus {
+  outline: none; /* Removes the default focus border */
+  border-color: #0066cc; /* Customize focus border color */
+}
+
 .form-card {
+  width: 80%;
   background: white;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin: 0 auto;
 }
 
 .form-card h2 {
@@ -153,7 +186,7 @@
 .field-group input:focus,
 .field-group select:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
   background-color: #fff;
 }
@@ -184,7 +217,7 @@
 }
 
 .form-footer button:last-child {
-  background: #4CAF50;
+  background: #3b82f6;
   color: white;
 }
 
@@ -252,7 +285,7 @@
 }
 
 .add-card-btn {
-  background: #4CAF50;
+  background: #3b82f6;
   color: white;
   border: none;
   border-radius: 8px;
