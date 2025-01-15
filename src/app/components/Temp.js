@@ -268,8 +268,10 @@ const AppointmentPage = () => {
     }
   };
 
-  
-
+  useEffect(() => {
+    fetchAppointments();
+  }, [selectedDate]);
+  console.log(appointments);
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
     <div className="appointment-page-container">

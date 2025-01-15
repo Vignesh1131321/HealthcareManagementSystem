@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "../../../lib/db";
-import { ObjectId } from "mongodb";
 
 export async function GET(req) {
-    console.log("API hit: get-appointments");
-    const doctorId = req.headers.get("doctorId");
-    const date = req.headers.get("date");
+    console.log("API hit: get-booked-appointments");
+
+    // Retrieve query parameters
+    const { searchParams } = new URL(req.url);
+    const doctorId = searchParams.get("doctorId");
+    const date = searchParams.get("date");
+
     console.log("Received doctorId:", doctorId);
     console.log("Received date:", date);
 
     if (!doctorId || !date) {
         return NextResponse.json(
-            { error: "Missing required parameters: doctorId or date" },
-            { status: 400 }
+            { success: false,error: "Missing required parameters: doctorId or date" },
+            { status: 406 }
         );
     }
 
@@ -20,21 +23,22 @@ export async function GET(req) {
         const client = await clientPromise;
         const db = client.db("your-database-name");
         const appointmentsCollection = db.collection("appointments");
-        
+
+        // Query the database
         const appointments = await appointmentsCollection
             .find({ 
                 doctorId: doctorId,
-                date: date // Assuming date is stored in same format
+                appointmentDate: date // Ensure the format matches your DB storage
             })
             .toArray();
 
-        console.log("Appointments found:", appointments);
         
+
         return NextResponse.json({ appointments });
     } catch (error) {
         console.error("Error fetching appointments:", error);
         return NextResponse.json(
-            { error: "Failed to fetch appointments" },
+            {success: false, error: "Failed to fetch appointments" },
             { status: 500 }
         );
     }
