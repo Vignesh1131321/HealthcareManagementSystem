@@ -12,13 +12,14 @@
 }
 
 .headerContent {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 15px 20px;
-  align-items: center;
-  margin-top: 0;
-}
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 20px;
+    align-items: center;
+    margin-top: 0;
+  }
+  
 
 /* Adjustments for larger screens */
 @media (min-width: 1200px) {

@@ -1,5 +1,7 @@
+import { IconType } from "react-icons"; 
 export interface ServiceCardProps {
-  imageSrc: string;
+  icon?: IconType;  
+  imageSrc?: string;
   imageAlt: string;
   title: string;
   description: string;

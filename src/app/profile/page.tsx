@@ -317,7 +317,7 @@ export default function ProfilePage() {
         const healthRecordsRes = await axios.get('/api/get-health-records', {
           headers: { userId: userDetails._id },
         });
-        
+        console.log(healthRecords);
         if (healthRecordsRes.data && healthRecordsRes.data.records) {
           setHealthRecords(healthRecordsRes.data.records);
         }

@@ -72,7 +72,7 @@ import { DoctorModal } from "./DoctorModal";
 import  Emergency  from "../../components/Emergency";
 import EmergencyConfirm from "../../components/EmergencyConfirm"; // Import EmergencyConfirm
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-
+import { FaRobot, FaHospital } from "react-icons/fa"; // Importing React Icons
 
 const servicesData: ServiceCardProps[] = [
   {
@@ -94,10 +94,10 @@ const servicesData: ServiceCardProps[] = [
   {
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/9669e28a94a0712decf9cf2aea791a4844a0b2ba5275c0d4c287673faf5bcd92?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
-    imageAlt: "Consultation icon",
-    title: "Consultation",
+    imageAlt: "MediAid",
+    title: "MediAid",
     description:
-      "Free consultation with our trusted doctors and get the best recommendations",
+      "Free consultation with our in built Ai",
   },
   {
     imageSrc:
