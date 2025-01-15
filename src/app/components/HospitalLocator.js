@@ -285,11 +285,11 @@ const HospitalLocator = () => {
                       </p>
                     </div>
 
-                    <div className="contact-info">
+                   <div className="contact-info"></div>
                       <div className="info-row">
                         <Phone className="info-icon" size={18} />
                         <p>{hospital.formatted_phone_number || "Phone not available"}</p>
-                      </div>
+                      
                     </div>
                   </div>
 

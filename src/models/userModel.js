@@ -1,15 +1,15 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  username:{
-    type:String,
-    required:[true,"Please enter a username"],
-    unique:true,
+  username: {
+    type: String,
+    required: [true, "Please provide a username"],
+    unique: true,
   },
-  email:{
-    type:String,
-    required:[true,"Please enter an email"],
-    unique:true,
+  email: {
+    type: String,
+    required: [true, "Please provide an email"],
+    unique: true,
   },
   firstName: {
     type: String,
@@ -51,40 +51,84 @@ const userSchema = new mongoose.Schema({
       required: false,
     },
   },
-  age: {
-    type: Number,
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
     required: false,
   },
-  gender: {
+  vitalStats: {
+    weight: {
+      type: String,
+      required: false,
+    },
+    height: {
+      type: String,
+      required: false,
+    },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
+      required: false,
+    },
+    bloodPressure: {
+      type: String,
+      required: false,
+    },
+  },
+  allergies: [{
+    type: {
+      type: String,
+      required: false,
+    },
+    severity: {
+      type: String,
+      enum: ['mild', 'moderate', 'severe'],
+      required: false,
+    },
+    reaction: {
+      type: String,
+      required: false,
+    }
+  }],
+  medications: [{
+    name: {
+      type: String,
+      required: false,
+    },
+    dosage: {
+      type: String,
+      required: false,
+    },
+    frequency: {
+      type: String,
+      required: false,
+    },
+    startDate: {
+      type: String,
+      required: false,
+    }
+  }],
+  profilePhotoUrl: {
     type: String,
     required: false,
   },
-  profilePhotoUrl: {
-    type: String, // GCS public URL for the profile photo
-    required: false,
+  password: {
+    type: String,
+    required: [true, "Please provide a password"],
   },
-  password:{
-    type:String,
-    required:[true,"Please enter a password"],
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
-  isVerified:{
-    type:Boolean,
-    default:false,
-  },
-  isAdmin:{
-    type:Boolean,
-    default:false,
+  isCompleteProfile: {
+    type: Boolean,
+    default: false,
   },
   forgotPasswordToken: String,
-  forgotPasswordTokenExpiry:Date,
-  verifyToken:String,
-  verifyTokenExpiry:Date,
-  isCompleteProfile:{
-    type:Boolean,
-    default:false,
-  },
-})
+  forgotPasswordTokenExpiry: Date,
+  verifyToken: String,
+  verifyTokenExpiry: Date,
+});
 
-const User = mongoose.models.users || mongoose.model("users",userSchema);
-
+const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;
