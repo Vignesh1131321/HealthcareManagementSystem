@@ -1,0 +1,17 @@
+{
+    "symptoms": [
+      {
+        "keyword": "fever",
+        "name": "Fever",
+        "recoveryTime": "2-5 days",
+        "suggestions": "Stay hydrated, rest, and monitor your temperature. If it persists beyond 3 days, consult a doctor."
+      },
+      {
+        "keyword": "headache",
+        "name": "Headache",
+        "recoveryTime": "1-2 days",
+        "suggestions": "Rest in a quiet, dark room. Stay hydrated and avoid stress. Use pain relievers if necessary."
+      }
+    ]
+  }
+  
