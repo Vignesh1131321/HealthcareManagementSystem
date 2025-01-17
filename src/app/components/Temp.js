@@ -1,481 +1,519 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import "./Chatbot.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import  Emergency  from "./Emergency";
-import EmergencyConfirm from "./EmergencyConfirm";
-import { FaUserMd, FaMicrophone, FaPaperPlane, FaRobot, FaUser, FaTrash, FaAmbulance } from "react-icons/fa";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { useRouter } from 'next/navigation';
-import { useJsApiLoader } from "@react-google-maps/api";
+
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import TestimonialSection from "./testimonials/TestimonialSection";
+import ReviewSlider from "./ReviewSlider"
+import AppointmentSuccessful from "./AppointmentSuccessful";
+import Emergency from "./Emergency";
+import { TestimonialCard } from "./testimonials/TestimonialCard";
+import styles from "./testimonials/TestimonialSection.module.css";
+import { Building2, Phone, Mail } from 'lucide-react';
+import "./AppointmentPage.css";
+
+let UserDetails = {
+  _id: "", // String value
+  username: "", // String value
+  email: "", // String value
+  firstName: "", // String value
+  lastName: "", // String value
+  phoneNumber: "", // String value
+  emergencyContact: {
+    name: "", // String value
+    phoneNumber: "", // String value
+  },
+  address: {
+    street: "", // String value
+    city: "", // String value
+    state: "", // String value
+    zipCode: "", // String value
+  },
+  age: 0, // Number value
+  gender: "", // String value
+  profilePhotoUrl: "", // String value (URL)
+  isCompleteProfile: false, // Boolean value
+};
 
 
-function Chatbot() {
-  const [messages, setMessages] = useState([]);
-  const [inputText, setInputText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [showEmergencyPrompt, setShowEmergencyPrompt] = useState(false);
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+
+const AppointmentPage = () => {
+  const [doctor, setDoctor] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [ratingDistribution, setRatingDistribution] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const [timeSlots, setTimeSlots] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [isError, setIsError] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [appointments, setAppointments] = useState([]);
 
 
+  const searchParams = useSearchParams();
 
-  const chatBodyRef = useRef(null);
-  const router = useRouter();
-  
-  const [contextMemory, setContextMemory] = useState({
-    userPreferences: {},
-    previousTopics: [], // Changed from Set to Array
-    lastInteractionTime: null,
-    emergencyLevel: "normal"
-  });
-
-  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_CHATBOT_API_KEY);
-
-  const emergencyKeywords = {
-    severe: [
-      // Cardiac and Circulatory Emergencies
-      "chest pain", "heart attack", "cardiac arrest", "stroke", 
-      "severe bleeding", "profuse bleeding", "uncontrolled bleeding", 
-      "internal bleeding", "high blood pressure", "hypertensive crisis",
-    
-      // Respiratory Emergencies
-      "difficulty breathing", "shortness of breath", "can't breathe", 
-      "severe asthma", "respiratory arrest", "collapsed lung",
-      "choking", "anaphylaxis", "allergic reaction", "severe allergic reaction",
-    
-      // Neurological Emergencies
-      "seizure", "unconscious", "loss of consciousness", "fainting", 
-      "convulsions", "head injury", "brain injury", "traumatic brain injury", 
-      "confusion", "disorientation", "slurred speech", "weakness on one side", 
-      "numbness", "severe headache", "migraine with aura", 
-      "sudden vision loss", "dizziness",
-    
-      // Trauma and Injuries
-      "broken bone", "fracture", "spinal injury", "severe burn", 
-      "third-degree burn", "electric shock", "amputation", 
-      "penetrating wound", "stab wound", "gunshot wound",
-      "fall from height", "severe pain", "trauma",
-    
-      // Poisoning and Overdose
-      "overdose", "poisoning", "toxic ingestion", "chemical exposure", 
-      "drug overdose", "alcohol poisoning", 
-    
-      // Mental Health Emergencies
-      "suicide", "suicidal thoughts", "self-harm", "psychotic episode", 
-      "violent behavior", "harming others", "mental breakdown",
-    
-      // Obstetric and Gynecological Emergencies
-      "labor pain", "severe abdominal pain", "pregnancy complications", 
-      "miscarriage", "preterm labor", "severe vaginal bleeding", 
-      "eclampsia", "preeclampsia",
-    
-      // Pediatric Emergencies
-      "child not breathing", "infant unresponsive", "blue lips", 
-      "high fever in baby", "baby not feeding", "child seizure",
-    
-      // Infection and Sepsis
-      "sepsis", "septic shock", "infection spreading", "fever not reducing", 
-      "severe fever", "rash with fever", "stiff neck", "confusion with fever",
-    
-      // Abdominal and Digestive Emergencies
-      "severe abdominal pain", "appendicitis", "intestinal blockage", 
-      "vomiting blood", "blood in stool", "unable to eat or drink", 
-      "jaundice", "pancreatitis",
-    
-      // Other Emergencies
-      "severe dehydration", "heatstroke", "hypothermia", 
-      "severe allergic reaction", "anaphylactic shock", 
-      "loss of limb function", "paralysis", "exposure to hazardous material"
-    ],
-    moderate: [
-      // General Symptoms
-      "fever", "high fever", "persistent fever", "mild fever", 
-      "chills", "fatigue", "weakness", "lethargy", "low energy",
-    
-      // Pain and Discomfort
-      "broken bone", "fracture", "severe pain", "moderate pain", 
-      "persistent pain", "localized pain", "joint pain", 
-      "back pain", "neck pain", "muscle pain", "abdominal pain", 
-      "pelvic pain", "cramps",
-    
-      // Digestive Symptoms
-      "continuous vomiting", "vomiting", "nausea", "diarrhea", 
-      "constipation", "indigestion", "bloating", "stomach ache", 
-      "loss of appetite", "acid reflux",
-    
-      // Head and Neurological Symptoms
-      "severe headache", "headache", "migraine", "dizziness", 
-      "lightheadedness", "blurred vision", "double vision", 
-      "sensitivity to light",
-    
-      // Respiratory Symptoms
-      "asthma attack", "wheezing", "coughing", "persistent cough", 
-      "dry cough", "productive cough", "sore throat", "runny nose", 
-      "nasal congestion", "shortness of breath after activity",
-    
-      // Skin Symptoms
-      "rash", "hives", "itching", "swelling", "skin redness", 
-      "minor burns", "cuts", "abrasions", "bruises", 
-      "dry skin", "peeling skin", "blisters",
-    
-      // Infections and Swelling
-      "infection", "swollen glands", "swelling", "redness", 
-      "pus", "discharge", "earache", "sinus pain",
-    
-      // Minor Trauma
-      "sprain", "strain", "twisted ankle", "minor injury", 
-      "minor bleeding", "superficial wound",
-    
-      // Urinary Symptoms
-      "burning sensation during urination", "frequent urination", 
-      "urinary urgency", "urinary pain",
-    
-      // Mild Allergic Reactions
-      "mild allergic reaction", "itchy eyes", "sneezing", 
-      "mild swelling", "runny nose",
-    
-      // Pregnancy and Reproductive Symptoms
-      "morning sickness", "mild cramps during pregnancy", 
-      "spotting", "irregular periods", "menstrual cramps",
-    
-      // Emotional and Psychological Symptoms
-      "anxiety", "stress", "trouble sleeping", "irritability", 
-      "low mood", "feeling overwhelmed",
-    
-      // Other Symptoms
-      "moderate dehydration", "heat exhaustion", "cold sweat", 
-      "shaking", "tingling sensation", "minor chest discomfort",
-      "slow healing wound"
-    ]
-  };
-
-  // Load chat history from localStorage on component mount
+  // Generate time slots once when component mounts
   useEffect(() => {
-    const savedMessages = localStorage.getItem('chatHistory');
-    const savedContext = localStorage.getItem('chatContext');
-    
-    if (savedMessages) {
-      setMessages(JSON.parse(savedMessages));
-    }
-    if (savedContext) {
-      const parsedContext = JSON.parse(savedContext);
-      // Ensure previousTopics is always an array
-      parsedContext.previousTopics = Array.isArray(parsedContext.previousTopics) 
-        ? parsedContext.previousTopics 
-        : [];
-      setContextMemory(parsedContext);
-    }
+    const generateTimeSlots = () => [
+      { time: "9:00 AM", available: Math.random() > 0.3 },
+      { time: "10:00 AM", available: Math.random() > 0.3 },
+      { time: "11:00 AM", available: Math.random() > 0.3 },
+      { time: "12:00 PM", available: Math.random() > 0.3 },
+      { time: "1:00 PM", available: Math.random() > 0.3 },
+      { time: "2:00 PM", available: Math.random() > 0.3 },
+      { time: "3:00 PM", available: Math.random() > 0.3 },
+      { time: "4:00 PM", available: Math.random() > 0.3 },
+    ];
+    setTimeSlots(generateTimeSlots());
   }, []);
 
-  // Save to localStorage whenever context or messages update
+  // Fetch doctor data from query params
   useEffect(() => {
-    localStorage.setItem('chatHistory', JSON.stringify(messages));
-    localStorage.setItem('chatContext', JSON.stringify(contextMemory));
-  }, [messages, contextMemory]);
-
-  const checkForEmergency = (text) => {
-    const lowercaseText = text.toLowerCase();
-    
-    const hasSevereSymptoms = emergencyKeywords.severe.some(keyword => 
-      lowercaseText.includes(keyword)
-    );
-    
-    const hasModerateSymptoms = emergencyKeywords.moderate.some(keyword => 
-      lowercaseText.includes(keyword)
-    );
-
-    if (hasSevereSymptoms) {
-      return "emergency";
-    } else if (hasModerateSymptoms) {
-      return "concerning";
-    }
-    return "normal";
-  };
-
-  const updateContext = (userMessage, botResponse) => {
-    const emergencyLevel = checkForEmergency(userMessage + " " + botResponse);
-    setContextMemory(prevContext => {
-      const newContext = { ...prevContext };
-      newContext.lastInteractionTime = new Date().toISOString();
-      
-      // Extract and add new topics without duplicates
-      const newTopics = extractTopics(userMessage);
-      newContext.previousTopics = [...new Set([...prevContext.previousTopics, ...newTopics])];
-      
-      const preferences = extractPreferences(userMessage);
-      newContext.userPreferences = {
-        ...newContext.userPreferences,
-        ...preferences
-      };
-      
-      newContext.emergencyLevel = emergencyLevel;
-      
-      return newContext;
-    });
-
-    if (emergencyLevel === "emergency") {
-      handleEmergencyPrompt();
-    }
-  };
-
-  const extractTopics = (message) => {
-    const topics = [];
-    const commonHealthTopics = ['pain', 'symptoms', 'medication', 'diet', 'exercise'];
-    
-    commonHealthTopics.forEach(topic => {
-      if (message.toLowerCase().includes(topic)) {
-        topics.push(topic);
+    const doctorData = searchParams.get("doctor");
+    if (doctorData) {
+      try {
+        const parsedDoctor = JSON.parse(doctorData);
+        setDoctor(parsedDoctor);
+        setReviews(parsedDoctor.reviews || []);
+      } catch (error) {
+        console.error("Error parsing doctor details:", error);
       }
-    });
-    
-    return topics;
-  };
-
-  const extractPreferences = (message) => {
-    const preferences = {};
-    if (message.toLowerCase().includes('prefer')) {
-      preferences.hasStatedPreference = true;
     }
-    return preferences;
-  };
+  }, [searchParams]);
 
-  const getConversationContext = () => {
-    const recentHistory = messages
-      .slice(-5)
-      .map((msg) => `${msg.sender === "user" ? "User" : "Assistant"}: ${msg.text}`)
-      .join("\n");
-
-    const contextInfo = `
-Previous topics discussed: ${contextMemory.previousTopics.join(", ")}
-Time since last interaction: ${
-      contextMemory.lastInteractionTime 
-      ? `${Math.round((new Date() - new Date(contextMemory.lastInteractionTime)) / 1000 / 60)} minutes`
-      : "First interaction"
-    }
-Emergency Level: ${contextMemory.emergencyLevel}
-    `;
-
-    return `${contextInfo}\n\nRecent conversation:\n${recentHistory}`;
-  };
-
-  const handleEmergencyPrompt = () => {
-    setShowEmergencyPrompt(true);
-  };
-
-  const handleEmergencyAction = (action) => {
-    if (action === 'book') {
-      router.push('/emergency-appointment');
-    } else if (action === 'call') {
-      window.location.href = 'tel:911';
-    }
-    setShowEmergencyPrompt(false);
-  };
-
-  const handleClearHistory = () => {
-    setMessages([]);
-    setContextMemory({
-      userPreferences: {},
-      previousTopics: [], // Reset to empty array
-      lastInteractionTime: null,
-      emergencyLevel: "normal"
-    });
-    localStorage.removeItem('chatHistory');
-    localStorage.removeItem('chatContext');
-  };
-
-  const fetchGeminiResponse = async (userInput) => {
-    try {
-      const conversationContext = getConversationContext();
-      const fullInput = `Context: ${conversationContext}\n\nCurrent user message: ${userInput}`;
-
-      const model = genAI.getGenerativeModel({ 
-        model: "tunedModels/newtrainingdata-ewlskxr09m5j",
+  // Calculate rating distribution
+  useEffect(() => {
+    const calculateRatingDistribution = () => {
+      const ratings = [5, 4, 3, 2, 1];
+      const distribution = ratings.map((rating) => {
+        const count = reviews.filter((review) => review.rating === rating).length;
+        const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+        return { rating, count, percentage };
       });
-      const result = await model.generateContent(fullInput);
+      setRatingDistribution(distribution);
+    };
+    calculateRatingDistribution();
+  }, [reviews]);
 
-      const botResponse = result.response.text().trim().replace(/^(User:|Bot:)/g, "").trim();
-      return botResponse;
-    } catch (error) {
-      console.error("Error fetching response from Gemini API:", error);
-      return "I'm sorry, I couldn't process your request at the moment.";
+  // Cycle through reviews
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentReviewIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [reviews.length]);
+
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+    setSelectedTimeSlot(null);
+  };
+  const getTimeSlotClass = (slot) => {
+    if (!selectedDate) return "time-slot disabled";
+    if (selectedTimeSlot === slot.time) return "time-slot selected";
+    return `time-slot ${slot.available ? "available" : "booked"}`;
+  };
+
+  const handleTimeSlotSelect = (slot) => {
+    if (slot.available) {
+      setSelectedTimeSlot(slot.time);
     }
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (inputText.trim() === "") return;
-
-    const timestamp = new Date().toLocaleTimeString([], { 
-      hour: "2-digit", 
-      minute: "2-digit" 
-    });
-
-    const userMessage = {
-      sender: "user",
-      text: inputText,
-      time: timestamp
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInputText("");
-    setIsLoading(true);
-
-    const botResponse = await fetchGeminiResponse(inputText);
-    
-    const botMessage = {
-      sender: "bot",
-      text: botResponse,
-      time: timestamp
-    };
-
-    setMessages(prev => [...prev, botMessage]);
-    setIsLoading(false);
-
-    updateContext(inputText, botResponse);
-
-    const synth = window.speechSynthesis;
-    const utterThis = new SpeechSynthesisUtterance(botResponse);
-    const voices = synth.getVoices();
-    const femaleVoice = voices.find(
-      (voice) => voice.name.includes("female") && voice.lang === "en-US"
-    );
-    utterThis.voice = femaleVoice || voices[0];
-    synth.speak(utterThis);
-  };
-
-  const handleSpeechInput = () => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert("Speech Recognition not supported in this browser.");
+  const handleAppointmentSubmit = async () => {
+    if (!selectedDate || !selectedTimeSlot) {
+      alert("Please select both date and time");
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.interimResults = true;
-    recognition.onresult = (event) => {
-      const transcript = Array.from(event.results)
-        .map((result) => result[0])
-        .map((result) => result.transcript)
-        .join("");
-      setInputText(transcript);
+    setIsSubmitting(true);
+
+    const appointmentDetails = {
+      userId : userDetails._id,
+      identity: doctor.identity,
+      doctorId: doctor.id,
+      doctorName: doctor.name,
+      specialty: doctor.specialty,
+      date: selectedDate,
+      time: selectedTimeSlot,
     };
 
-    recognition.start();
+    const appointmentDate = new Date(appointmentDetails.date);
+
+    const day = String(appointmentDate.getDate()).padStart(2, '0'); // Add leading zero if necessary
+    const month = String(appointmentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = appointmentDate.getFullYear();
+
+    const formattedDate = `${day}-${month}-${year}`;
+    console.log("Appointment date:", formattedDate); // Output: DD-MM-YYYY
+    
+    console.log("Appointment date", appointmentDetails.date);
+    appointmentDetails.date = formattedDate;
+
+    try {
+      const response = await fetch("/api/users/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(appointmentDetails),
+      });
+      console.log("Appointment details:", appointmentDetails);
+      
+      if (response.ok) {
+        /* alert("Appointment successfully booked!"); */
+        setShowModal(true);
+        setSelectedDate("");
+        setSelectedTimeSlot(null);
+      } else {
+        const error = await response.json();
+        console.error("Error booking appointment:", error.message);
+        /* alert("Failed to book appointment.") */;
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      /* alert("An error occurred while booking the appointment."); */
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const EmergencyPrompt = () => (
-    <div className="emergency-prompt">
-      <div className="emergency-content">
-        <FaAmbulance className="emergency-icon" />
-        <h3>Emergency Situation Detected</h3>
-        
-        <p>Based on your symptoms, immediate medical attention may be required.</p>
-        <div className="emergency-buttons">
-          <button 
-            onClick={() => handleEmergencyAction('book')}
-            className="emergency-button book"
-          >
-            Book Emergency Appointment
-          </button>
-          <button 
-            onClick={() => {
-              setShowEmergencyPrompt(false);
-              handleAppointmentSubmit; 
-            }
-            }
-            className="emergency-button cancel"
-          >
-            Continue Chat
-          </button>
-        </div>
-      </div>
-      
-    </div>
-  );
-    
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? reviews.length - 1 : prevIndex - 1
+    );
+  };
   
 
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % reviews.length);
+  };
+
+  const fetchUserDetails = async () => {
+    try {
+      console.log("Fetching user details... from appointment");
+      
+      const response = await fetch("/../api/users/me");
+      
+      if (response.ok) {
+        const resData = await response.json();
+        
+        if (resData && resData.data) {
+          setUserDetails(resData.data);
+          
+          if (!resData.data.isCompleteProfile) {
+            setShowCompleteProfileCard(true);
+          }
+        } else {
+          toast.error("Failed to get user details");
+        }
+      } else {
+        toast.error("Failed to fetch user details. Server returned an error.");
+      }
+    } 
+    catch (error) {
+      console.error("Error fetching user details or health records:", error);
+      toast.error("Failed to fetch user details or health records");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  if (!doctor) {
+    return <p className="loading-message">Loading doctor details...</p>;
+  }
+
+  const currentReview = reviews[currentReviewIndex];
+
+  const fetchAppointments = async () => {
+    if (!userDetails || !userDetails._id) {
+      console.warn("User details not available yet.");
+      return;
+    }
+
+  
+    try {
+      setLoading(true);
+  
+      const response = await axios.get('/api/get-booked-appointment', {
+        headers: {
+          doctorId: doctor.id,
+          date: selectedDate
+        },
+      });
+  
+      if (response.data.success) {
+        setAppointments(response.data.appointments);
+        
+      } else {
+        toast.error("Failed to fetch appointments");
+      }
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      toast.error("Failed to fetch appointments");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [selectedDate]);
+  console.log(appointments);
   return (
-    <div className="chat-body">
-      <div className="chat-container">
-        {showEmergencyPrompt && <EmergencyPrompt />}
-        <div className="chat-header">
-          <div className="header-content">
-            <FaUserMd className="header-icon" />
-            <div className="header-text">
-              <h3>Medical Assistant</h3>
-              <p>Ask me anything about your health</p>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+    <div className="appointment-page-container">
+      <div className="top-sections-container">
+        <div className="doctor-details-section">
+          <div className="doctor-card">
+            <div className="doctor-card-header">
+              
+              <div className="doctor-header-info">
+                <Typography variant="h4" className="doctor-name">
+                  {doctor.name}
+                </Typography>
+                {doctor.identity === "2" && (
+                  <div className="specialty-badge">
+                    <AccessTimeIcon className="specialty-icon" />
+                    <Typography variant="body1" className="specialty-text">
+                      {doctor.specialty}
+                    </Typography>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="doctor-card-content">
+              <div className="info-row">
+                <Building2 className="info-icon" />
+                <div className="info-text">
+                  <Typography variant="subtitle2" className="info-label">
+                    Clinic Name
+                  </Typography>
+                  <Typography variant="body1">
+                    {doctor.clinicName}
+                  </Typography>
+                </div>
+              </div>
+
+              <div className="info-row">
+                <LocationOnIcon className="info-icon" />
+                <div className="info-text">
+                  <Typography variant="subtitle2" className="info-label">
+                    Location
+                  </Typography>
+                  <Typography variant="body1">
+                    {doctor.clinicLocation?.address}
+                  </Typography>
+                </div>
+              </div>
+
+              {doctor.contact && (
+                <>
+                  <div className="info-row">
+                    <Phone className="info-icon" />
+                    <div className="info-text">
+                      <Typography variant="subtitle2" className="info-label">
+                        Contact
+                      </Typography>
+                      <Typography variant="body1">
+                        {doctor.contact.phone}
+                      </Typography>
+                    </div>
+                  </div>
+
+                  <div className="info-row">
+                    <Mail className="info-icon" />
+                    <div className="info-text">
+                      <Typography variant="subtitle2" className="info-label">
+                        Website
+                      </Typography>
+                      <Typography variant="body1">
+                        {doctor.contact.email}
+                      </Typography>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
-          <button 
-            className="clear-history-btn"
-            onClick={handleClearHistory}
-            title="Clear chat history"
+        </div>
+
+          <div className="appointment-section">
+            <h2>Book an Appointment</h2>
+            
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+  <DatePicker
+    label="Select Date"
+    value={selectedDate}
+    onChange={handleDateChange}
+    renderInput={(params) => (
+      <TextField {...params} className="date-input" />
+    )}
+  />
+</LocalizationProvider>
+
+           
+
+            
+              <>
+                <h3>Available Time Slots</h3>
+                <div className="time-slots-container">
+                  {timeSlots.map((slot, index) => (
+                    <div
+                      key={index}
+                      className={getTimeSlotClass(slot)}
+                      onClick={() => handleTimeSlotSelect(slot)}
+                    >
+                      {slot.time}
+                    </div>
+                  ))}
+                </div>
+              </>
+            
+
+            {/* Show AppointmentSuccessful or AppointmentFailure modal */}
+            {showModal && (
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  {isError ? (
+                    <>
+                      <AppointmentFailure />
+                      <button
+                        className="close-button"
+                        onClick={() => setShowModal(false)}
+                      >
+                        Close
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Emergency num = "1"/>
+                      <button
+                        className="close-button"
+                        onClick={() => setShowModal(false)}
+                      >
+                        Close
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+            
+
+            <div className="slot-legend">
+            <div className="legend-item">
+              <div className="legend-box available"></div>
+              <span>Free</span>
+            </div>
+            <div className="legend-item">
+              <div className="legend-box booked"></div>
+              <span>Full</span>
+            </div>
+            {!selectedDate && (
+              <div className="legend-item">
+                <div className="legend-box disabled"></div>
+                <span>Select a date first</span>
+              </div>
+            )}
+          </div>
+
+          <button
+            className="confirm-button"
+            disabled={!selectedDate || !selectedTimeSlot || isSubmitting}
+            onClick={handleAppointmentSubmit}
           >
-            <FaTrash />
+            {isSubmitting ? "Booking..." : "Confirm Appointment"}
           </button>
         </div>
-
-        <div className="messages-container" ref={chatBodyRef}>
-          {messages.map((msg, index) => (
-            <div key={index} className={`message ${msg.sender}`}>
-              <div className="message-bubble">
-                <div className="message-icon">
-                  {msg.sender === "user" ? <FaUser /> : <FaRobot />}
-                </div>
-                <div className="message-content">
-                  <p>{msg.text}</p>
-                  <span className="message-time">{msg.time}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-          
-          {isLoading && (
-            <div className="message bot">
-              <div className="message-bubble">
-                <div className="message-icon">
-                  <FaRobot />
-                </div>
-                <div className="message-content typing">
-                  <span className="typing-dot"></span>
-                  <span className="typing-dot"></span>
-                  <span className="typing-dot"></span>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        <div className="chat-footer">
-          <form onSubmit={handleSendMessage}>
-            <div className="input-container">
-              <input
-                type="text"
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="Type your message..."
-              />
-              <button 
-                type="button" 
-                className="voice-btn"
-                onClick={handleSpeechInput}
-              >
-                <FaMicrophone />
-              </button>
-              <button 
-                type="submit" 
-                className="send-btn"
-                disabled={!inputText.trim()}
-              >
-                <FaPaperPlane />
-              </button>
+        {/* <div className="reviews-section">
+          <h2>Reviews</h2>
+          {currentReview ? (
+            <div className="review-content">
+              <p>
+                <strong>{currentReview.author || "Anonymous"}</strong>:{" "}
+                {currentReview.text || "No review text available"}
+              </p>
+              <p>
+                Rating:{" "}
+                <span className="stars">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span
+                      key={i}
+                      className={i < currentReview.rating ? "star filled" : "star"}
+                    />
+                  ))}
+                </span>
+                {currentReview.relative_time_description && (
+                  <> - {currentReview.relative_time_description}</>
+                )}
+              </p>
             </div>
-          </form>
+          ) : (
+            <p>No reviews available.</p>
+          )} */}
+          {/* <TestimonialSection></TestimonialSection> */}
+          <ReviewSlider testimonials = {reviews}></ReviewSlider>
+
+  {/*         <section className={styles.testimonialSection}>
+            <div className={styles.navigationDots}>
+              {reviews.map((_, i) => (
+                <div
+                  key={i}
+                  className={`${styles.dot} ${
+                    i === currentIndex ? styles.active : ""
+                  }`}
+                  onClick={() => setCurrentIndex(i)}
+                />
+              ))}
+            </div>
+
+            <div className={styles.testimonialGrid}>
+              <div className={styles.navigationArrows}>
+                <div className={styles.arrow} onClick={handlePrev}>
+                  ←
+                </div>
+                <div className={styles.arrow} onClick={handleNext}>
+                  →
+                </div>
+              </div>
+
+              <div
+                className={styles.slider}
+                style={{
+                  transform: `translateX(-${currentIndex * 100}%)`,
+                  transition: "transform 0.5s ease-in-out",
+                }}
+              >
+                {reviews.map((review, i) => (
+                  <div key={i} className={styles.slide}>
+                    <TestimonialCard data={review} size="large" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section> */}
         </div>
       </div>
-      
-    </div>
-  );
-}
+    
 
-export default Chatbot;
+
+  );
+};
+
+export default AppointmentPage;

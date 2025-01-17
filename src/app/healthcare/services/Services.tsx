@@ -89,7 +89,7 @@ const servicesData: ServiceCardProps[] = [
     imageAlt: "Online pharmacy icon",
     title: "Online pharmacy",
     description:
-      "Buy your medicines with our mobile application with a simple delivery system",
+      "Buy your medicines with our website with a simple delivery system",
   },
   {
     imageSrc:
@@ -97,7 +97,7 @@ const servicesData: ServiceCardProps[] = [
     imageAlt: "MediAid",
     title: "MediAid",
     description:
-      "Free consultation with our in built Ai",
+      "Free consultation with our in built AI",
   },
   {
     imageSrc:

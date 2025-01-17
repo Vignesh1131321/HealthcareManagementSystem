@@ -443,6 +443,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
           <div className="field-group">
             <label>Blood Group</label>
             <select
+              className="custom-select"
               value={formData.bloodGroup}
               onChange={(e) => handleInputChange('bloodGroup', e.target.value)}
             >
@@ -468,8 +469,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
           </div>
         </div>
       );
-      case 4:
-        return (
+    case 4:
+      return (
           <div className="form-fields card-grid">
             {formData.allergies.map((allergy, index) => (
               <div key={index} className="info-card">
@@ -504,7 +505,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
             </button>
           </div>
         );
-      case 5:
+    case 5:
         return (
           <div className="form-fields card-grid">
             {formData.medications.map((medication, index) => (
@@ -621,25 +622,27 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
 return (
     <div className="profile-page">
       <div className="steps-container">
-        <div className="steps-progress">
-          {steps.map((step, index) => (
-            <div key={index} className="step-item">
-              <div
-                className={`step-icon ${
-                  index < activeStep ? 'completed' : index === activeStep ? 'active' : ''
-                }`}
-              >
-                {index < activeStep ? <Check /> : step.icon}
+        <div className="steps-header">
+          <div className="steps-progress">
+            {steps.map((step, index) => (
+              <div key={index} className="step-item">
+                <div
+                  className={`step-icon ${
+                    index < activeStep ? 'completed' : index === activeStep ? 'active' : ''
+                  }`}
+                  >
+                  {index < activeStep ? <Check /> : step.icon}
+                </div>
+                <span className={`step-name ${index === activeStep ? 'active' : ''}`}>
+                  {step.name}
+                </span>
               </div>
-              <span className={`step-name ${index === activeStep ? 'active' : ''}`}>
-                {step.name}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
   
-      <div className="profile">
+      {/* <div className="profile"> */}
         <form onSubmit={handleCompleteProfileSubmit} className="form-card">
           <h2>{steps[activeStep].name}</h2>
           {renderStepContent()}
@@ -678,7 +681,7 @@ return (
             )}
           </div>
         </form>
-      </div>
+      {/* </div> */}
     </div>
   );
 };
