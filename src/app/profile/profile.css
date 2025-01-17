@@ -1,559 +1,573 @@
-/* General Styles */
-body {
-  font-family: 'Inter', sans-serif;
-  margin: 0;
+/* Base Layout */
+.profile-page {
   min-height: 100vh;
-  background-color: #f8fafc;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e5edff 100%);
+  padding: 2rem;
 }
 
-.profile-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: calc(100vh - 90px); /* Subtract navbar height */
-  background: linear-gradient(135deg, #f0f4ff 0%, #e6eeff 100%);
-  padding: 90px 20px 40px;
-  gap: 24px;
+.profile-content {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.profile-card,
-.health-record-container {
-  position: relative;
-  width: 45%;
-  max-width: 600px;
-  padding: 32px;
-  border-radius: 16px;
-  background-color: #ffffff;
+.profile-main {
+  background: white;
+  border-radius: 20px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: auto;
-  min-height: 600px;
+  overflow: hidden;
 }
 
-.profile-image-container {
+/* Profile Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  border-bottom: 1px solid #e5e7eb;
+  gap: 2rem;
+}
+
+.profile-photo-container {
   position: relative;
-  margin: -60px auto 20px;
+}
+
+.profile-photo {
   width: 120px;
   height: 120px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid #ffffff;
+  border: 4px solid white;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.profile-image {
+.photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.profile-header {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 24px;
-  background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.profile-details {
-  text-align: left;
-  font-size: 1rem;
-  color: #475569;
-  flex-grow: 1;
-}
-
-.profile-details p {
-  margin-bottom: 12px;
-  padding: 12px;
-  border-radius: 8px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s ease;
-}
-
-.profile-details strong {
-  color: #1e293b;
-  font-weight: 600;
-  min-width: 120px;
-  display: inline-block;
-}
-
-/* Profile Actions */
-.profile-actions {
-  margin-top: auto;
-  padding: 16px;
-  background-color: #f8fafc;
-  border-radius: 12px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  width: calc(100% - 32px);
-}
-
-.custom-file-upload {
-  grid-column: 1 / -1;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  background-color: #ffffff;
+.photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e5edff;
   color: #3b82f6;
-  border: 2px solid #3b82f6;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  text-align: center;
 }
 
-.custom-file-upload input[type="file"] {
+.loading-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #f0f7ff 25%, #e5edff 50%, #f0f7ff 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.photo-upload-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #3b82f6;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.photo-upload-btn:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+.hidden {
   display: none;
 }
 
-.upload-btn,
+.user-info {
+  flex: 1;
+}
+
+.user-info h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.contact-info {
+  display: flex;
+  gap: 1.5rem;
+  color: #6b7280;
+  flex-wrap: wrap;
+}
+
+.contact-info span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .logout-btn {
-  padding: 12px;
-  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  background-color: #ef4444;
+  color: white;
   border: none;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.upload-btn {
-  background-color: #3b82f6;
-  color: white;
+.logout-btn:hover {
+  background-color: #dc2626;
 }
 
-.logout-btn {
-  background-color: #ef4444;
-  color: white;
+/* Details Grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
 }
 
-/* Health Records Section */
-.health-record-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.tabs {
-  display: flex;
-  gap: 8px;
-  padding: 4px;
-  background-color: #f1f5f9;
+.detail-card {
+  padding: 1.5rem;
+  background: #f8faff;
   border-radius: 12px;
-  margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.detail-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  color: #3b82f6;
+  background: #e5edff;
+  padding: 0.75rem;
+  border-radius: 12px;
+}
+
+.card-content h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.card-content p {
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+/* Records Section */
+.records-section {
+  padding: 2rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 0.5rem;
+  background: #f3f4f6;
+  padding: 0.25rem;
+  border-radius: 8px;
 }
 
 .tab-btn {
-  flex: 1;
-  padding: 12px 24px;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 500;
-  color: #64748b;
+  color: #6b7280;
   background: transparent;
-  transition: all 0.2s ease;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .tab-btn.active {
-  background-color: #ffffff;
+  background: white;
   color: #3b82f6;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.health-records-list,
+/* Records Content */
+.records-content {
+  background: #f8faff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.health-records,
+.appointments {
+  padding: 1.5rem;
+}
+
+.records-list,
 .appointments-list {
-  flex-grow: 1;
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
-  max-height: 600px;
-  min-height: 400px;
-  overflow-y: auto;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 16px;
-}
-
-.health-record-item,
-.appointment-item {
-  padding: 16px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  list-style: none;
-}
-/* ... (keep existing general styles) ... */
-
-/* Health Records Section */
-.health-records-list {
-  flex-grow: 1;
-  background-color: #ffffff;
-  border-radius: 12px;
-  padding: 16px;
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 16px;
+  padding: 0.5rem;
 }
 
-.health-record-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-  margin-bottom: 12px;
+.record-item,
+.appointment-card {
+  background: white;
   border-radius: 8px;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e5e7eb;
   transition: all 0.2s ease;
 }
 
-.health-record-item:hover {
-  background-color: #f1f5f9;
-  border-color: #cbd5e1;
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-item:hover,
+.appointment-card:hover {
+  transform: translateX(4px);
+  border-color: #3b82f6;
 }
 
 .record-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.75rem;
+  color: #1f2937;
 }
 
-.file-icon {
-  color: #3b82f6;
-}
-
-.preview-btn {
+.preview-button {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 6px;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
   border: 1px solid #3b82f6;
-  background-color: transparent;
+  border-radius: 6px;
   color: #3b82f6;
+  background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.preview-btn:hover {
-  background-color: #3b82f6;
+.preview-button:hover {
+  background: #3b82f6;
   color: white;
 }
 
 /* Upload Section */
 .upload-section {
-  background-color: #f8fafc;
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: white;
   border-radius: 12px;
-  padding: 20px;
-  margin-top: 16px;
+  border: 1px solid #e5e7eb;
 }
 
 .selected-file {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 12px;
-  background-color: #ffffff;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8faff;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 16px;
+  margin-bottom: 1rem;
 }
 
 .file-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
+  color: #1f2937;
 }
 
-.clear-file {
-  padding: 4px;
+.clear-file-btn {
+  padding: 0.25rem;
   border-radius: 4px;
   border: none;
-  background-color: #fee2e2;
+  background: #fee2e2;
   color: #ef4444;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.clear-file:hover {
-  background-color: #fecaca;
+.clear-file-btn:hover {
+  background: #fecaca;
 }
 
 .upload-controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 1rem;
 }
 
-.custom-file-upload {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #3b82f6;
+.file-select-btn {
+  padding: 0.75rem 1.5rem;
   border: 2px solid #3b82f6;
+  border-radius: 8px;
+  color: #3b82f6;
+  background: white;
   cursor: pointer;
+  text-align: center;
   transition: all 0.2s ease;
 }
 
-.custom-file-upload:hover {
-  background-color: #ebf5ff;
+.file-select-btn:hover {
+  background: #f0f7ff;
 }
 
-.upload-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px;
-  border-radius: 8px;
+.upload-submit-btn {
+  padding: 0.75rem 1.5rem;
   border: none;
-  background-color: #3b82f6;
+  border-radius: 8px;
+  background: #3b82f6;
   color: white;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   transition: all 0.2s ease;
 }
 
-.upload-btn:disabled {
-  background-color: #cbd5e1;
+.upload-submit-btn:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.upload-submit-btn:disabled {
+  background: #cbd5e1;
   cursor: not-allowed;
 }
 
-.upload-btn:not(:disabled):hover {
-  background-color: #2563eb;
+/* Appointment Card */
+.appointment-card {
+  padding: 1.25rem;
 }
 
-/* File Preview */
-.file-preview {
-  margin-top: 20px;
-  padding: 16px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
+.appointment-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.file-preview h4 {
-  margin: 0 0 12px;
-  color: #1e293b;
+.appointment-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
 }
 
-.pdf-preview {
-  width: 100%;
-  height: 600px;
-  border: none;
-  border-radius: 4px;
+.specialty {
+  color: #3b82f6;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
 }
 
-/* Preview Modal */
-.preview-modal-overlay {
+.appointment-details {
+  color: #6b7280;
+}
+
+.appointment-details p {
+  margin-bottom: 0.25rem;
+}
+
+/* Modal */
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  padding: 2rem;
+  z-index: 50;
 }
 
-.preview-modal {
-  background-color: white;
+.modal {
+  background: white;
   border-radius: 16px;
   width: 95%;
-  max-width: 1200px;
-  max-height: 95vh;
+  max-width: 1000px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
 }
 
-.preview-modal-header {
+.modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  border-bottom: 1px solid #e2e8f0;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.preview-modal-header h3 {
-  margin: 0;
-  color: #1e293b;
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
 }
 
-.close-preview {
-  padding: 8px;
+.close-modal {
+  padding: 0.5rem;
   border-radius: 8px;
   border: none;
-  background-color: #f1f5f9;
-  color: #64748b;
+  background: #f3f4f6;
+  color: #6b7280;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.close-preview:hover {
-  background-color: #e2e8f0;
-  color: #1e293b;
+.close-modal:hover {
+  background: #e5e7eb;
+  color: #1f2937;
 }
 
-.preview-modal-content {
-  padding: 24px;
+.modal-content {
+  padding: 1.5rem;
   overflow-y: auto;
-  flex-grow: 1;
- 
+  flex: 1;
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 700px;
+  border: none;
+  border-radius: 8px;
 }
 
 .unsupported-format {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 48px;
   text-align: center;
-  color: #64748b;
+  padding: 3rem;
+  color: #6b7280;
 }
 
 .download-btn {
-  padding: 12px 24px;
-  border-radius: 8px;
-  background-color: #3b82f6;
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
   color: white;
   text-decoration: none;
+  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .download-btn:hover {
-  background-color: #2563eb;
+  background: #2563eb;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .upload-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .preview-modal {
-    width: 98%;
-    height: 98vh;
-  }
-
-  .pdf-preview {
-    height: 500px;
-  }
+/* Loading States */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
 }
 
-@media (max-width: 480px) {
-  .health-record-item {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .preview-btn {
-    width: 100%;
-    justify-content: center;
-  }
-  .pdf-preview {
-    height: 400px; /* Adjusted for smallest screens */
-  }
-}
-
-/* Complete Profile Card */
-.complete-profile-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  padding: 32px;
-  width: 90%;
-  max-width: 600px;
-  margin: 20px auto;
-}
-
-.complete-profile-card form {
-  display: grid;
-  gap: 16px;
-}
-
-.complete-profile-card input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.95rem;
+.no-records,
+.no-appointments {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .profile-container {
-    padding-top: 100px;
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
   }
   
-  .profile-card,
-  .health-record-container {
-    width: 48%;
+  .contact-info {
+    justify-content: center;
   }
-}
-
-@media (max-width: 768px) {
-  .profile-container {
-    flex-direction: column;
-    align-items: center;
-    padding: 100px 16px 40px;
-  }
-
-  .profile-card,
-  .health-record-container {
-    width: 100%;
-    max-width: 500px;
-    margin-bottom: 24px;
-  }
-
-  .profile-actions {
+  
+  .details-grid {
     grid-template-columns: 1fr;
   }
 }
+
 @media (max-width: 768px) {
-  .health-records-list,
-  .appointments-list {
-    max-height: 500px;
-    min-height: 300px;
-  }
-}
-
-@media (max-width: 480px) {
-  .health-records-list,
-  .appointments-list {
-    max-height: 400px;
-    min-height: 250px;
-  }
-}
-
-@media (max-width: 480px) {
-  .profile-container {
-    padding: 80px 12px 32px;
+  .profile-page {
+    padding: 1rem;
   }
   
-  .profile-card,
-  .health-record-container {
-    padding: 24px 16px;
+  .section-header {
+    flex-direction: column;
+    gap: 1rem;
   }
+  
+  .upload-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .pdf-viewer {
+    height: 500px;
+  }
+}
 
+@media (max-width: 640px) {
   .profile-header {
-    font-size: 1.75rem;
+    padding: 1.5rem;
   }
-
+  
+  .profile-photo {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .contact-info {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .tab-buttons {
+    width: 100%;
+  }
+  
   .tab-btn {
-    padding: 10px 16px;
-    font-size: 0.9rem;
+    flex: 1;
+    padding: 0.75rem;
+  }
+  
+  .record-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .preview-button {
+    width: 100%;
+    justify-content: center;
   }
 }
