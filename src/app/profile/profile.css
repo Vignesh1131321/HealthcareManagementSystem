@@ -228,9 +228,16 @@ body {
   color: #3b82f6;
 }
 
+.record-actions {
+  display: flex;
+  gap: 12px; /* Space between the buttons */
+  align-items: center; /* Ensure buttons are aligned vertically */
+}
+
 .preview-btn {
   display: flex;
   align-items: center;
+  justify-content: center; /* Center the text and icon */
   gap: 6px;
   padding: 8px 16px;
   border-radius: 6px;
@@ -239,12 +246,18 @@ body {
   color: #3b82f6;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-size: 0.9rem; /* Ensure consistent font size */
 }
 
 .preview-btn:hover {
   background-color: #3b82f6;
   color: white;
 }
+
+.preview-icon, .summarize-icon {
+  font-size: 1rem; /* Ensure consistent icon size */
+}
+
 
 /* Upload Section */
 .upload-section {
