@@ -9,6 +9,63 @@
   overflow-x: hidden;
   font-family: 'Muli', system-ui, -apple-system, sans-serif;
 }
+.animatedText {
+  display: inline-block;
+  position: relative;
+  font-weight: bold;
+  color: #000;
+  transition: all 0.3s ease;
+  opacity: 1;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.animatedText::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: transparent;
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: none;
+}
+.animatedChar {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+  letter-spacing: 0.02em;
+  padding: 0 0.01em;
+}
+
+.animationWrapper {
+  display: inline-block;
+  overflow: hidden;
+  letter-spacing: normal;
+  word-spacing: 0.25em;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional: Add a smooth hover effect */
+.animationWrapper:hover .animatedChar {
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.animationWrapper:hover .animatedChar:hover {
+  transform: translateY(-2px);
+  color: #458FF6;
+}
 
 .mainContent {
   width: 100%;

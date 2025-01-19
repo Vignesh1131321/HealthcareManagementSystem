@@ -1,38 +1,101 @@
-/* Global reset for margins and paddings */
-:global(html), :global(body) {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  overflow-x: hidden;  /* Prevent horizontal scrolling */
-}
-
-/* Apply box-sizing globally */
-:global(*), :global(*::before), :global(*::after) {
-  box-sizing: border-box;
-}
-
+/* NavbarWrapper.module.css */
 .headerContent {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 15px 20px;
-    align-items: center;
-    margin-top: 0;
-  }
-  
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: background-color 0.3s ease;
+}
 
-/* Adjustments for larger screens */
-@media (min-width: 1200px) {
-  .headerContent {
-    padding: 20px 30px; /* Increase padding for larger screens */
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    padding: 1rem 1.5rem;
   }
 }
 
-/* Adjustments for smaller screens */
 @media (max-width: 768px) {
-  .headerContent {
-    flex-direction: column; /* Stack the logo and navigation vertically */
-    align-items: center; /* Center-align logo and navigation */
-    padding: 10px 15px; /* Reduce padding */
+  .container {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* For the Navigation component (Navigation.module.css) */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.menuButton {
+  display: none;
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    position: relative;
+  }
+
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    color: currentColor;
+  }
+
+  .navItems {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    min-width: 200px;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .navItems.open {
+    display: flex;
+    animation: slideDown 0.2s ease-out;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
