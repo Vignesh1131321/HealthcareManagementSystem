@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Search, ShoppingCart, X, Plus, Minus, CreditCard, MapPin } from 'lucide-react';
 import { NavbarWrapper } from '../healthcare/components/NavbarWrapper';
 import './styles.css'
