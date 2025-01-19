@@ -16,6 +16,7 @@ type UserDetails = {
     name: string;
     phoneNumber: string;
   };
+  age: string;
   address: {
     street: string;
     city: string;
@@ -23,7 +24,14 @@ type UserDetails = {
     zipCode: string;
   };
   gender: string;
+  vitalStats: {
+    weight: string;
+    height: string;
+    bloodGroup: string;
+    // bloodPressure: string;
+  };
   profilePhotoUrl?: string;
+  isVerified: boolean;
   isCompleteProfile: boolean;
 };
 
@@ -54,7 +62,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     weight: string;
     height: string;
     bloodGroup: string;
-    bloodPressure: string;
+    // bloodPressure: string;
     allergies: {
       type: string;
       severity: string;
@@ -78,7 +86,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     weight: '',
     height: '',
     bloodGroup: '',
-    bloodPressure: '',
+    // bloodPressure: '',
     allergies: [],
     medications: [],
   });
@@ -175,7 +183,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
   // };
   
 
-  const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!userDetails?._id) {
@@ -209,7 +217,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
           weight: formData.weight,
           height: formData.height,
           bloodGroup: formData.bloodGroup,
-          bloodPressure: formData.bloodPressure
+          // bloodPressure: formData.bloodPressure
         },
         allergies: formData.allergies,
     medications: formData.medications,
@@ -458,7 +466,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
               <option value="AB-">AB-</option>
             </select>
           </div>
-          <div className="field-group">
+          {/* <div className="field-group">
             <label>Blood Pressure</label>
             <input
               type="text"
@@ -466,7 +474,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
               value={formData.bloodPressure}
               onChange={(e) => handleInputChange('bloodPressure', e.target.value)}
             />
-          </div>
+          </div> */}
         </div>
       );
     case 4:
@@ -660,7 +668,7 @@ return (
                 type="button" // Change from submit to button
                 onClick={(e) => {
                   e.preventDefault();
-                  handleCompleteProfileSubmit(e as React.FormEvent<HTMLFormElement>);
+                  handleCompleteProfileSubmit(e);
                 }}
                 disabled={loading}
                 className="submit-button"

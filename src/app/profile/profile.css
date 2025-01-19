@@ -10,7 +10,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: calc(100vh - 90px); /* Subtract navbar height */
+  /* min-height: calc(100vh - 90px);  */
+  min-height: 100vh;
   background: linear-gradient(135deg, #f0f4ff 0%, #e6eeff 100%);
   padding: 90px 20px 40px;
   gap: 24px;
@@ -56,7 +57,7 @@ body {
   color: #1e293b;
   margin: 0 0 24px;
   background: linear-gradient(135deg, #3b82f6 0%, #4f46e5 100%);
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

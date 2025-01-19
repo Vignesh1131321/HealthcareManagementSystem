@@ -70,10 +70,10 @@ const userSchema = new mongoose.Schema({
       enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
       required: false,
     },
-    bloodPressure: {
-      type: String,
-      required: false,
-    },
+    // bloodPressure: {
+    //   type: String,
+    //   required: false,
+    // },
   },
   allergies: [{
     type: {

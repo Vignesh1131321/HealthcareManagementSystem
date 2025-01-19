@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       weight: requestData.vitalStats.weight,
       height: requestData.vitalStats.height,
       bloodGroup: requestData.vitalStats.bloodGroup,
-      bloodPressure: requestData.vitalStats.bloodPressure
+      // bloodPressure: requestData.vitalStats.bloodPressure
     };
 
     // Handle allergies
