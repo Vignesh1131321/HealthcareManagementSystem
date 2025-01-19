@@ -6,9 +6,16 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
-import ProfileStepsForm from './ProfileForm';
+import ProfileForm from './ProfileForm';
 import "./profile.css";
 import {MedicalSummary} from "../components/MedicalSummary";
+
+interface ProfileImage {
+  contentType: string;
+  data: {
+    data: Buffer;
+  };
+}
 
 type UserDetails = {
   _id: string;
@@ -21,6 +28,7 @@ type UserDetails = {
     name: string;
     phoneNumber: string;
   };
+  age: string;
   address: {
     street: string;
     city: string;
@@ -32,14 +40,24 @@ type UserDetails = {
     weight: string;
     height: string;
     bloodGroup: string;
-    bloodPressure: string;
+    // bloodPressure: string;
   };
   profilePhotoUrl?: string;
   isVerified: boolean;
   isCompleteProfile: boolean;
 };
 
-
+interface Appointment {
+  _id: string;
+  doctorName:string;
+  doctorId: string;
+  patientId: string;
+  appointmentDate: string;
+  appointmentTime: string;
+  identity: string;
+  specialty: string;
+  // Add other appointment properties as needed
+}
 
 
 export default function ProfilePage() {
@@ -58,13 +76,13 @@ export default function ProfilePage() {
   }>>([]);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [images, setImages] = useState([]);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
   const [activeTab, setActiveTab] = useState<"healthRecords" | "appointments">("healthRecords");
   const [appointments, setAppointments] = useState([]); // State for appointments
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [images, setImages] = useState<ProfileImage[]>([]);
   const [previewRecord, setPreviewRecord] = useState<{
     name: string;
     url: string;
@@ -237,67 +255,67 @@ const handleGenerateSummary = async (record: any) => {
   useEffect(() => {
     fetchUserDetails();
   }, []);
-  const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
   
-    if (!userDetails?._id) {
-      toast.error('User ID not found');
-      return;
-    }
+  //   if (!userDetails?._id) {
+  //     toast.error('User ID not found');
+  //     return;
+  //   }
   
-    try {
-      setLoading(true);
+  //   try {
+  //     setLoading(true);
       
-      const formData = new FormData();
+  //     const formData = new FormData();
       
-      // Append all form fields
-      formData.append('userId', userDetails._id);
-      formData.append('username', userDetails.username);
-      formData.append('email', userDetails.email);
-      formData.append('firstName', formData.firstName);
-      formData.append('lastName', formData.lastName);
-      formData.append('phoneNumber', formData.phoneNumber);
-      formData.append('gender', formData.gender);
+  //     // Append all form fields
+  //     formData.append('userId', userDetails._id);
+  //     formData.append('username', userDetails.username);
+  //     formData.append('email', userDetails.email);
+  //     formData.append('firstName', formData.firstName);
+  //     formData.append('lastName', formData.lastName);
+  //     formData.append('phoneNumber', formData.phoneNumber);
+  //     formData.append('gender', formData.gender);
       
-      // Address
-      formData.append('street', formData.street);
-      formData.append('city', formData.city);
-      formData.append('state', formData.state);
-      formData.append('zipCode', formData.zipCode);
+  //     // Address
+  //     formData.append('street', formData.street);
+  //     formData.append('city', formData.city);
+  //     formData.append('state', formData.state);
+  //     formData.append('zipCode', formData.zipCode);
       
-      // Emergency Contact
-      formData.append('emergencyContactName', formData.emergencyName);
-      formData.append('emergencyContactPhone', formData.emergencyContact);
+  //     // Emergency Contact
+  //     formData.append('emergencyContactName', formData.emergencyName);
+  //     formData.append('emergencyContactPhone', formData.emergencyContact);
       
-      // Vital Stats
-      formData.append('weight', formData.weight);
-      formData.append('height', formData.height);
-      formData.append('bloodGroup', formData.bloodGroup);
-      formData.append('bloodPressure', formData.bloodPressure);
+  //     // Vital Stats
+  //     formData.append('weight', formData.weight);
+  //     formData.append('height', formData.height);
+  //     formData.append('bloodGroup', formData.bloodGroup);
+  //     formData.append('bloodPressure', formData.bloodPressure);
   
-      const response = await fetch('/api/users/complete-profile', {
-        method: 'POST',
-        body: formData,
-      });
+  //     const response = await fetch('/api/users/complete-profile', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
   
-      const data = await response.json();
+  //     const data = await response.json();
   
-      if (response.ok) {
-        toast.success('Profile completed successfully');
-        setUserDetails(data.data);
-        setShowCompleteProfileCard(false);
-      } else {
-        throw new Error(data.error || 'Failed to complete profile');
-      }
-    } catch (error: any) {
-      console.error('Error completing profile:', error);
-      toast.error(error.message || 'An error occurred while updating profile');
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     if (response.ok) {
+  //       toast.success('Profile completed successfully');
+  //       setUserDetails(data.data);
+  //       setShowCompleteProfileCard(false);
+  //     } else {
+  //       throw new Error(data.error || 'Failed to complete profile');
+  //     }
+  //   } catch (error: any) {
+  //     console.error('Error completing profile:', error);
+  //     toast.error(error.message || 'An error occurred while updating profile');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!file) {
@@ -342,7 +360,7 @@ const handleGenerateSummary = async (record: any) => {
     }
   };
 
-  const handleSubmitForHealthRecord = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForHealthRecord = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
   
     if (!file || !userDetails?._id) {
@@ -455,13 +473,15 @@ useEffect(() => {
 }, [activeTab]);
 return (
   <>
-  <NavbarWrapper/>
+  {!showCompleteProfileCard && userDetails && (
+      <NavbarWrapper/>
+    )}
   <div className="profile-page">
     {showCompleteProfileCard ? (
-      <ProfileStepsForm
-        userDetails={userDetails}
-        setUserDetails={setUserDetails}
-        setShowCompleteProfileCard={setShowCompleteProfileCard}
+      <ProfileForm
+          userDetails={userDetails}
+          setUserDetails={setUserDetails}
+          setShowCompleteProfileCard={setShowCompleteProfileCard}
       />
     ) : (
       <div className="profile-content">
@@ -481,7 +501,7 @@ return (
                       )
                     )}`}
                     alt="Profile"
-                    className="photo"
+                    className="photo"    // className="profile-image"
                   />
                 ) : (
                   <div className="photo-placeholder">
@@ -644,7 +664,7 @@ return (
                     {selectedFileName && (
                       <div className="selected-file">
                         <div className="file-info">
-                          <FileText size={16} />
+                          <FileText size={16}  />
                           <span>{selectedFileName}</span>
                         </div>
                         <button 
@@ -689,7 +709,7 @@ return (
                     <div className="loading">Loading appointments...</div>
                   ) : appointments.length > 0 ? (
                     <div className="appointments-list">
-                      {appointments.map((appointment) => (
+                      {appointments.map((appointment:Appointment) => (
                         <div key={appointment._id} className="appointment-card">
                           <div className="appointment-header">
                             <Calendar size={20} />

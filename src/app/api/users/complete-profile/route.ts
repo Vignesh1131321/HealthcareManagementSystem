@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     data.lastName = requestData.lastName;
     data.phoneNumber = requestData.phoneNumber;
     data.gender = requestData.gender;
+    data.age = requestData.age;
 
     // Handle address
     data.address = {
@@ -29,12 +30,14 @@ export async function POST(request: NextRequest) {
       phoneNumber: requestData.emergencyContact.phoneNumber
     };
 
+
+
     // Handle vital stats
     data.vitalStats = {
       weight: requestData.vitalStats.weight,
       height: requestData.vitalStats.height,
       bloodGroup: requestData.vitalStats.bloodGroup,
-      bloodPressure: requestData.vitalStats.bloodPressure
+      // bloodPressure: requestData.vitalStats.bloodPressure
     };
 
     // Handle allergies
