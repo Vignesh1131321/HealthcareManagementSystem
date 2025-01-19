@@ -1,0 +1,38 @@
+/* Global reset for margins and paddings */
+:global(html), :global(body) {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;  /* Prevent horizontal scrolling */
+}
+
+/* Apply box-sizing globally */
+:global(*), :global(*::before), :global(*::after) {
+  box-sizing: border-box;
+}
+
+.headerContent {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px 20px;
+    align-items: center;
+    margin-top: 0;
+  }
+  
+
+/* Adjustments for larger screens */
+@media (min-width: 1200px) {
+  .headerContent {
+    padding: 20px 30px; /* Increase padding for larger screens */
+  }
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column; /* Stack the logo and navigation vertically */
+    align-items: center; /* Center-align logo and navigation */
+    padding: 10px 15px; /* Reduce padding */
+  }
+}

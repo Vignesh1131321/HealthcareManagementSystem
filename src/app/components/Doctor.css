@@ -59,6 +59,7 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   margin-bottom: 2rem;
   animation: slideUp 0.6s ease-out;
+  box-sizing: border-box;
 }
 
 .search-box {
@@ -66,12 +67,15 @@
   align-items: center;
   gap: 1rem;
   height: 48px;
+  width:100%;
+  box-sizing: border-box;
 }
 
 .search-input-wrapper {
   position: relative;
   flex: 1;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .search-icon {
@@ -94,6 +98,7 @@
   font-size: 1rem;
   background: #f8fafc;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .location-input:focus {
