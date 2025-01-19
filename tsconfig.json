@@ -23,7 +23,7 @@
   "@lib/*": ["./src/lib/*"]
 }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js", "src/lib/db.tsx", "src/app/api/upload-health-record/route.js"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js", "src/app/api/get-health-records/route.js", "src/lib/db.tsx", "src/app/api/upload-health-record/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js", "src/lib/db.tsx", "src/app/api/upload-health-record/route.js", "src/app/components/PharmacyChatBot.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/chatbot/route.js", "src/app/api/users/upload/route.js", "src/app/api/get-health-records/route.js", "src/lib/db.tsx", "src/app/api/upload-health-record/route.js", "src/app/components/PharmacyChatBot.tsx"],
   "exclude": ["node_modules"]
 }
