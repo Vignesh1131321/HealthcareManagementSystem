@@ -65,6 +65,7 @@
 // };
 "use client"
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./Services.module.css";
 import { ServiceCard } from "./ServiceCard";
 import { ServiceCardProps } from "./types";
@@ -87,7 +88,7 @@ const servicesData: ServiceCardProps[] = [
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/f603194c42343420fed615c51e0db10a9d2c74dc1a226b34282f2993e7b9d15f?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
     imageAlt: "Online pharmacy icon",
-    title: "Online pharmacy",
+    title: "Online Pharmacy",
     description:
       "Buy your medicines with our website with a simple delivery system",
   },
@@ -102,10 +103,10 @@ const servicesData: ServiceCardProps[] = [
   {
     imageSrc:
       "https://cdn.builder.io/api/v1/image/assets/TEMP/15c5bf4fcde5830907277032315d66226187cd0422f88a1e1726a4fd9f7b6645?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
-    imageAlt: "Details info icon",
-    title: "Details info",
+    imageAlt: "Search Hospitals icon",
+    title: "Search Hospitals",
     description:
-      "Free consultation with our trusted doctors and get the best recommendations",
+      "Quickly locate and access the closest hospitals for immediate care and support.",
   },
   {
     imageSrc:
@@ -319,7 +320,22 @@ useEffect(() => {
       
     }
   }; */
+  const router = useRouter();
 
+  const handleSearchHospitals = () => {
+    router.push("/hospitals");
+  }
+  const handleChatbotClick = (): void => {
+    router.push("/chat");
+  };
+
+  const handleTracking = () => {
+    router.push("/profile");
+  }
+
+  const handleClickPharmacy = () => {
+    router.push("/pharmacy");
+  }
   const handleEmergencyCareClick = () => {
     setShowEmergencyConfirm(true); // Show EmergencyConfirm popup
   };
@@ -375,6 +391,14 @@ useEffect(() => {
              ? handleFindDoctorClick
              : service.title === "Emergency care"
              ? handleEmergencyCareClick
+             : service.title === "MediAid"
+             ? handleChatbotClick
+             : service.title === "Online Pharmacy"
+             ? handleClickPharmacy
+             : service.title === "Search Hospitals"
+             ? handleSearchHospitals
+             : service.title === "Tracking"
+             ? handleTracking
              : undefined
          }
        />
