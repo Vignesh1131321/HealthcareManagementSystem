@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema({
     enum: ['male', 'female', 'other'],
     required: false,
   },
+  age: {
+    type: String,
+    required: false,
+  },
   vitalStats: {
     weight: {
       type: String,

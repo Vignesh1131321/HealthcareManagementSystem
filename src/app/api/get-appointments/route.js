@@ -3,9 +3,7 @@ import clientPromise from "../../../lib/db";
 import { ObjectId } from "mongodb";
 
 export async function GET(req) {
-    console.log("API hit: get-appointments");
     const userId = req.headers.get("userId");
-    console.log("Received userId:", userId);
 
     if (!userId) {
         return NextResponse.json(
@@ -21,8 +19,6 @@ export async function GET(req) {
         const appointments = await appointmentsCollection
             .find({ userId: userId }) // Use userId as a string if stored that way
             .toArray();
-
-        console.log("Appointments found:", appointments);
         // if (!appointments || appointments.length === 0) {
         //     return NextResponse.json(
         //         { message: "No appointments found for the given user." },

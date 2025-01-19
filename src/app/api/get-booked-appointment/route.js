@@ -2,15 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import clientPromise from "../../../lib/db";
 
 export async function GET(req) {
-    console.log("API hit: get-booked-appointments");
 
     // Retrieve query parameters
     const { searchParams } = new URL(req.url);
     const doctorId = searchParams.get("doctorId");
     const date = searchParams.get("date");
-
-    console.log("Received doctorId:", doctorId);
-    console.log("Received date:", date);
 
     if (!doctorId || !date) {
         return NextResponse.json(

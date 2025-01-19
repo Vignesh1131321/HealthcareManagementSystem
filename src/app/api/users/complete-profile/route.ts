@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
     data.lastName = requestData.lastName;
     data.phoneNumber = requestData.phoneNumber;
     data.gender = requestData.gender;
+    data.age = requestData.age;
 
     // Handle address
     data.address = {
@@ -28,6 +29,8 @@ export async function POST(request: NextRequest) {
       name: requestData.emergencyContact.name,
       phoneNumber: requestData.emergencyContact.phoneNumber
     };
+
+
 
     // Handle vital stats
     data.vitalStats = {
