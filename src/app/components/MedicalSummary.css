@@ -1,0 +1,31 @@
+.medical-summary {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #2c3e50;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  
+  ul {
+    padding-left: 20px;
+    margin-top: 8px;
+  }
+  
+  li {
+    color: #34495e;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  
+  li::marker {
+    color: #3498db;
+  }

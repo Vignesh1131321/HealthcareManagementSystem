@@ -1,13 +1,15 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, ChevronLeft,Mail,MapPin,Calendar } from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, ChevronLeft,Mail,MapPin,Calendar,FileSearch } from 'lucide-react';
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import ProfileStepsForm from './ProfileForm';
 import "./profile.css";
+import {MedicalSummary} from "../components/MedicalSummary";
+
 type UserDetails = {
   _id: string;
   username: string;
@@ -44,6 +46,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(0);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
+  const [showSummary, setShowSummary] = useState(false);
+  const [currentSummary, setCurrentSummary] = useState<string>("");
+  const [summarizing, setSummarizing] = useState(false);
   const [healthRecords, setHealthRecords] = useState<Array<{
     _id: string;
     name: string;
@@ -98,7 +103,54 @@ export default function ProfilePage() {
       setPreviewUrl(null);
     }
   };
+// Modify the handleGenerateSummary function to include better error handling
+const handleGenerateSummary = async (record: any) => {
+  if (!record.textContent) {
+    toast.error("No text content available to summarize");
+    return;
+  }
 
+  try {
+    setSummarizing(true);
+    setShowSummary(true);
+
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ 
+        message: `Please analyze this medical test report and provide a concise summary so that it is easy for non medical person to understand it as well as there are wnough details for a doctor to read and easily understd a: ${record.textContent}` 
+      }),
+    });
+
+    const data = await response.json();
+    
+    if (response.ok) {
+      setCurrentSummary(data.response);
+    } else {
+      // Handle rate limit error specifically
+      if (response.status === 429) {
+        toast.error("Rate limit reached. Please try again later.");
+      } else {
+        throw new Error(data.error || "Failed to generate summary");
+      }
+    }
+  } catch (error) {
+    console.error("Error generating summary:", error);
+    toast.error("Failed to generate summary. Please try again later.");
+    setShowSummary(false); // Close the modal on error
+  } finally {
+    setSummarizing(false);
+  }
+};
+
+
+  // Add this function to close the summary modal
+  const closeSummary = () => {
+    setShowSummary(false);
+    setCurrentSummary("");
+  };
   // Handle record preview
   const handleRecordPreview = (record: any) => {
     // Ensure we have the correct data format
@@ -402,6 +454,8 @@ useEffect(() => {
   }
 }, [activeTab]);
 return (
+  <>
+  <NavbarWrapper/>
   <div className="profile-page">
     {showCompleteProfileCard ? (
       <ProfileStepsForm
@@ -563,13 +617,22 @@ return (
                             <FileText size={20} />
                             <span>{record.name}</span>
                           </div>
-                          <button 
-                            className="preview-button"
-                            onClick={() => handleRecordPreview(record)}
-                          >
-                            <Eye size={16} />
-                            Preview
-                          </button>
+                          <div className="button-group">
+                        <button 
+                          className="preview-button"
+                          onClick={() => handleRecordPreview(record)}
+                        >
+                          <Eye size={16} />
+                          Preview
+                        </button>
+                        <button 
+                          className="preview-button"
+                          onClick={() => handleGenerateSummary(record)}
+                        >
+                          <FileSearch className="summarize-icon" />
+                          Summarize
+                        </button>
+                      </div>
                         </div>
                       ))}
                     </div>
@@ -687,6 +750,31 @@ return (
         </div>
       </div>
     )}
+                      {showSummary && (
+                <div className="preview-modal-overlay">
+                  <div className="preview-modal">
+                    <div className="preview-modal-header">
+                      <h3>Report Summary</h3>
+                      <button 
+                        className="close-preview" 
+                        onClick={closeSummary}
+                      >
+                        <X size={24} />
+                      </button>
+                    </div>
+                    <div className="preview-modal-content">
+                      {summarizing ? (
+                        <div className="loading-summary">
+                          <p>Generating summary...</p>
+                        </div>
+                      ) : (
+                        <MedicalSummary summaryText={currentSummary} />
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
   </div>
+  </>
 );
 };
