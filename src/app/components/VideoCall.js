@@ -6,6 +6,8 @@ const VideoCall = () => {
   const jitsiContainerRef = useRef(null);
   const [api, setApi] = useState(null);
   const [roomName, setRoomName] = useState("");
+  const [joinRoomInput, setJoinRoomInput] = useState("");
+  const [showJoinInput, setShowJoinInput] = useState(false);
 
   useEffect(() => {
     // Dynamically load Jitsi Meet External API
@@ -31,7 +33,7 @@ const VideoCall = () => {
     };
   }, [api]);
 
-  const startCall = () => {
+  const initializeCall = (roomNameToUse) => {
     if (!window.JitsiMeetExternalAPI) {
       console.error("Jitsi API script not loaded yet.");
       return;
@@ -43,11 +45,10 @@ const VideoCall = () => {
     }
 
     const domain = "meet.jit.si";
-    const generatedRoomName = `DemoRoom_${Math.floor(Math.random() * 10000)}`;
-    setRoomName(generatedRoomName);
+    setRoomName(roomNameToUse);
 
     const options = {
-      roomName: generatedRoomName,
+      roomName: roomNameToUse,
       parentNode: jitsiContainerRef.current,
       configOverwrite: { prejoinPageEnabled: false },
       interfaceConfigOverwrite: {
@@ -69,13 +70,28 @@ const VideoCall = () => {
 
     const newApi = new window.JitsiMeetExternalAPI(domain, options);
     setApi(newApi);
-    console.log("Call started in room:", generatedRoomName);
+    console.log("Connected to room:", roomNameToUse);
+  };
+
+  const startCall = () => {
+    const generatedRoomName = `DemoRoom_${Math.floor(Math.random() * 10000)}`;
+    initializeCall(generatedRoomName);
+  };
+
+  const joinCall = (e) => {
+    e.preventDefault();
+    if (joinRoomInput.trim()) {
+      initializeCall(joinRoomInput.trim());
+      setJoinRoomInput("");
+      setShowJoinInput(false);
+    }
   };
 
   const endCall = () => {
     if (api) {
       api.dispose();
       setApi(null);
+      setRoomName("");
       console.log("Call ended.");
     } else {
       console.warn("No active call to end.");
@@ -83,54 +99,71 @@ const VideoCall = () => {
   };
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
-      <h1>Jitsi Video Call</h1>
+    <div className="p-6 text-center max-w-4xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">Video Call</h1>
+      
       <div
         id="jitsi-container"
         ref={jitsiContainerRef}
-        style={{
-          width: "100%",
-          height: "500px",
-          margin: "20px auto",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          overflow: "hidden",
-        }}
+        className="w-full h-[500px] mb-6 border border-gray-200 rounded-lg overflow-hidden"
       />
-      <div style={{ marginTop: "20px" }}>
-        <button
-          onClick={startCall}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            marginRight: "10px",
-            cursor: "pointer",
-          }}
-        >
-          Start Call
-        </button>
-        <button
-          onClick={endCall}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#dc3545",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          End Call
-        </button>
+
+      <div className="space-y-4">
+        {!api && (
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex gap-4">
+              <button
+                onClick={startCall}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Start New Call
+              </button>
+              <button
+                onClick={() => setShowJoinInput(!showJoinInput)}
+                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                Join Existing Call
+              </button>
+            </div>
+
+            {showJoinInput && (
+              <form onSubmit={joinCall} className="flex gap-2">
+                <input
+                  type="text"
+                  value={joinRoomInput}
+                  onChange={(e) => setJoinRoomInput(e.target.value)}
+                  placeholder="Enter room name"
+                  className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Join
+                </button>
+              </form>
+            )}
+          </div>
+        )}
+
+        {api && (
+          <button
+            onClick={endCall}
+            className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            End Call
+          </button>
+        )}
+
+        {roomName && (
+          <div className="mt-4">
+            <p className="font-medium">Current Room: {roomName}</p>
+            <p className="text-sm text-gray-600 mt-1">
+              Share this room name with others to join the call
+            </p>
+          </div>
+        )}
       </div>
-      {roomName && (
-        <p style={{ marginTop: "20px", fontWeight: "bold" }}>
-          Current Room: {roomName}
-        </p>
-      )}
     </div>
   );
 };
