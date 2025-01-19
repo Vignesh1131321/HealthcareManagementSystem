@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema({
     enum: ['male', 'female', 'other'],
     required: false,
   },
+  age: {
+    type: String,
+    required: false,
+  },
   vitalStats: {
     weight: {
       type: String,
@@ -70,10 +74,10 @@ const userSchema = new mongoose.Schema({
       enum: ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'],
       required: false,
     },
-    bloodPressure: {
-      type: String,
-      required: false,
-    },
+    // bloodPressure: {
+    //   type: String,
+    //   required: false,
+    // },
   },
   allergies: [{
     type: {

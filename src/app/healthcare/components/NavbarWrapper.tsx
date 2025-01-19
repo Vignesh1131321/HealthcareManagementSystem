@@ -4,17 +4,25 @@ import { Navigation } from "./Navigation";
 import styles from "../styles/NavbarWrapper.module.css";
 
 interface NavbarWrapperProps {
-  backgroundColor?: string; // Optional background color prop
+  backgroundColor?: string;
+  className?: string;
 }
 
-export const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ backgroundColor }) => {
+export const NavbarWrapper: React.FC<NavbarWrapperProps> = ({ 
+  backgroundColor,
+  className
+}) => {
   return (
-    <div 
-      className={styles.headerContent} 
-      style={{ backgroundColor: backgroundColor || "transparent" }} // Apply the background color passed via props
+    <header 
+      className={`${styles.headerContent} ${className || ''}`}
+      style={{ backgroundColor: backgroundColor || "transparent" }}
     >
-      <Logo letter="M" text="MediLink" />
-      <Navigation />
-    </div>
+      <div className={styles.container}>
+        <div className={styles.logoWrapper}>
+          <Logo letter="M" text="MediLink" />
+        </div>
+        <Navigation />
+      </div>
+    </header>
   );
 };

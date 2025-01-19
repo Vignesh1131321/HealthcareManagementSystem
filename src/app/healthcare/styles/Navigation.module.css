@@ -1,4 +1,10 @@
 /* Navigation.module.css */
+.navigationWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .nav {
   display: flex;
   gap: 1rem;
@@ -54,45 +60,100 @@
   border: none;
   padding: 0.5rem;
   cursor: pointer;
+  color: #1f1534;
+  z-index: 50;
 }
 
-.mobileNav {
-  display: none;
+.menuIcon {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
 }
 
 @media (max-width: 768px) {
-  .nav {
-    display: none;
+  .navigationWrapper {
+    width: 100%;
   }
 
   .mobileMenuButton {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
   }
 
-  .mobileNav {
-    display: flex;
-    flex-direction: column;
+  .nav {
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: calc(100% + 1rem);
     right: 0;
     background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
   }
 
   .mobileNavOpen {
+    opacity: 1;
+    z-index: 10000;
+    visibility: visible;
     transform: translateY(0);
   }
 
   .navItem {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
   }
 
-  .navItem:last-child {
-    border-bottom: none;
+  .navItem:hover {
+    background-color: rgba(69, 143, 246, 0.1);
+  }
+
+  .navItem::after {
+    display: none;
+  }
+
+  .navLink {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* Animation for menu items */
+  .mobileNavOpen .navItem {
+    animation: slideIn 0.3s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 0.7;
+      transform: translateX(0);
+    }
+  }
+
+  /* Stagger animation for menu items */
+  .mobileNavOpen .navItem:nth-child(1) { animation-delay: 0.1s; }
+  .mobileNavOpen .navItem:nth-child(2) { animation-delay: 0.2s; }
+  .mobileNavOpen .navItem:nth-child(3) { animation-delay: 0.3s; }
+  .mobileNavOpen .navItem:nth-child(4) { animation-delay: 0.4s; }
+}
+
+/* For smaller mobile devices */
+@media (max-width: 480px) {
+  .nav {
+    width: calc(100vw - 2rem);
+    right: -1rem;
   }
 }

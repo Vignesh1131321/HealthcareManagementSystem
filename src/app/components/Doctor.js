@@ -3,7 +3,17 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 import { GoogleMap, useJsApiLoader, Marker } from "@react-google-maps/api";
-import { Building2, Phone, MapPin, Star, Clock ,Search} from 'lucide-react';
+import { 
+  Building2, 
+  Phone, 
+  MapPin, 
+  Star, 
+  Clock, 
+  Search,
+  Heart,
+  Loader2,
+  Shield
+} from 'lucide-react';
 import "./Doctor.css";
 
 const Doctor = ({ specialty }) => {
@@ -12,6 +22,7 @@ const Doctor = ({ specialty }) => {
   const [manualLocation, setManualLocation] = useState("");
   const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedHospital, setSelectedHospital] = useState(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const specialty1 = searchParams.get('specialty');
@@ -20,6 +31,12 @@ const Doctor = ({ specialty }) => {
     googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",
     libraries: ["places"],
   });
+
+  const mapContainerStyle = {
+    width: '100%',
+    height: '100%',
+    borderRadius: '12px'
+  };
 
   useEffect(() => {
     if (isLoaded) {
@@ -166,21 +183,26 @@ const Doctor = ({ specialty }) => {
   };
 
   return (
-    <div className="hospital-locator-container">
-     
-      <div className="main-container">
-        <h1 className="page-title">Find a {(specialty1 || specialty)?.charAt(0).toUpperCase() + (specialty1 || specialty)?.slice(1)}</h1>
+    <div className="hospital-page">
+      <NavbarWrapper />
+      <main className="main-content">
+        <div className="hero-section">
+          <h1>Find {(specialty1 || specialty)?.charAt(0).toUpperCase() + (specialty1 || specialty)?.slice(1)} Near You</h1>
+          <p>Connect with specialized healthcare professionals in your area</p>
+        </div>
 
         <div className="search-container">
-          <div className="search-input-wrapper">
-            <input
-              type="text"
-              value={manualLocation}
-              onChange={(e) => handleAutocomplete(e.target.value)}
-              placeholder="Enter location..."
-              className="search-input"
-            />
-            <Search className="search-icon" size={20} />
+          <div className="search-box">
+            <div className="search-input-wrapper">
+              <Search className="search-icon" />
+              <input
+                type="text"
+                value={manualLocation}
+                onChange={(e) => handleAutocomplete(e.target.value)}
+                placeholder="Enter your location..."
+                className="location-input"
+              />
+            </div>
           </div>
 
           {autocompleteSuggestions.length > 0 && (
@@ -191,6 +213,7 @@ const Doctor = ({ specialty }) => {
                   onClick={() => handlePlaceSelect(suggestion.place_id)}
                   className="suggestion-item"
                 >
+                  <MapPin className="suggestion-icon" />
                   {suggestion.description}
                 </div>
               ))}
@@ -199,16 +222,26 @@ const Doctor = ({ specialty }) => {
         </div>
 
         {errorMessage && (
-          <div className="error-message">{errorMessage}</div>
+          <div className="error-message">
+            <Shield className="error-icon" />
+            {errorMessage}
+          </div>
         )}
 
-        {isLoaded && mapCenter ? (
-          <div className="content-container">
-            <div className="map-container">
+        <div className="content-grid">
+          <div className="map-section">
+            {isLoaded && mapCenter ? (
               <GoogleMap
-                mapContainerStyle={{ width: "100%", height: "500px" }}
+                mapContainerStyle={mapContainerStyle}
                 center={mapCenter}
                 zoom={13}
+                options={{
+                  disableDefaultUI: false,
+                  zoomControl: true,
+                  mapTypeControl: false,
+                  streetViewControl: false,
+                  fullscreenControl: true
+                }}
               >
                 {hospitals.map((hospital) => (
                   <Marker
@@ -217,80 +250,69 @@ const Doctor = ({ specialty }) => {
                       lat: hospital.geometry.location.lat(),
                       lng: hospital.geometry.location.lng(),
                     }}
-                    title={hospital.name}
+                    onClick={() => setSelectedHospital(hospital)}
                   />
                 ))}
               </GoogleMap>
-            </div>
-
-            <div className="hospitals-grid">
-              {hospitals.map((hospital) => (
-                <div key={hospital.place_id} className="hospital-card">
-                  <div className="hospital-card-header">
-                    <Building2 className="card-icon" size={24} />
-                    <h3 className="hospital-name">{hospital.name}</h3>
-                  </div>
-
-                  <div className="hospital-info">
-                    <div className="info-row">
-                      <div className="info-icon-wrapper">
-                        <MapPin className="info-icon" size={20} />
-                      </div>
-                      <p className="hospital-address">{hospital.vicinity}</p>
-                    </div>
-
-                    {hospital.rating ? (
-  <div className="info-row ">
-    <div className="info-icon">
-      <Star className="info-icon" size={18} fill="#FFD700" />
-    </div>
-    <p className="hospital-rating">
-      <span className="rating-value">{hospital.rating}</span>
-      <span className="rating-max"> / 5</span>
-    </p>
-  </div>
-) : (
-  <div className="info-row">
-    <div className="info-icon">
-     <Star className="info-icon" size={18} fill="#FFD700" />
-    </div>
-    <p className="hospital-rating">Rating not available</p>
-  </div>
-)}
-
-                    <div className="info-row">
-                      <div className="info-icon-wrapper">
-                        <Clock className="info-icon" size={20} />
-                      </div>
-                      <p className="hospital-hours">
-                        {hospital.opening_hours?.weekday_text?.[0] || "Hours not available"}
-                      </p>
-                    </div>
-
-                    <div className="contact-info">
-                      <div className="info-row">
-                        <div className="info-icon-wrapper">
-                          <Phone className="info-icon" size={20} />
-                        </div>
-                        <p className="contact-text">{hospital.formatted_phone_number || "Phone not available"}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleBookAppointment(hospital)}
-                    className="book-button"
-                  >
-                    Book Appointment
-                  </button>
-                </div>
-              ))}
-            </div>
+            ) : (
+              <div className="loading-map">
+                <Loader2 className="loading-icon" />
+                <p>Loading map...</p>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="loading-message">Loading map...</div>
-        )}
-      </div>
+
+          <div className="hospitals-list">
+            {hospitals.map((hospital) => (
+              <div 
+                key={hospital.place_id} 
+                className={`hospital-card ${selectedHospital?.place_id === hospital.place_id ? 'selected' : ''}`}
+                onClick={() => setSelectedHospital(hospital)}
+              >
+                <div className="hospital-header">
+                  <Building2 className="hospital-icon" />
+                  <h3>{hospital.name}</h3>
+                  {hospital.rating && (
+                    <div className="rating">
+                      <Star className="star-icon" />
+                      <span>{hospital.rating}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="hospital-info">
+                  <div className="info-row">
+                    <MapPin className="info-icon" />
+                    <p>{hospital.vicinity}</p>
+                  </div>
+                  <div className="info-row">
+                    <Clock className="info-icon" />
+                    <p>{hospital.opening_hours ? 
+                      hospital.opening_hours.weekday_text[0] : 
+                      "Hours not available"}
+                    </p>
+                  </div>
+                  <div className="info-row">
+                    <Phone className="info-icon" />
+                    <p>{hospital.formatted_phone_number || "Phone not available"}</p>
+                  </div>
+                </div>
+
+                <button
+                  className="book-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleBookAppointment(hospital);
+                  }}
+                >
+                  <Heart className="button-icon" />
+                  Book Appointment
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
