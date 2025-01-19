@@ -8,7 +8,7 @@ import { ServiceHeader } from "./services/ServiceHeader";
 import { Services } from "./services/Services";
 import { HealthcareSection } from "./aboutus/HealthcareSection";
 import { Footer } from "./footer/Footer";
-
+import { HeroContentProps } from "./types";
 interface AnimatedTextProps {
   text: string;
   speed?: number;
@@ -52,7 +52,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({ text, speed = 45 }) => {
 };
 
 // Rest of the component remains the same...
-export const HealthcarePage: React.FC = () => {
+export const HealthcarePage: React.FC<HeroContentProps>= () => {
   return (
     <>
       <NavbarWrapper />
