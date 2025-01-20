@@ -25,3 +25,35 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default clientPromise;
+
+// Optional: Export types for your database collections
+export interface IAppointment {
+  _id?: string;
+  patientId: string;
+  doctorId: string;
+  date: Date;
+  time: string;
+  location?: string;
+  notes?: string;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IPatient {
+  _id?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  dateOfBirth?: Date;
+}
+
+export interface IDoctor {
+  _id?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  specialization: string;
+  department?: string;
+}

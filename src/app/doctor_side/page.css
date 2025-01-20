@@ -1,0 +1,96 @@
+/* General Styles */
+
+.App {
+    font-family: Arial, sans-serif;
+    color: #333;
+    text-align: center;
+  }
+  
+  .hero {
+    background: linear-gradient(120deg, #007bff, #00bfff);
+    color: #fff;
+    padding: 50px 20px;
+    margin-bottom: 50px;
+    animation: fadeIn 1s ease-in-out;
+  }
+  
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero p {
+    margin-top: 10px;
+    font-size: 1.2rem;
+  }
+  
+  
+  
+  /* Scroll Image Styles */
+  .scroll-image {
+    width: 250px;
+    height: auto;
+    margin: 0 auto 50px;
+    transition: transform 0.1s ease-in-out, opacity 0.3s;
+    border-radius: 8px;
+  }
+  
+  .scroll-image:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  
+  /* Feature Section */
+  .features {
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .feature-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+    width: 300px;
+  }
+  
+  .feature-box:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .feature-content {
+    text-align: center;
+  }
+  
+  .feature-content h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+  }
+  
+  .feature-content p {
+    color: #333;
+  }
+  
+  .feature-image img {
+    width: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  

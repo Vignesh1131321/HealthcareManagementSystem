@@ -101,6 +101,7 @@
 
   .mobileNavOpen {
     opacity: 1;
+    z-index: 10000;
     visibility: visible;
     transform: translateY(0);
   }

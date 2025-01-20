@@ -55,34 +55,40 @@
 .search-container {
   background: white;
   border-radius: 16px;
-  padding: 1.5rem;
+  padding: 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   margin-bottom: 2rem;
   animation: slideUp 0.6s ease-out;
   position: relative;
   z-index: 1001;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .search-box {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  height: 48px;
+  align-items: stretch;
+  gap: 1.5rem;
+  width: 100%;
+  position: relative;
+  z-index: 1002;
+  min-height: 56px;
 }
 
 .search-input-wrapper {
   position: relative;
   flex: 1;
-  height: 100%;
+  min-height: 56px;
+  z-index: 1003;
 }
 
 .search-icon {
   position: absolute;
-  left: 16px;
+  left: 20px;
   top: 50%;
   transform: translateY(-50%);
-  width: 20px !important;
-  height: 20px !important;
+  width: 24px !important;
+  height: 24px !important;
   color: #64748b;
   pointer-events: none;
 }
@@ -90,46 +96,50 @@
 .location-input {
   width: 100%;
   height: 100%;
-  padding: 0 16px 0 48px;
+  padding: 0 20px 0 56px;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   background: #f8fafc;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 .location-input:focus {
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   outline: none;
+  background: white;
 }
 
-/* Filter Button and Panel */
 .filter-button {
-  height: 100%;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 0 20px;
+  gap: 10px;
+  padding: 0 28px;
   background: #3b82f6;
   color: white;
   border: none;
   border-radius: 12px;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 1.1rem;
   transition: all 0.2s ease;
   white-space: nowrap;
-  min-width: 120px;
+  min-width: 140px;
+  cursor: pointer;
 }
 
 .filter-button:hover {
   background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
 .button-icon {
-  width: 20px !important;
-  height: 20px !important;
+  width: 22px !important;
+  height: 22px !important;
 }
 
 .arrow-icon {
@@ -142,19 +152,23 @@
   transform: rotate(180deg);
 }
 
+/* Filter Panel */
 .filters-panel {
   max-height: 0;
   overflow: hidden;
   transition: all 0.3s ease;
   opacity: 0;
+  position: relative;
+  z-index: 1001;
+  width: 100%;
 }
 
 .filters-panel.show {
   max-height: 400px;
   opacity: 1;
-  padding-top: 1.5rem;
-  margin-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  padding-top: 2rem;
+  margin-top: 2rem;
+  border-top: 2px solid #e2e8f0;
 }
 
 .filter-groups {
@@ -186,6 +200,7 @@
   background: white;
   color: #475569;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .filter-option:hover {
@@ -342,6 +357,7 @@
   font-weight: 500;
   font-size: 0.9rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .book-button:hover {
@@ -351,7 +367,7 @@
 /* Suggestions Dropdown */
 .suggestions-dropdown {
   position: absolute;
-  top: calc(100% + 8px); /* Add some spacing from the input */
+  top: calc(100% + 8px);
   left: 0;
   right: 0;
   background: white;
@@ -363,6 +379,7 @@
   z-index: 1000;
   border: 1px solid #e2e8f0;
   padding: 8px 0;
+  animation: slideDown 0.2s ease-out;
 }
 
 .suggestion-item {
@@ -379,12 +396,14 @@
 .suggestion-item:hover {
   background: #f8fafc;
 }
+
 .suggestion-icon {
   width: 18px !important;
   height: 18px !important;
   color: #3b82f6;
   flex-shrink: 0;
 }
+
 /* Error Message */
 .error-message {
   display: flex;
@@ -396,6 +415,27 @@
   color: #991b1b;
   margin-bottom: 1rem;
 }
+
+.error-icon {
+  width: 20px !important;
+  height: 20px !important;
+  color: #991b1b;
+}
+
+/* Scrollbar Styling */
+.hospitals-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.hospitals-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.hospitals-list::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 2px;
+}
+
 .suggestions-dropdown::-webkit-scrollbar {
   width: 4px;
 }
@@ -426,26 +466,6 @@
   }
 }
 
-.error-icon {
-  width: 20px !important;
-  height: 20px !important;
-  color: #991b1b;
-}
-
-/* Scrollbar Styling */
-.hospitals-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.hospitals-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.hospitals-list::-webkit-scrollbar-thumb {
-  background: #3b82f6;
-  border-radius: 2px;
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .content-grid {
@@ -462,22 +482,27 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .search-container {
+    padding: 1.5rem;
+  }
+  
   .search-box {
     flex-direction: column;
-    height: auto;
-    gap: 12px;
+    gap: 1rem;
+    min-height: auto;
   }
   
   .search-input-wrapper {
-    height: 48px;
+    width: 100%;
   }
   
   .filter-button {
     width: 100%;
-    height: 48px;
   }
-  
+}
+
+@media (max-width: 640px) {
   .hero-section h1 {
     font-size: 1.5rem;
   }
@@ -489,8 +514,7 @@
   .rating {
     margin-top: 0.5rem;
   }
-}
-@media (max-width: 640px) {
+  
   .suggestions-dropdown {
     position: absolute;
     top: calc(100% + 4px);

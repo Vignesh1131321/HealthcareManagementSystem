@@ -16,6 +16,7 @@ type UserDetails = {
     name: string;
     phoneNumber: string;
   };
+  age: string;
   address: {
     street: string;
     city: string;
@@ -23,7 +24,14 @@ type UserDetails = {
     zipCode: string;
   };
   gender: string;
+  vitalStats: {
+    weight: string;
+    height: string;
+    bloodGroup: string;
+    // bloodPressure: string;
+  };
   profilePhotoUrl?: string;
+  isVerified: boolean;
   isCompleteProfile: boolean;
 };
 
@@ -51,10 +59,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     street: string;
     emergencyName: string;
     emergencyContact: string;
+    age: string;
     weight: string;
     height: string;
     bloodGroup: string;
-    bloodPressure: string;
+    // bloodPressure: string;
     allergies: {
       type: string;
       severity: string;
@@ -75,10 +84,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
     street: userDetails?.address?.street || '',
     emergencyName: userDetails?.emergencyContact?.name || '',
     emergencyContact: userDetails?.emergencyContact?.phoneNumber || '',
+    age: userDetails?.age || '',
     weight: '',
     height: '',
     bloodGroup: '',
-    bloodPressure: '',
+    // bloodPressure: '',
     allergies: [],
     medications: [],
   });
@@ -175,7 +185,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
   // };
   
 
-  const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (!userDetails?._id) {
@@ -205,11 +215,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
           name: formData.emergencyName,
           phoneNumber: formData.emergencyContact
         },
+        age : formData.age,
         vitalStats: {
           weight: formData.weight,
           height: formData.height,
           bloodGroup: formData.bloodGroup,
-          bloodPressure: formData.bloodPressure
+          // bloodPressure: formData.bloodPressure
         },
         allergies: formData.allergies,
     medications: formData.medications,
@@ -423,6 +434,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
       return (
         <div className="form-fields">
           <div className="field-group">
+            <label>Age</label>
+            <input
+              type="number"
+              placeholder="Enter age"
+              value={formData.age}
+              onChange={(e) => handleInputChange('age', e.target.value)}
+              min="0"
+              max="120"
+            />
+          </div>
+          <div className="field-group">
             <label>Weight (kg)</label>
             <input
               type="number"
@@ -458,7 +480,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
               <option value="AB-">AB-</option>
             </select>
           </div>
-          <div className="field-group">
+          {/* <div className="field-group">
             <label>Blood Pressure</label>
             <input
               type="text"
@@ -466,7 +488,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
               value={formData.bloodPressure}
               onChange={(e) => handleInputChange('bloodPressure', e.target.value)}
             />
-          </div>
+          </div> */}
         </div>
       );
     case 4:
@@ -578,7 +600,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
                         <span>{selectedFileName}</span>
                       </div>
                       <button 
-                        className="clear-file" 
+                        className="clear-file-btn" 
                         onClick={clearSelectedFile}
                       >
                         <X size={16} />
@@ -587,16 +609,17 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userDetails, setUserDetails, 
                   )}
                   
                   <div className="upload-controls">
-                    <label className="custom-file-upload">
+                    <label className="file-select-btn">
                       <input
                         type="file"
                         accept=".pdf"
                         onChange={handleFileSelect}
+                        className="hidden"
                       />
                       Choose File
                     </label>
                     <button
-                      className="upload-btn"
+                      className="upload-submit-btn"
                       onClick={handleSubmitForHealthRecord}
                       disabled={!file || loading}
                     >
@@ -660,7 +683,7 @@ return (
                 type="button" // Change from submit to button
                 onClick={(e) => {
                   e.preventDefault();
-                  handleCompleteProfileSubmit(e as React.FormEvent<HTMLFormElement>);
+                  handleCompleteProfileSubmit(e);
                 }}
                 disabled={loading}
                 className="submit-button"

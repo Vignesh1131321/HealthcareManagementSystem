@@ -1,4 +1,8 @@
 /* Base Layout */
+.hospital-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e5edff 100%);
+}
 .profile-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f7ff 0%, #e5edff 100%);
