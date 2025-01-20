@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, ChevronLeft,Mail,MapPin,Calendar,FileSearch } from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch } from 'lucide-react';
+import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -42,6 +43,17 @@ type UserDetails = {
     bloodGroup: string;
     // bloodPressure: string;
   };
+  allergies?: Array<{
+    type: string;
+    severity: string;
+    reaction: string;
+  }>;
+  medications?: Array<{
+    name: string;
+    dosage: string;
+    frequency: string;
+    startDate: string;
+  }>;
   profilePhotoUrl?: string;
   isVerified: boolean;
   isCompleteProfile: boolean;
@@ -255,65 +267,6 @@ const handleGenerateSummary = async (record: any) => {
   useEffect(() => {
     fetchUserDetails();
   }, []);
-  // const handleCompleteProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  
-  //   if (!userDetails?._id) {
-  //     toast.error('User ID not found');
-  //     return;
-  //   }
-  
-  //   try {
-  //     setLoading(true);
-      
-  //     const formData = new FormData();
-      
-  //     // Append all form fields
-  //     formData.append('userId', userDetails._id);
-  //     formData.append('username', userDetails.username);
-  //     formData.append('email', userDetails.email);
-  //     formData.append('firstName', formData.firstName);
-  //     formData.append('lastName', formData.lastName);
-  //     formData.append('phoneNumber', formData.phoneNumber);
-  //     formData.append('gender', formData.gender);
-      
-  //     // Address
-  //     formData.append('street', formData.street);
-  //     formData.append('city', formData.city);
-  //     formData.append('state', formData.state);
-  //     formData.append('zipCode', formData.zipCode);
-      
-  //     // Emergency Contact
-  //     formData.append('emergencyContactName', formData.emergencyName);
-  //     formData.append('emergencyContactPhone', formData.emergencyContact);
-      
-  //     // Vital Stats
-  //     formData.append('weight', formData.weight);
-  //     formData.append('height', formData.height);
-  //     formData.append('bloodGroup', formData.bloodGroup);
-  //     formData.append('bloodPressure', formData.bloodPressure);
-  
-  //     const response = await fetch('/api/users/complete-profile', {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
-  
-  //     const data = await response.json();
-  
-  //     if (response.ok) {
-  //       toast.success('Profile completed successfully');
-  //       setUserDetails(data.data);
-  //       setShowCompleteProfileCard(false);
-  //     } else {
-  //       throw new Error(data.error || 'Failed to complete profile');
-  //     }
-  //   } catch (error: any) {
-  //     console.error('Error completing profile:', error);
-  //     toast.error(error.message || 'An error occurred while updating profile');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -576,8 +529,8 @@ return (
                   <p><strong>Age:</strong> {userDetails?.age}</p>
                   <p><strong>Gender:</strong> {userDetails?.gender}</p>
                   <p><strong>Blood Group: </strong>{userDetails?.vitalStats?.bloodGroup || 'Not provided'}</p>
-        <p><strong>Weight: </strong>{userDetails?.vitalStats?.weight ? `${userDetails.vitalStats.weight} kg` : 'Not provided'}</p>
-        <p><strong>Height: </strong>{userDetails?.vitalStats?.height ? `${userDetails.vitalStats.height} cm` : 'Not provided'}</p>
+                  <p><strong>Weight: </strong>{userDetails?.vitalStats?.weight ? `${userDetails.vitalStats.weight} kg` : 'Not provided'}</p>
+                  <p><strong>Height: </strong>{userDetails?.vitalStats?.height ? `${userDetails.vitalStats.height} cm` : 'Not provided'}</p>
                 </div>
               </div>
 
@@ -586,9 +539,9 @@ return (
                 <div className="card-content">
                   <h3>Emergency Contact</h3>
                   <p><strong>Name: </strong>{userDetails?.emergencyContact?.name || 'Not provided'}</p>
-        <p><strong>Phone: </strong>{userDetails?.emergencyContact?.phoneNumber ? 
-          `+91 ${userDetails.emergencyContact.phoneNumber}` : 
-          'Not provided'}</p>
+                  <p><strong>Phone: </strong>{userDetails?.emergencyContact?.phoneNumber ? 
+                  `+91 ${userDetails.emergencyContact.phoneNumber}` : 
+                  'Not provided'}</p>
                 </div>
               </div>
 
@@ -597,9 +550,50 @@ return (
                 <div className="card-content">
                   <h3>Address</h3>
                   <p><strong>Street: </strong>{userDetails?.address?.street || 'Not provided'}</p>
-        <p><strong>City: </strong>{userDetails?.address?.city || 'Not provided'}</p>
-        <p><strong>State: </strong>{userDetails?.address?.state || 'Not provided'}</p>
-        <p><strong>Zip Code: </strong>{userDetails?.address?.zipCode || 'Not provided'}</p>
+                  <p><strong>City: </strong>{userDetails?.address?.city || 'Not provided'}</p>
+                  <p><strong>State: </strong>{userDetails?.address?.state || 'Not provided'}</p>
+                  <p><strong>Zip Code: </strong>{userDetails?.address?.zipCode || 'Not provided'}</p>
+                </div>
+              </div>
+
+              <div className="detail-card">
+                <CoronavirusIcon className="card-icon" />
+                <div className="card-content">
+                  <h3>Allergies</h3>
+                  {userDetails?.allergies && userDetails.allergies.length > 0 ? (
+                    <ul className="allergies-list">
+                      {userDetails.allergies.map((allergy, index) => (
+                        <li key={index} className="allergy-item">
+                          <strong>Type:</strong> {allergy.type}<br />
+                          <strong>Severity:</strong> {allergy.severity}<br />
+                          <strong>Reaction:</strong> {allergy.reaction}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No known allergies</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="detail-card">
+                <PillIcon className="card-icon" />
+                <div className="card-content">
+                  <h3>Medications</h3>
+                  {userDetails?.medications && userDetails.medications.length > 0 ? (
+                    <ul className="medications-list">
+                      {userDetails.medications.map((medication, index) => (
+                        <li key={index} className="medication-item">
+                          <strong>Name:</strong> {medication.name}<br />
+                          <strong>Dosage:</strong> {medication.dosage}<br />
+                          <strong>Frequency:</strong> {medication.frequency}<br />
+                          <strong>Start Date:</strong> {medication.startDate}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p>No medications</p>
+                  )}
                 </div>
               </div>
             </div>

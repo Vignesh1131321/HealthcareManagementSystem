@@ -1,0 +1,208 @@
+/* General styling */
+.loginContainer {
+  background-color: rgb(248, 248, 248);
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Reduced gap between form and image */
+  overflow: hidden;
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  justify-content: center; /* Centering content */
+  padding: 20px; /* Reduced padding */
+  height: 100vh; /* Full height of the viewport */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.loginImage {
+  aspect-ratio: 0.79; /* Maintain the aspect ratio */
+  object-fit: contain; /* Ensure the image is fully visible without being cropped */
+  width: 50%; /* Increase the width to 50% to make the image larger */
+  min-width: 200px; /* Ensure the image doesn't shrink too small */
+  align-self: stretch; /* Ensure it stretches to the height of the container */
+  max-width: 500px; /* Limit the image size to avoid it getting too large */
+}
+
+.formWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center buttons vertically in the form */
+  align-items: center; /* Center content horizontally */
+  width: 45%; /* Adjust form width to fit alongside the larger image */
+  min-width: 300px; /* Ensure the form doesn't shrink too much */
+}
+
+.formContainer {
+  border-radius: 16px;
+  background-color: #fff;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid rgba(102, 102, 102, 0.25);
+  box-sizing: border-box;
+}
+
+.loginTitle {
+  font-size: 28px; /* Reduced font size */
+  color: #333;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
+.loginButton,
+.socialButton {
+  padding: 12px 40px; /* Adjust padding as needed */
+  border-radius: 30px; /* Curved buttons */
+  border: 2px solid #333; /* Border around the buttons */
+  transition: all 0.3s ease-in-out;
+  width: auto; /* Remove stretching, buttons size to content */
+  margin: 0 auto; /* Center the buttons */
+  display: block; /* Make them block elements to center them */
+  margin-bottom: 10px;
+}
+
+.loginButton:hover,
+.socialButton:hover {
+  background-color: #4e73df; /* Change color on hover */
+  color: white;
+}
+
+
+.socialButtonContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px; /* Reduced gap */
+}
+
+.socialText {
+  color: #333;
+  font-size: 18px; /* Reduced font size */
+}
+
+.signupPrompt {
+  padding: 20px; /* Reduced padding */
+}
+
+.forgotPassword {
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+.forgotPassword:hover {
+  text-decoration: underline;
+}
+
+.bottomImage {
+  width: 100%;
+  max-width: 480px; /* Adjusted max-width */
+  margin-top: 40px;
+}
+
+/* Use :global for label selector */
+:global(label) {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+@media (max-width: 991px) {
+  /* Ensure responsive behavior */
+  .loginContainer {
+    flex-direction: column; /* Stack on small screens */
+    align-items: center;
+  }
+
+  .loginImage {
+    width: 80%; /* Image takes up more space on smaller screens */
+  }
+
+  .formWrapper {
+    width: 90%; /* Form width adjusts on smaller screens */
+  }
+
+  .loginButton,
+  .socialButton {
+    width: 100%; /* Full width for buttons on mobile */
+  }
+
+  .signupPrompt {
+    padding: 16px; /* Reduced padding */
+  }
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.inputLabel {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.inputWrapper {
+  position: relative; /* Needed to position the icon inside the input field */
+}
+
+.inputField {
+  width: 100%;
+  min-height: 45px; /* Adjust the height to suit your design */
+  border-radius: 12px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.passwordToggle {
+  position: absolute; /* Position the toggle icon inside the input */
+  top: 50%; /* Center the icon vertically */
+  right: 10px; /* Space from the right edge of the input */
+  transform: translateY(-50%); /* Fine-tune vertical centering */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hideIcon {
+  width: 20px; /* Adjust the size of the icon */
+  height: 20px; /* Adjust the size of the icon */
+}
+
+.passwordToggle span {
+  display: none; /* Hide the text by default */
+}
+
+.passwordToggle:hover .hideIcon {
+  opacity: 0.7; /* Add some opacity on hover */
+}
+
+/* Optional: Show the "Show/Hide" text on focus or hover */
+.passwordToggle:focus-within span {
+  display: inline-block;
+  font-size: 12px;
+  color: #333;
+  margin-left: 5px;
+}
+
+.divider {
+  display: flex;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  color: rgba(102, 102, 102, 0.45);
+  font-size: 14px; /* Adjusted font size */
+}
+
+.dividerLine {
+  background-color: rgba(102, 102, 102, 0.25);
+  height: 2px;
+  flex: 1;
+}

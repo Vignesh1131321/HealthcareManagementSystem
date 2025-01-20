@@ -1,0 +1,136 @@
+.doctorForm {
+    display: grid;
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .formSection {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.2s ease;
+  }
+  
+  .formSection:hover {
+    background: #f1f5f9;
+  }
+  
+  .formSection h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .inputGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem; /* Increased gap between side-by-side inputs */
+    margin-bottom: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  
+  .inputWrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 0.875rem 1.125rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.938rem;
+    color: #1e293b;
+    background: white;
+    transition: all 0.2s ease;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #505abb;
+    box-shadow: 0 0 0 3px rgba(80, 90, 187, 0.1);
+  }
+  
+  .input::placeholder {
+    color: #94a3b8;
+  }
+  
+  /* Google Places Autocomplete styles */
+  .inputWrapper .pac-container {
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-top: 4px;
+    font-family: inherit;
+    padding: 0.5rem;
+  }
+  
+  .inputWrapper .pac-item {
+    padding: 0.75rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+  }
+  
+  .inputWrapper .pac-item:hover {
+    background-color: #f1f5f9;
+  }
+  
+  .inputWrapper .pac-item-query {
+    font-size: 0.938rem;
+    color: #1e293b;
+  }
+  
+  .submitButton {
+    width: 100%;
+    padding: 0.875rem;
+    background: #505abb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.938rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1.5rem;
+  }
+  
+  .submitButton:hover {
+    background: #424d9e;
+  }
+  
+  .submitButton:active {
+    transform: translateY(1px);
+  }
+  
+  @media (max-width: 768px) {
+    .doctorForm {
+      gap: 1.5rem;
+    }
+  
+    .formSection {
+      padding: 1.5rem;
+    }
+  
+    .inputGrid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 0;
+    }
+  }
+  .inputError {
+    border-color: #ff4d4f;
+  }
+  
+  .errorMessage {
+    color: #ff4d4f;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+  }
