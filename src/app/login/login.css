@@ -1,0 +1,61 @@
+/* app/(auth)/login/login.module.css */
+.pageContainer {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f6f9fc 0%, #edf2f7 100%);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .formToggleContainer {
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 12px;
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .toggleButton {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+    color: #64748b;
+  }
+  
+  .toggleButton.active {
+    background-color: #2563eb;
+    color: white;
+  }
+  
+  .toggleButton:hover:not(.active) {
+    background-color: #f1f5f9;
+  }
+  
+  .formContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 640px) {
+    .pageContainer {
+      padding: 1rem;
+    }
+  
+    .formToggleContainer {
+      width: 90%;
+      margin-bottom: 1.5rem;
+    }
+  
+    .toggleButton {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+  }

@@ -6,7 +6,7 @@ import { InputField } from "./InputField"; // Import the InputField component
 import { SocialButton } from "./SocialButton";
 import { signIn } from "next-auth/react";
 
-export const LoginForm: React.FC = () => {
+export const DoctorLoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -24,13 +24,14 @@ export const LoginForm: React.FC = () => {
       redirect: false,
       email,
       password,
+      isDoctor: true
     });
 
     if (res?.error) {
       setError(res.error);  // Set error message from NextAuth
     } else {
       // Redirect to home page on successful login
-      window.location.href = "/";  // Or use `router.push("/")` if you're using next/router
+      window.location.href = "/doctor_side";  // Or use `router.push("/")` if you're using next/router
     }
   };
 
@@ -83,11 +84,11 @@ export const LoginForm: React.FC = () => {
               <div className={styles.dividerLine} />
             </div>
 
-            <SocialButton
+            {/* <SocialButton
               icon="https://cdn.builder.io/api/v1/image/assets/TEMP/d9db2c249ee63c3bb536d1c87122771cfa623b5911c4c83594978d738168ecd4?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21"
               text="Continue with Google"
               onClick={handleSocialLogin}
-            />
+            /> */}
             <div>
               <a href="#" className={styles.forgotPassword}>
                 Forget your password?
