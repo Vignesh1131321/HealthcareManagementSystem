@@ -58,5 +58,6 @@ export const config = {
     '/forgotpassword',
     '/appointment',
     '/complete-profile',
+    '/doctor_side/doctor-profile',
   ]
 }

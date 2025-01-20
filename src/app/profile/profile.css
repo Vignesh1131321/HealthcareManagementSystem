@@ -575,6 +575,25 @@
   flex-grow: 1;
  
 }
+
+.allergies-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.allergy-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+.allergy-item strong {
+  color: #495057;
+  margin-right: 5px;
+}
 /* Responsive Design */
 @media (max-width: 1024px) {
   .profile-header {
