@@ -5,7 +5,7 @@
   align-items: center;
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f8fafc, #ffffff);
+  background: "rgba(255, 255, 255, 0.7)";
   overflow-x: hidden;
   font-family: 'Muli', system-ui, -apple-system, sans-serif;
 }

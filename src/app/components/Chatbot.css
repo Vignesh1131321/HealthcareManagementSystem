@@ -1,3 +1,7 @@
+.hospital-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #EBF4FF 0%, #E0EAFC 100%);
+}
 .chat-body {
   min-height: 100vh;
   display: flex;

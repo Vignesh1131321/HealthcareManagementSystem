@@ -7,6 +7,7 @@ import { FaUserMd, FaMicrophone, FaPaperPlane, FaRobot, FaUser, FaTrash, FaAmbul
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { useRouter } from 'next/navigation';
 import { useJsApiLoader } from "@react-google-maps/api";
+import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 
 
 function Chatbot() {

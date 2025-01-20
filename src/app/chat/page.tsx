@@ -760,7 +760,7 @@ const ChatPage = () => {
   };
 
   return (
-    <>
+    <div className="hospital-page">
       <NavbarWrapper/>
       <div className="chat-body">
         <div className="chat-container">
@@ -845,7 +845,7 @@ const ChatPage = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

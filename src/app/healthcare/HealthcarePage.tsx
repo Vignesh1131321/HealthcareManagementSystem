@@ -54,8 +54,8 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({ text, speed = 45 }) => {
 // Rest of the component remains the same...
 export const HealthcarePage: React.FC<HeroContentProps>= () => {
   return (
-    <>
-      <NavbarWrapper />
+    <div className="hospital-page">
+      <NavbarWrapper backgroundColor="linear-gradient(to bottom, #f8fafc, #ffffff);"/>
       <div className={styles.pageContainer}>
         <div className={styles.mainContent}>
           <div className={styles.heroSection}>
@@ -88,6 +88,6 @@ export const HealthcarePage: React.FC<HeroContentProps>= () => {
         </div>
       </div>
       <Footer />
-    </>
+    </div>
   );
 };
