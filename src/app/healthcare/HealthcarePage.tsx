@@ -55,7 +55,7 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({ text, speed = 45 }) => {
 export const HealthcarePage: React.FC<HeroContentProps>= () => {
   return (
     <div className="hospital-page">
-      <NavbarWrapper backgroundColor="linear-gradient(to bottom, #f8fafc, #ffffff);"/>
+      <NavbarWrapper backgroundColor="linear-gradient(to bottom, #f8fafc, #ffffff)"/>
       <div className={styles.pageContainer}>
         <div className={styles.mainContent}>
           <div className={styles.heroSection}>

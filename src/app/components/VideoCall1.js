@@ -1,145 +1,123 @@
 "use client";
-
-import React, { useRef, useState } from "react";
+import axios from 'axios';
+import React, { useRef, useState } from 'react';
 
 const VideoCall1 = () => {
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
-  const peerConnectionRef = useRef(null);
   const [isInCall, setIsInCall] = useState(false);
-  const [roomId, setRoomId] = useState(""); // State to store the Room ID
-
-  const servers = {
-    iceServers: [
-      { urls: "stun:stun.l.google.com:19302" }, // Google's public STUN server
-    ],
-  };
+  const [localOffer, setLocalOffer] = useState('');
+  const [roomId, setRoomId] = useState('');
+  const localVideoRef = useRef();
+  const remoteVideoRef = useRef();
+  const peerConnectionRef = useRef();
 
   const generateRoomId = () => {
-    // Generate a random 8-character room ID
-    return Math.random().toString(36).substr(2, 8).toUpperCase();
+    return Math.random().toString(36).substring(7);
   };
 
+  // Add room storage
+  const [rooms, setRooms] = useState(new Map());
+  
   const startCall = async () => {
-    const localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-
-    localVideoRef.current.srcObject = localStream;
-
-    const peerConnection = new RTCPeerConnection(servers);
-    peerConnectionRef.current = peerConnection;
-
-    localStream.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, localStream);
-    });
-
-    peerConnection.ontrack = (event) => {
-      remoteVideoRef.current.srcObject = event.streams[0];
-    };
-
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        console.log("New ICE candidate:", event.candidate);
-        // In a real app, send the candidate to the signaling server
-      }
-    };
-
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-    console.log("Offer created:", offer);
-
-    // Generate and display a room ID
-    const newRoomId = generateRoomId();
-    setRoomId(newRoomId);
-
-    setIsInCall(true);
-
-    // For demonstration, log the offer and room ID
-    console.log(`Room ID: ${newRoomId}`);
-    console.log("Offer:", JSON.stringify(offer));
-    alert(`Room ID: ${newRoomId}\nShare this Room ID with someone to join.`);
-  };
-
-  const joinCall = async (remoteOffer) => {
-    const peerConnection = new RTCPeerConnection(servers);
-    peerConnectionRef.current = peerConnection;
-
-    const localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-
-    localVideoRef.current.srcObject = localStream;
-
-    localStream.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, localStream);
-    });
-
-    peerConnection.ontrack = (event) => {
-      remoteVideoRef.current.srcObject = event.streams[0];
-    };
-
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        console.log("New ICE candidate:", event.candidate);
-        // In a real app, send the candidate to the signaling server
-      }
-    };
-
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(remoteOffer));
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
-
-    console.log("Answer created:", answer);
-    alert("Send this Answer to the person who created the room.");
-    setIsInCall(true);
-  };
-
-  const endCall = () => {
-    if (peerConnectionRef.current) {
-      peerConnectionRef.current.close();
-      peerConnectionRef.current = null;
+    try {
+      const newRoomId = generateRoomId();
+      setRoomId(newRoomId);
+  
+      const pc = new RTCPeerConnection();
+      peerConnectionRef.current = pc;
+  
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      localVideoRef.current.srcObject = stream;
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+  
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      
+      // Store room data in database
+      await axios.post('/api/rooms/create', {
+        roomId: newRoomId,
+        offer: {
+          type: offer.type,
+          sdp: offer.sdp
+        }
+      });
+      
+      alert(`Share this Room ID with the person you want to call: ${newRoomId}`);
+      setIsInCall(true);
+    } catch (error) {
+      console.error("Error starting call:", error);
+      alert("Failed to start call: " + error.message);
     }
-
-    if (localVideoRef.current.srcObject) {
-      localVideoRef.current.srcObject.getTracks().forEach((track) => track.stop());
-      localVideoRef.current.srcObject = null;
-    }
-
-    remoteVideoRef.current.srcObject = null;
-    setIsInCall(false);
-    setRoomId("");
   };
+  
+  const joinCall = async () => {
+    try {
+      const roomId = prompt("Enter Room ID:");
+      if (!roomId) return;
+  
+      // Get room data from database
+      const response = await axios.get(`/api/rooms/${roomId}`);
+      if (!response.data || !response.data.offer) {
+        throw new Error('Room not found or invalid data');
+      }
 
+      const offerData = response.data.offer;
+
+  
+      setRoomId(roomId);
+  
+      const pc = new RTCPeerConnection();
+      peerConnectionRef.current = pc;
+  
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      localVideoRef.current.srcObject = stream;
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+  
+      pc.ontrack = (event) => {
+        remoteVideoRef.current.srcObject = event.streams[0];
+      };
+  
+      await pc.setRemoteDescription(new RTCSessionDescription(offerData));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+  
+      // Update room with answer
+      await axios.post(`/api/rooms/${roomId}/answer`, {
+        answer: {
+          type: answer.type,
+          sdp: answer.sdp
+        }
+      });
+  
+      setIsInCall(true);
+    } catch (error) {
+      console.error("Error joining call:", error);
+      alert("Error joining call: " + error.message);
+    }
+  };
   return (
-    <div>
+    <div className="video-call-container">
       <h1>Video Call</h1>
-      <div>
-        <video ref={localVideoRef} autoPlay playsInline muted style={{ width: "45%", marginRight: "10px" }} />
-        <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "45%" }} />
+      {roomId && <div className="room-id">Room ID: {roomId}</div>}
+      <div className="video-grid">
+        <video ref={localVideoRef} autoPlay playsInline muted />
+        <video ref={remoteVideoRef} autoPlay playsInline />
       </div>
-      {!isInCall ? (
-        <>
-          <button onClick={startCall}>Start Call</button>
-          <button
-            onClick={() => {
-              const remoteOffer = prompt("Paste the remote offer here:");
-              if (remoteOffer) joinCall(JSON.parse(remoteOffer));
-            }}
-          >
-            Join Call
+      <div className="controls">
+        {!isInCall ? (
+          <div>
+            <button onClick={startCall}>Start New Call</button>
+            <button onClick={joinCall}>Join Call</button>
+          </div>
+        ) : (
+          <button onClick={() => {
+            peerConnectionRef.current?.close();
+            setIsInCall(false);
+            localVideoRef.current.srcObject?.getTracks().forEach(track => track.stop());
+          }}>
+            End Call
           </button>
-        </>
-      ) : (
-        <button onClick={endCall}>End Call</button>
-      )}
-      {roomId && (
-        <p style={{ marginTop: "20px", fontWeight: "bold" }}>
-          Room ID: <span style={{ color: "blue" }}>{roomId}</span>
-        </p>
-      )}
+        )}
+      </div>
     </div>
   );
 };
