@@ -1,4 +1,4 @@
-"use client"
+/* "use client"
 import React, { useEffect, useRef, useState } from "react";
 import { ZegoExpressEngine } from "zego-express-engine-webrtc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -199,4 +199,4 @@ const VideoCall2 = () => {
   );
 };
 
-export default VideoCall2;
+export default VideoCall2; */
