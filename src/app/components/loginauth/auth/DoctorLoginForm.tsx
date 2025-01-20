@@ -31,7 +31,7 @@ export const DoctorLoginForm: React.FC = () => {
       setError(res.error);  // Set error message from NextAuth
     } else {
       // Redirect to home page on successful login
-      window.location.href = "/";  // Or use `router.push("/")` if you're using next/router
+      window.location.href = "/doctor_side";  // Or use `router.push("/")` if you're using next/router
     }
   };
 
