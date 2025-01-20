@@ -1,4 +1,4 @@
-"use client"; // Add this directive to indicate it's a client component
+"use client";
 
 import React, { useRef, useState } from "react";
 
@@ -7,11 +7,17 @@ const VideoCall1 = () => {
   const remoteVideoRef = useRef(null);
   const peerConnectionRef = useRef(null);
   const [isInCall, setIsInCall] = useState(false);
+  const [roomId, setRoomId] = useState(""); // State to store the Room ID
 
   const servers = {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" }, // Google's public STUN server
     ],
+  };
+
+  const generateRoomId = () => {
+    // Generate a random 8-character room ID
+    return Math.random().toString(36).substr(2, 8).toUpperCase();
   };
 
   const startCall = async () => {
@@ -36,6 +42,7 @@ const VideoCall1 = () => {
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         console.log("New ICE candidate:", event.candidate);
+        // In a real app, send the candidate to the signaling server
       }
     };
 
@@ -43,7 +50,16 @@ const VideoCall1 = () => {
     await peerConnection.setLocalDescription(offer);
     console.log("Offer created:", offer);
 
+    // Generate and display a room ID
+    const newRoomId = generateRoomId();
+    setRoomId(newRoomId);
+
     setIsInCall(true);
+
+    // For demonstration, log the offer and room ID
+    console.log(`Room ID: ${newRoomId}`);
+    console.log("Offer:", JSON.stringify(offer));
+    alert(`Room ID: ${newRoomId}\nShare this Room ID with someone to join.`);
   };
 
   const joinCall = async (remoteOffer) => {
@@ -68,6 +84,7 @@ const VideoCall1 = () => {
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         console.log("New ICE candidate:", event.candidate);
+        // In a real app, send the candidate to the signaling server
       }
     };
 
@@ -76,6 +93,7 @@ const VideoCall1 = () => {
     await peerConnection.setLocalDescription(answer);
 
     console.log("Answer created:", answer);
+    alert("Send this Answer to the person who created the room.");
     setIsInCall(true);
   };
 
@@ -92,6 +110,7 @@ const VideoCall1 = () => {
 
     remoteVideoRef.current.srcObject = null;
     setIsInCall(false);
+    setRoomId("");
   };
 
   return (
@@ -102,19 +121,24 @@ const VideoCall1 = () => {
         <video ref={remoteVideoRef} autoPlay playsInline style={{ width: "45%" }} />
       </div>
       {!isInCall ? (
-        <button onClick={startCall}>Start Call</button>
+        <>
+          <button onClick={startCall}>Start Call</button>
+          <button
+            onClick={() => {
+              const remoteOffer = prompt("Paste the remote offer here:");
+              if (remoteOffer) joinCall(JSON.parse(remoteOffer));
+            }}
+          >
+            Join Call
+          </button>
+        </>
       ) : (
         <button onClick={endCall}>End Call</button>
       )}
-      {!isInCall && (
-        <button
-          onClick={() => {
-            const remoteOffer = prompt("Paste remote offer here:");
-            joinCall(JSON.parse(remoteOffer));
-          }}
-        >
-          Join Call
-        </button>
+      {roomId && (
+        <p style={{ marginTop: "20px", fontWeight: "bold" }}>
+          Room ID: <span style={{ color: "blue" }}>{roomId}</span>
+        </p>
       )}
     </div>
   );
