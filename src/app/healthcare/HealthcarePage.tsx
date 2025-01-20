@@ -9,6 +9,7 @@ import { Services } from "./services/Services";
 import { HealthcareSection } from "./aboutus/HealthcareSection";
 import { Footer } from "./footer/Footer";
 import { HeroContentProps } from "./types";
+
 interface AnimatedTextProps {
   text: string;
   speed?: number;
@@ -33,26 +34,46 @@ const AnimatedText: React.FC<AnimatedTextProps> = ({ text, speed = 45 }) => {
     }
   }, [currentIndex, text, speed]);
 
+  // Split text into two parts: "Virtual healthcare for" and "you"
+  const words = text.split(' ');
+  const firstLine = words.slice(0, words.length - 1).join(' '); // Everything except "you"
+  const secondLine = words[words.length - 1]; // Just "you"
+
   return (
-    <div className={styles.animationWrapper}>
-      {displayedText.split('').map((char, index) => (
-        <span
-          key={index}
-          className={styles.animatedChar}
-          style={{
-            animationDelay: `${index * 0.05}s`,
-            marginRight: char === ' ' ? '0.25em' : '0.02em' // Add spacing between characters
-          }}
-        >
-          {char}
-        </span>
-      ))}
+    <div className={styles.animationContainer}>
+      <div className={styles.animationWrapper}>
+        {firstLine.split('').map((char, index) => (
+          <span
+            key={index}
+            className={styles.animatedChar}
+            style={{
+              animationDelay: `${index * 0.05}s`,
+              marginRight: char === ' ' ? '0.25em' : '0.02em'
+            }}
+          >
+            {char}
+          </span>
+        ))}
+      </div>
+      <div className={styles.animationWrapper}>
+        {secondLine.split('').map((char, index) => (
+          <span
+            key={`second-${index}`}
+            className={styles.animatedChar}
+            style={{
+              animationDelay: `${(firstLine.length + index) * 0.05}s`,
+              marginRight: '0.02em'
+            }}
+          >
+            {char}
+          </span>
+        ))}
+      </div>
     </div>
   );
 };
 
-// Rest of the component remains the same...
-export const HealthcarePage: React.FC<HeroContentProps>= () => {
+export const HealthcarePage: React.FC<HeroContentProps> = () => {
   return (
     <div className="hospital-page">
       <NavbarWrapper backgroundColor="linear-gradient(to bottom, #f8fafc, #ffffff)"/>

@@ -18,7 +18,12 @@
   opacity: 1;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
-
+.animationContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
 .animatedText::after {
   content: '';
   display: inline-block;
@@ -32,17 +37,15 @@
 .animatedChar {
   display: inline-block;
   opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.5s ease forwards;
-  letter-spacing: 0.02em;
-  padding: 0 0.01em;
+  animation: fadeIn 0.5s forwards;
+  font-size: inherit;
+  line-height: inherit;
 }
-
 .animationWrapper {
-  display: inline-block;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   overflow: hidden;
-  letter-spacing: normal;
-  word-spacing: 0.25em;
 }
 
 @keyframes fadeInUp {
@@ -215,10 +218,15 @@ html {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-
 @keyframes slideIn {
   from {
     opacity: 0;
