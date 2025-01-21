@@ -428,11 +428,14 @@ const handleGenerateSummary = async (record: any) => {
         }
       });
       console.log("response fetching");
+
+      console.log("response data",response.data);
+      console.log("response data room",response.data.room);
       
-      if (response.data && response.data.room) {
-        console.log("Room found:", response.data.room);
+      if (response.data) {
+        // console.log("Room found:", response.data.room);
         setRoomId(response.data.roomId);
-        router.push(`/room/${roomId}`);
+        router.push(`/room/${response.data.roomId}`);
       } else {
         toast.error('Room not found');
       }
@@ -741,7 +744,7 @@ return (
                             <Calendar size={20} />
                             <h3>{appointment.doctorName.split('|')[0]}</h3>
                             <button 
-                              onClick={() => handleJoinRoom(userDetails._id, appointment.doctorId)}
+                              onClick={() => handleJoinRoom(userDetails?._id, appointment.doctorId)}
                               className="video-call-btn"
                               title="Join Video Call"
                             >

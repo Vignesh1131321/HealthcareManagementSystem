@@ -7,12 +7,12 @@ const roomSchema = new mongoose.Schema({
     unique: true 
   },
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     required: true
   },
   doctorId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Doctor',
     required: true
   },

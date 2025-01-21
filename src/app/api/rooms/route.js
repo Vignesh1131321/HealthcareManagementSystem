@@ -29,7 +29,7 @@ export async function GET(req) {
     if (!room) {
       return NextResponse.json(
         { error: "Room not found or unauthorized" },
-        { status: 404 }
+        { status: 406 }
       );
     }
 
