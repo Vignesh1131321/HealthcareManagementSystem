@@ -1,4 +1,4 @@
-/* import DoctorChat from "../components/DoctorChat";
+import DoctorChat from "../components/DoctorChat";
 import Header from "../components/Header";
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 export default function ChatbotPage() {
@@ -9,4 +9,4 @@ export default function ChatbotPage() {
       </div>
   
     );
-  } */
+  }
