@@ -211,6 +211,15 @@ useEffect(() => {
       specialty: doctor.specialty,
       date: selectedDate,
       time: selectedTimeSlot,
+      prescription: [
+        {
+          medicineName: "", // e.g., "Paracetamol"
+          dosage: "",       // e.g., "500mg"
+          frequency: "",    // e.g., "Twice a day"
+          duration: "",     // e.g., "5 days"
+          specialInstructions: "", // e.g., "Take after food"
+        }
+      ],
     };
 
     const appointmentDate = new Date(appointmentDetails.date);
