@@ -144,7 +144,7 @@ export const DoctorAppointment = ({ doctorId }) => {
             <div className="patient-details">
               <div className="detail-row">
                 <User size={20} />
-                <span>{appointment.userId}</span>
+                <span>{appointment.userName}</span>
               </div>
 
               {appointment.specialty && (

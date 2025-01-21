@@ -7,9 +7,9 @@ import { NavigationItemProps } from "../types";
 const navigationItems: NavigationItemProps[] = [
   { text: "Home", link: "/" },
   /* { text: "Find Doctor", link: "/doctor" }, */
-  { text: "Find Hospitals", link: "/hospitals" },
-  { text: "MediAid", link: "/chat" },
-  { text: "Profile", link: "/profile" },
+  // { text: "Find Hospitals", link: "/hospitals" },
+  { text: "Appointments", link: "/doctor_home/doctor_appointments" },
+  { text: "Profile", link: "/doctor_home/doctor-profile" },
 ];
 
 export const Navigation: React.FC = () => {
