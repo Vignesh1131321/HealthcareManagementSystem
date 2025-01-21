@@ -3,6 +3,7 @@ import useUser from '@/app/hooks/useUser';
 import React, { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import { NavbarWrapper } from '@/app/healthcare/components/NavbarWrapper';
 
 const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
   const { fullName } = useUser();
@@ -79,11 +80,15 @@ const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
   }, [roomID, fullName]);
 
   return (
-    <div
-      className="myCallContainer"
-      ref={containerRef}
-      style={{ width: '100vw', height: '100vh' }}
-    ></div>
+    <>
+      <NavbarWrapper/>
+      <div
+        className="myCallContainer"
+        ref={containerRef}
+        style={{ width: '100vw', height: '100vh' }}
+      >
+      </div>
+    </>
   );
 };
 

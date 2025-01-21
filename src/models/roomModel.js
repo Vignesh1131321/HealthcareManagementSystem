@@ -1,38 +1,30 @@
 import mongoose from 'mongoose';
 
 const roomSchema = new mongoose.Schema({
-  roomId: {
+  roomId: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  userId: {
     type: String,
-    required: true,
-    unique: true
+    ref: 'User',
+    required: true
   },
-  offer: {
-    type: {
-      type: String,
-      required: true
-    },
-    sdp: {
-      type: String,
-      required: true
-    }
+  doctorId: {
+    type: String,
+    ref: 'Doctor',
+    required: true
   },
-  answer: {
-    type: {
-      type: String,
-      required: false
-    },
-    sdp: {
-      type: String,
-      required: false
-    }
+  isActive: {
+    type: Boolean,
+    default: true
   },
-  createdAt: {
-    type: Date,
+  createdAt: { 
+    type: Date, 
     default: Date.now,
-    expires: 3600 // Automatically delete after 1 hour
+    expires: 3600 // Room expires after 1 hour
   }
 });
 
-// Change from named export to default export
-const Room = mongoose.models.Room || mongoose.model('Room', roomSchema);
-export default Room;
+export default mongoose.models.Room || mongoose.model('Room', roomSchema);

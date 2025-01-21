@@ -8,7 +8,7 @@ const GOOGLE_PLACES_API_KEY = "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4";
 // Handler for POST requests
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { userId, identity, doctorId, doctorName, specialty, date, time } = body;
+    const { userId,userName, identity, doctorId, doctorName, specialty, date, time } = body;
 
     if (!doctorId || !doctorName || !date || !time) {
         return NextResponse.json(
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest) {
 
         await appointmentsCollection.insertOne({
             userId,
+            userName,
             identity,
             doctorId,
             doctorName,

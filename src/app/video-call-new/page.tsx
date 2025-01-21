@@ -3,19 +3,59 @@ import { useEffect, useState } from "react";
 import useUser from "../hooks/useUser";
 import { useRouter } from "next/navigation";
 import {v4 as uuid} from 'uuid';
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function Video() {
   const { fullName, setFullName } = useUser();
   const [roomId, setRoomId] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setFullName("");
   }, []);
 
-  const handleJoinRoom = () => {
-    router.push(`/room/${roomId}`);
+  
+  const handleCreateRoom = async () => {
+    const newRoomId = uuid();
+    try {
+      await axios.post("/api/rooms/create", { roomId: newRoomId });
+      router.push(`/room/${newRoomId}`);
+    } catch (error) {
+      console.error("Error creating room:", error);
+      toast.error("Failed to create room");
+    }
   };
+  
+  const fetchRoom = async (id: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/rooms/${id}`);
+      
+      if (response.data && response.data.room) {
+        setRoomId(id);
+        router.push(`/room/${id}`);
+      } else {
+        toast.error('Room not found');
+      }
+    } catch (error) {
+      console.error('Error fetching room:', error);
+      toast.error('Failed to join room');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinRoom = async () => {
+    if (!roomId.trim()) {
+      toast.error('Please enter a room ID');
+      return;
+    }
+    await fetchRoom(roomId);
+  };
+
+
 
   return (
     <div className="w-full h-screen">
@@ -52,11 +92,10 @@ export default function Video() {
               </button>
             </div>
             <div>
-              <button
-              onClick={() => router.push(`/room/${uuid()}`)}
-              >
-               do
-              </button>
+            <button onClick={handleCreateRoom} className="bg-green-500 px-4 py-2 rounded">
+              Do
+            </button>
+
               Or create a new meeting
             </div>
             </>

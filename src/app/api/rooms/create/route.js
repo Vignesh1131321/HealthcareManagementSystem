@@ -1,17 +1,42 @@
-import { NextResponse } from 'next/server';
-import { connect } from '@/dbConfig/dbConfig';
-import Room from '@/models/roomModel';
+import { NextResponse } from "next/server";
+import { connect } from "@/dbConfig/dbConfig";
+import Room from "@/models/roomModel";
+import mongoose from 'mongoose';
 
-export async function POST(request) {
+export async function POST(req) {
   try {
-    await connect();
-    const { roomId, offer } = await request.json();
-    console.log(`Creating room with ID: ${roomId}`); // Debug log
-    const room = new Room({ roomId, offer });
-    await room.save();
-    return NextResponse.json({ success: true, room });
+    await mongoose.connect(process.env.MONGO_URI);
+    
+    // Get data from request headers
+    const { roomId, userId, doctorId } = await req.json();
+
+    console.log("userId ", userId);
+    console.log("doctorId ", doctorId);
+    console.log("roomId ", roomId);
+    // Validate required fields
+    if (!roomId || !userId || !doctorId) {
+      return NextResponse.json({ 
+        error: "Room ID, User ID and Doctor ID are required" 
+      }, { status: 400 });
+    }
+
+    // Create new room
+    const newRoom = await Room.create({
+      roomId,
+      userId,
+      doctorId,
+      isActive: true
+    });
+
+    return NextResponse.json({
+      message: "Room created successfully",
+      room: newRoom
+    }, { status: 201 });
+
   } catch (error) {
-    console.error("Error in POST /api/rooms/create:", error); // Debug log
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error creating room:", error);
+    return NextResponse.json({ 
+      error: "Failed to create room" 
+    }, { status: 500 });
   }
 }

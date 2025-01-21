@@ -204,12 +204,22 @@ useEffect(() => {
 
     const appointmentDetails = {
       userId : userDetails._id,
+      userName: userDetails.username,
       identity: doctor.identity,
       doctorId: doctor.id,
       doctorName: doctor.name,
       specialty: doctor.specialty,
       date: selectedDate,
       time: selectedTimeSlot,
+      prescription: [
+        {
+          medicineName: "", // e.g., "Paracetamol"
+          dosage: "",       // e.g., "500mg"
+          frequency: "",    // e.g., "Twice a day"
+          duration: "",     // e.g., "5 days"
+          specialInstructions: "", // e.g., "Take after food"
+        }
+      ],
     };
 
     const appointmentDate = new Date(appointmentDetails.date);
