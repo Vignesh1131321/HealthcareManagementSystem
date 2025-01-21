@@ -5,13 +5,13 @@ import Room from "@/models/roomModel";
 export async function GET(req) {
   try {
     await connect();
-    
+    console.log("Hi in backend");
     // Get URL parameters
-    const url = new URL(req.url);
-    const doctorId = url.searchParams.get("doctorId");
-    const userId = url.searchParams.get("userId");
-    const roomId = url.pathname.split('/').pop();
-
+    const userId = req.headers.get("userId");
+    const doctorId = req.headers.get("doctorId");
+    console.log("userId", userId);
+    console.log("doctorId", doctorId);
+    
     if (!doctorId || !userId) {
       return NextResponse.json(
         { error: "doctorId and userId are required" },
@@ -21,10 +21,9 @@ export async function GET(req) {
 
     // Find room with matching IDs
     const room = await Room.findOne({
-      roomId,
       doctorId,
       userId,
-      isActive: true
+    //   isActive: true
     });
 
     if (!room) {

@@ -1,17 +1,20 @@
-import { NextResponse } from 'next/server';
-import { connect } from '@/dbConfig/dbConfig';
-import Room from '@/models/roomModel';
+// src/app/api/rooms/create/route.js
+import mongoose from "mongoose";
+import Room from "@/models/roomModel";
 
-export async function POST(request) {
+export async function POST(req) {
   try {
-    await connect();
-    const { roomId, offer } = await request.json();
-    console.log(`Creating room with ID: ${roomId}`); // Debug log
-    const room = new Room({ roomId, offer });
-    await room.save();
-    return NextResponse.json({ success: true, room });
+    await mongoose.connect(process.env.MONGO_URI);
+
+    const { roomId } = await req.json();
+    if (!roomId) {
+      return new Response(JSON.stringify({ error: "Room ID is required" }), { status: 400 });
+    }
+
+    const newRoom = await Room.create({ roomId });
+    return new Response(JSON.stringify({ message: "Room created", room: newRoom }), { status: 201 });
   } catch (error) {
-    console.error("Error in POST /api/rooms/create:", error); // Debug log
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Error creating room:", error);
+    return new Response(JSON.stringify({ error: "Failed to create room" }), { status: 500 });
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch } from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch} from 'lucide-react';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -95,6 +95,7 @@ export default function ProfilePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [images, setImages] = useState<ProfileImage[]>([]);
+  const [roomId, setRoomId] = useState("");
   const [previewRecord, setPreviewRecord] = useState<{
     name: string;
     url: string;
@@ -416,7 +417,38 @@ const handleGenerateSummary = async (record: any) => {
       setLoading(false);
     }
   };
-  
+  const fetchRoom = async (userId: string,doctorId:string) => {
+    try {
+      setLoading(true);
+      console.log("fetching room");
+      const response = await axios.get('/api/rooms', {
+        headers :{
+          userId: userId,
+          doctorId:doctorId
+        }
+      });
+      console.log("response fetching");
+      
+      if (response.data && response.data.room) {
+        console.log("Room found:", response.data.room);
+        setRoomId(response.data.roomId);
+        router.push(`/room/${roomId}`);
+      } else {
+        toast.error('Room not found');
+      }
+    } catch (error) {
+      console.error('Error fetching room:', error);
+      toast.error('Failed to join room');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinRoom = async (userId:any,doctorId:any) => {
+    console.log("trying to join room");
+    console.log("1");
+    await fetchRoom(userId,doctorId);
+  };
 
 // Trigger fetch when activeTab is "appointments"
 useEffect(() => {
@@ -705,18 +737,26 @@ return (
                       <div className="appointments-list">
                         {appointments.map((appointment:Appointment) => (
                           <div key={appointment._id} className="appointment-card">
-                            <div className="appointment-header">
-                              <Calendar size={20} />
-                              <h3>{appointment.doctorName.split('|')[0]}</h3>
-                            </div>
-                            {appointment.identity === "2" && (
-                              <p className="specialty">Specialty: {appointment.specialty}</p>
-                            )}
-                            <div className="appointment-details">
-                              <p>Date: {appointment.appointmentDate}</p>
-                              <p>Time: {appointment.appointmentTime}</p>
-                            </div>
+                          <div className="appointment-header">
+                            <Calendar size={20} />
+                            <h3>{appointment.doctorName.split('|')[0]}</h3>
+                            <button 
+                              onClick={() => handleJoinRoom(userDetails._id, appointment.doctorId)}
+                              className="video-call-btn"
+                              title="Join Video Call"
+                            >
+                              VideoCall
+                              {/* <VideoCamera size={20} /> */}
+                            </button>
                           </div>
+                          {appointment.identity === "2" && (
+                            <p className="specialty">Specialty: {appointment.specialty}</p>
+                          )}
+                          <div className="appointment-details">
+                            <p>Date: {appointment.appointmentDate}</p>
+                            <p>Time: {appointment.appointmentTime}</p>
+                          </div>
+                        </div>
                         ))}
                       </div>
                     ) : (
