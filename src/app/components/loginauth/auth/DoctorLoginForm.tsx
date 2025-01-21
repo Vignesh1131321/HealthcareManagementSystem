@@ -11,27 +11,48 @@ export const DoctorLoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+    
+  //   if (!email || !password) {
+  //     setError("Email and Password are required.");
+  //     return;
+  //   }
+
+  //   // Perform manual login with credentials
+  //   const res = await signIn("credentials", {
+  //     redirect: false,
+  //     email,
+  //     password,
+  //     isDoctor: true
+  //   });
+
+  //   if (res?.error) {
+  //     setError(res.error);  // Set error message from NextAuth
+  //   } else {
+  //     // Redirect to home page on successful login
+  //     window.location.href = "/doctor_side";  // Or use `router.push("/")` if you're using next/router
+  //   }
+  // };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+      
     if (!email || !password) {
       setError("Email and Password are required.");
       return;
     }
-
-    // Perform manual login with credentials
+  
     const res = await signIn("credentials", {
       redirect: false,
       email,
       password,
-      isDoctor: true
+      isDoctor: true // explicitly set to true for doctors
     });
-
+  
     if (res?.error) {
-      setError(res.error);  // Set error message from NextAuth
+      setError(res.error);
     } else {
-      // Redirect to home page on successful login
-      window.location.href = "/doctor_side";  // Or use `router.push("/")` if you're using next/router
+      window.location.href = "/doctor_home"; // redirect to doctor dashboard
     }
   };
 

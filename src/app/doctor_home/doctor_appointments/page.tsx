@@ -1,9 +1,9 @@
 "use client"
-import { DoctorAppointment } from "../components/DoctorAppointment";
+import { DoctorAppointment } from "../../components/DoctorAppointment";
 import { useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
-import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
+import { NavbarWrapper } from "../components/NavbarWrapper";
 
 type DoctorDetails = {
   _id: string;
@@ -18,7 +18,7 @@ export default function DoctorAppointmentPage() {
   useEffect(() => {
     const getDoctorDetails = async () => {
       try {
-        const res = await axios.get<{ data: DoctorDetails }>("/doctor_side/doctors/me");
+        const res = await axios.get<{ data: DoctorDetails }>("/doctor_home/doctors/me");
         if (res.data && res.data.data) {
           setDoctorDetails(res.data.data);
         } else {
