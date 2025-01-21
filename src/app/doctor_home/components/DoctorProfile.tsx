@@ -36,7 +36,7 @@ const DoctorProfile = () => {
   useEffect(() => {
     const getDoctorDetails = async () => {
       try {
-        const res = await axios.get<{ data: DoctorDetails }>("/doctor_side/doctors/me");
+        const res = await axios.get<{ data: DoctorDetails }>("/doctor_home/doctors/me");
       if (res.data && res.data.data) {
         setDoctorDetails(res.data.data);
       } else {
