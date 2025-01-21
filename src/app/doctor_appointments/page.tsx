@@ -3,6 +3,7 @@ import { DoctorAppointment } from "../components/DoctorAppointment";
 import { useState, useEffect } from "react";
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 
 type DoctorDetails = {
   _id: string;
@@ -32,7 +33,9 @@ export default function DoctorAppointmentPage() {
   }, []);
 
   return (
+
     <div>
+      <NavbarWrapper/>
       {doctorDetails ? (
         <DoctorAppointment doctorId={doctorDetails.placeId} />
       ) : (
