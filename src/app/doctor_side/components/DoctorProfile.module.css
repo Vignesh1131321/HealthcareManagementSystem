@@ -37,3 +37,37 @@
   .detailCard strong {
     color: #1f2937;
   }
+
+  .detail-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .cardIcon {
+    width: 24px;
+    height: 24px;
+    color: #2563eb;
+  }
+  
+  .cardContent {
+    flex: 1;
+  }
+  
+  .cardContent h3 {
+    color: #2563eb;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+  
+  .cardContent p {
+    margin: 0.5rem 0;
+    color: #4b5563;
+  }
+  
+  .cardContent strong {
+    color: #1f2937;
+  }
