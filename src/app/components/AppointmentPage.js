@@ -468,79 +468,9 @@ useEffect(() => {
           </button>
         </div>
         </div>
-
-        {/* <div className="reviews-section">
-          <h2>Reviews</h2>
-          {currentReview ? (
-            <div className="review-content">
-              <p>
-                <strong>{currentReview.author || "Anonymous"}</strong>:{" "}
-                {currentReview.text || "No review text available"}
-              </p>
-              <p>
-                Rating:{" "}
-                <span className="stars">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <span
-                      key={i}
-                      className={i < currentReview.rating ? "star filled" : "star"}
-                    />
-                  ))}
-                </span>
-                {currentReview.relative_time_description && (
-                  <> - {currentReview.relative_time_description}</>
-                )}
-              </p>
-            </div>
-          ) : (
-            <p>No reviews available.</p>
-          )} */}
-          {/* <TestimonialSection></TestimonialSection> */}
           <ReviewSlider testimonials = {reviews}></ReviewSlider>
-
-  {/*         <section className={styles.testimonialSection}>
-            <div className={styles.navigationDots}>
-              {reviews.map((_, i) => (
-                <div
-                  key={i}
-                  className={`${styles.dot} ${
-                    i === currentIndex ? styles.active : ""
-                  }`}
-                  onClick={() => setCurrentIndex(i)}
-                />
-              ))}
-            </div>
-
-            <div className={styles.testimonialGrid}>
-              <div className={styles.navigationArrows}>
-                <div className={styles.arrow} onClick={handlePrev}>
-                  ←
-                </div>
-                <div className={styles.arrow} onClick={handleNext}>
-                  →
-                </div>
-              </div>
-
-              <div
-                className={styles.slider}
-                style={{
-                  transform: `translateX(-${currentIndex * 100}%)`,
-                  transition: "transform 0.5s ease-in-out",
-                }}
-              >
-                {reviews.map((review, i) => (
-                  <div key={i} className={styles.slide}>
-                    <TestimonialCard data={review} size="large" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section> */}
         </div>
       </div>
-    
-
-
   );
 };
 
