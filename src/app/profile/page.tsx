@@ -671,7 +671,7 @@ return (
                   ) : (
                     <p>No medications</p>
                   )}
-                      {prescriptions.length > 0 ? (
+                      {/* {prescriptions.length > 0 ? (
                         prescriptions.map((prescription, index) => (
                           <div key={index} className="prescription-item">
                             <p><strong>Date:</strong> {new Date(prescription.createdAt).toLocaleDateString()}</p>
@@ -689,7 +689,7 @@ return (
                         ))
                       ) : (
                         <p>No prescriptions available</p>
-                      )}
+                      )} */}
                 </div>
               </div>
             </div>

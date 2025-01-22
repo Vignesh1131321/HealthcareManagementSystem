@@ -511,6 +511,8 @@ Base Layout
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+  animation: slideIn 0.3s ease-out;
 }
 
 .modal-header {
