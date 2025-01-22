@@ -3,7 +3,7 @@ import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 export default function Appointment() {
     return (
       <div>
-        <NavbarWrapper backgroundColor="rgb(195, 197, 218, 0.6)"/>
+        {/* <NavbarWrapper backgroundColor="linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)"/> */}
         <AppointmentPage ></AppointmentPage>
       </div>
   

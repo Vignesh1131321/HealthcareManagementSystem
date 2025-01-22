@@ -17,6 +17,11 @@ export const DoctorAppointment = ({ doctorId }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filter, setFilter] = useState('all'); // all, upcoming, past
 
+  const handlePrescription = (userId, doctorId) => {
+    const prescriptionId = `${userId}-${doctorId}-${Date.now()}`; // Generate a unique prescription ID
+    router.push(`/doctor_home/prescription?userId=${userId}&doctorId=${doctorId}&prescriptionId=${prescriptionId}`);
+  };
+
   useEffect(() => {
     fetchAppointments();
   }, [doctorId]);
@@ -64,7 +69,7 @@ export const DoctorAppointment = ({ doctorId }) => {
     }
   };
 
-  const filterAppointments = () => {
+    const filterAppointments = () => {
     const now = new Date();
     return appointments.filter(appointment => {
       const appointmentDate = parseDate(appointment.appointmentDate);
@@ -92,10 +97,6 @@ export const DoctorAppointment = ({ doctorId }) => {
     });
   };
 
-  const handlePrescription = (userId, doctorId) => {
-    console.log('Prescription for:', userId, doctorId);
-    router.push(`/prescription?userId=${userId}&doctorId=${doctorId}`);
-  };
 
   if (loading) {
     return (
@@ -163,7 +164,7 @@ export const DoctorAppointment = ({ doctorId }) => {
 
             <div className="appointment-actions">
               <button onClick={() => handleCreateRoom(appointment.userId, appointment.doctorId)} className="action-btn view">Video Call</button>
-              <button className="action-btn reschedule">Reschedule</button>
+              <button onClick={() => handlePrescription(appointment.userId, appointment.doctorId)} className="action-btn reschedule">Give Prescription</button>
             </div>
           </div>
         ))}
