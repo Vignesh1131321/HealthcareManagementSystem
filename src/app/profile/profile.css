@@ -8,14 +8,31 @@
   background: linear-gradient(135deg, #f0f7ff 0%, #e5edff 100%);
   padding: 2rem;
 }
+.prescription-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.prescription-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
 .appointment-actions {
   display: flex;
-  justify-content: flex-end;  /* This aligns items to the right */
-  align-items: center;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e5e7eb;
-  gap: 1rem;  /* Adds consistent spacing between buttons */
+  gap: 1rem;
+  margin-right:10px;
+  margin-top:44px;
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
 }
 
 .video-call-btn {
@@ -30,13 +47,12 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  /* Remove margin-left: auto since the parent handles alignment */
 }
 
+
 .video-call-btn:hover {
-  background: #2563eb;  /* Darker blue on hover */
+  background: #2563eb;
   transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);  /* Updated shadow color */
 }
 
 .video-call-btn:active {
@@ -427,8 +443,12 @@
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 16px;
+  position: relative;
 }
-
 .appointment-header {
   display: flex;
   align-items: center;
@@ -440,18 +460,30 @@
   font-size: 1.125rem;
   font-weight: 600;
   color: #1f2937;
+  margin: 0;
 }
-
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
 .specialty {
   color: #3b82f6;
   font-size: 0.875rem;
-  margin-bottom: 0.75rem;
+  margin: 0.5rem 0;
 }
 
 .appointment-details {
+
   color: #6b7280;
 }
-
+.name-specialty {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
 .appointment-details p {
   margin-bottom: 0.25rem;
 }
@@ -686,11 +718,13 @@
   .video-call-btn {
     width: 100%;
     justify-content: center;
+    padding-left:20px;
   }
   
   .appointment-actions {
     flex-direction: column;
     gap: 0.75rem;
+    justify-content: flex-end;
   }
   
   .tab-buttons {
