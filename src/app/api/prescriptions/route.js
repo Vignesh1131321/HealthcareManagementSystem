@@ -7,13 +7,16 @@ export const GET = async (request) => {
     await mongoose.connect(process.env.MONGO_URI);
 
     const userId = request.headers.get("userId");
+    const doctorId = request.headers.get("doctorId");
 
     // if (!userId || !doctorId) {
     //   return NextResponse.json({ success: false, error: "userId or doctorId missing" });
     // }
 
     console.log("Fetching prescriptions for user:", userId);
-    const prescriptions = await Prescription.find({ userId});
+    console.log("Fetching prescriptions for doctor:", doctorId);
+    
+    const prescriptions = await Prescription.find({ userId, doctorId});
 
     return NextResponse.json({ success: true, prescriptions });
   } catch (error) {

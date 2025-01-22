@@ -1,4 +1,4 @@
-/* Base Layout */
+Base Layout
 .hospital-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f7ff 0%, #e5edff 100%);
@@ -19,7 +19,7 @@
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  /* transition: all 0.2s ease; */
 }
 .prescription-btn:hover {
   background: #059669;
@@ -46,7 +46,7 @@
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  /* transition: all 0.2s ease; */
 }
 
 
@@ -75,7 +75,7 @@
   overflow: hidden;
 }
 
-/* Profile Header */
+
 .profile-header {
   display: flex;
   align-items: center;
@@ -188,7 +188,7 @@
   background-color: #dc2626;
 }
 
-/* Details Grid */
+
 .details-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -231,7 +231,7 @@
   margin-bottom: 0.25rem;
 }
 
-/* Records Section */
+
 .records-section {
   padding: 2rem;
   border-top: 1px solid #e5e7eb;
@@ -275,7 +275,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Records Content */
+
 .records-content {
   background: #f8faff;
   border-radius: 12px;
@@ -323,10 +323,10 @@
   gap: 0.75rem;
   color: #1f2937;
 }
-/* Ensure buttons are in a flex container */
+
 .button-group {
   display: flex;
-  gap: 1rem; /* Space between buttons */
+  gap: 1rem;
 }
 
 .preview-button {
@@ -341,7 +341,7 @@
   background: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.9rem; /* Ensure consistent font size */
+  font-size: 0.9rem;
 }
 
 .preview-button:hover {
@@ -350,11 +350,11 @@
 }
 
 .preview-icon, .summarize-icon {
-  font-size: 1rem; /* Ensure consistent icon size */
+  font-size: 1rem;
 }
 
 
-/* Upload Section */
+
 .upload-section {
   margin-top: 1.5rem;
   padding: 1.5rem;
@@ -438,7 +438,7 @@
   cursor: not-allowed;
 }
 
-/* Appointment Card */
+
 .appointment-card {
   padding: 1.5rem;
   display: flex;
@@ -488,7 +488,7 @@
   margin-bottom: 0.25rem;
 }
 
-/* Modal */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -576,7 +576,7 @@
   background: #2563eb;
 }
 
-/* Loading States */
+
 .loading {
   text-align: center;
   padding: 2rem;
@@ -589,7 +589,7 @@
   padding: 3rem;
   color: #6b7280;
 }
-/* Preview Modal */
+
 .preview-modal-overlay {
   position: fixed;
   top: 0;
@@ -666,7 +666,7 @@
   color: #495057;
   margin-right: 5px;
 }
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .profile-header {
     flex-direction: column;
@@ -746,3 +746,82 @@
     justify-content: center;
   }
 }
+/* .modal-overlay {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+  animation: slideIn 0.3s ease-out;
+}
+
+.record-item {
+  transition: all 0.3s ease;
+  opacity: 1;
+}
+
+.medication-details {
+  transition: all 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.loading-prescriptions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+}
+.medications-list {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #e5e7eb;
+}
+
+.medication-details {
+  background: #f8faff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.prescription-notes {
+  margin-top: 0.5rem;
+  color: #6b7280;
+  font-style: italic;
+}
+.prescriptions-list {
+  margin-top: 1rem;
+}
+
+.prescription-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.medication-item {
+  margin-left: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed #eee;
+} */

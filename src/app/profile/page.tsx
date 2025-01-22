@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch,VideoIcon} from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, Pill,PillIcon,Mail,MapPin,Loader2,Calendar,FileSearch,VideoIcon} from 'lucide-react';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -115,6 +115,9 @@ export default function ProfilePage() {
   const [images, setImages] = useState<ProfileImage[]>([]);
   const [roomId, setRoomId] = useState("");
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
+  const [isLoadingPrescriptions, setIsLoadingPrescriptions] = useState(false);
   const [previewRecord, setPreviewRecord] = useState<{
     name: string;
     url: string;
@@ -243,6 +246,24 @@ const handleGenerateSummary = async (record: any) => {
     }
   };
   
+  const handleGetPrescription = async (userId: string, doctorId: string) => {
+    try {
+      setIsLoadingPrescriptions(true);
+      const res2 = await axios.get('/api/prescriptions', {
+        headers: { userId, doctorId },
+      });
+      if (res2.data) {
+        setSelectedPrescriptions(res2.data.prescriptions);
+        setShowPrescriptionModal(true);
+      }
+    } catch (error) {
+      console.error('Error fetching prescriptions:', error);
+      toast.error("Failed to fetch prescriptions");
+    }
+    finally{
+      setIsLoadingPrescriptions(false);
+    }
+  };
 
   const fetchUserDetails = async () => {
     try {
@@ -256,25 +277,7 @@ const handleGenerateSummary = async (record: any) => {
         toast.error("Failed to get user details");
         return;
       }
-      try {
-        console.log("fetching prescriptions from user details"+res.data.data._id);
-        const res2 = await axios.get('/api/prescriptions', {
-          headers: { userId: res.data.data._id },
-        });
-        console.log("res2",res2);
-        console.log("res2.data",res2.data);
-        console.log("res2.data.prescriptions",res2.data.prescriptions);
-        if (res2.data) {
-
-          setPrescriptions(res2.data.prescriptions);
-        } else {
-          console.log("No prescriptions found");
-          setPrescriptions([]);
-        }
-      } catch (error) {
-        console.error('Error fetching prescriptions:', error);
-        toast.error("Failed to fetch prescriptions");
-      }
+      
       try {
         const healthRecordsRes = await axios.get('/api/get-health-records', {
           headers: { userId: res.data.data._id },
@@ -797,6 +800,7 @@ return (
                     ) : appointments.length > 0 ? (
                       <div className="appointments-list">
                         {appointments.map((appointment:Appointment) => (
+                          
                           <div key={appointment._id} className="appointment-card">
                           <div className="appointment-header">
                             <Calendar size={20} />
@@ -812,13 +816,57 @@ return (
                                 Video Call
                               </button>
                               <button
-                                /* onClick={() => handleGetPrescription(appointment._id)} */
+                                onClick={() => handleGetPrescription(userDetails?._id || '', appointment.doctorId)}
                                 className="prescription-btn"
                                 title="Get Prescription"
                               >
                                 <FileText size={20} />
                                 Get Prescription
                               </button>
+                              {showPrescriptionModal && (
+                                <div className="modal-overlay">
+                                  <div className="modal">
+                                    <div className="modal-header">
+                                      <h3>Prescription Details</h3>
+                                      <button className="close-modal" onClick={() => setShowPrescriptionModal(false)}>
+                                        <X size={20} />
+                                      </button>
+                                    </div>
+                                    <div className="modal-content">
+                                    {isLoadingPrescriptions ? (
+                                      <div className="loading-prescriptions">
+                                        <Loader2 className="animate-spin" size={24} />
+                                      </div>
+                                    ) :selectedPrescriptions.length > 0 ? (
+                                        selectedPrescriptions.map((prescription, index) => (
+                                          <div key={index} className="record-item">
+                                            <div className="record-info">
+                                              <Pill size={20} />
+                                              <div>
+                                                <p><strong>Date:</strong> {new Date(prescription.createdAt).toLocaleDateString()}</p>
+                                                <div className="medications-list">
+                                                  {prescription.medications.map((med, medIndex) => (
+                                                    <div key={medIndex} className="medication-details">
+                                                      <p><strong>Medicine:</strong> {med.name}</p>
+                                                      <p><strong>Dosage:</strong> {med.dosage}</p>
+                                                      <p><strong>Duration:</strong> {med.duration}</p>
+                                                    </div>
+                                                  ))}
+                                                </div>
+                                                {prescription.notes && (
+                                                  <p className="prescription-notes"><strong>Notes:</strong> {prescription.notes}</p>
+                                                )}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <div className="no-records">No prescriptions available</div>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                       
                           {appointment.identity === "2" && (

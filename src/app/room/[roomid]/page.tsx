@@ -14,6 +14,34 @@ const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
   const isInitializedRef = useRef(false);
 
   useEffect(() => {
+    const originalConsoleError = console.error;
+  
+    // Suppress console.error temporarily
+    console.error = (...args) => {
+      if (args.some(arg => typeof arg === 'string' && arg.includes('zego'))) {
+        // Suppress Zego-specific logs
+        return;
+      }
+      originalConsoleError(...args); // Allow other errors
+    };
+  
+    const initRoom = async () => {
+      // Initialization logic
+    };
+  
+    initRoom();
+  
+    return () => {
+      // Restore original console.error
+      console.error = originalConsoleError;
+      if (zegoRef.current) {
+        zegoRef.current.destroy();
+      }
+    };
+  }, []);
+  
+
+  useEffect(() => {
     const initRoom = async () => {
       if (!containerRef.current || isInitializedRef.current) return;
 
