@@ -49,16 +49,6 @@ Patients can seamlessly book appointments with doctors in real-time, ensuring in
    Generate and provide digital prescriptions for patients, ensuring easy access to prescribed medications and reducing paperwork.
 
 
----
-## Contributors
-
-1.Vignesh Pasupuleti
-
-2.Chandrahas Reddy
-
-3.Sunhith Reddy Bojja
-
-4.Krishna Chaitanya
 
 
 
