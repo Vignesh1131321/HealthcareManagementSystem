@@ -823,7 +823,31 @@ return (
                                 <FileText size={20} />
                                 Get Prescription
                               </button>
-                              {showPrescriptionModal && (
+                              
+                            </div>
+                      
+                          {appointment.identity === "2" && (
+                            <p className="specialty">Specialty: {appointment.specialty}</p>
+                          )}
+                          <div className="appointment-details">
+                            <p>Date: {appointment.appointmentDate}</p>
+                            <p>Time: {appointment.appointmentTime}</p>
+                          </div>
+                        </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="no-appointments">No appointments scheduled</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+{showPrescriptionModal && (
                                 <div className="modal-overlay">
                                   <div className="modal">
                                     <div className="modal-header">
@@ -867,28 +891,6 @@ return (
                                   </div>
                                 </div>
                               )}
-                            </div>
-                      
-                          {appointment.identity === "2" && (
-                            <p className="specialty">Specialty: {appointment.specialty}</p>
-                          )}
-                          <div className="appointment-details">
-                            <p>Date: {appointment.appointmentDate}</p>
-                            <p>Time: {appointment.appointmentTime}</p>
-                          </div>
-                        </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="no-appointments">No appointments scheduled</div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Preview Modal */}
       {showPreview && previewRecord && (
