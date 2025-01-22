@@ -6,6 +6,7 @@ import Doctor from "@/models/doctor";
 
 export async function GET() {
   try {
+    console.log("getting details");
     const session = await getServerSession(authOptions);
     
     if (!session) {

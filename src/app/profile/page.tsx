@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch} from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch,VideoIcon} from 'lucide-react';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -10,12 +10,29 @@ import { signOut } from "next-auth/react";
 import ProfileForm from './ProfileForm';
 import "./profile.css";
 import {MedicalSummary} from "../components/MedicalSummary";
+import NoMeetingModal from '../components/NoMeetingModal';
 
 interface ProfileImage {
   contentType: string;
   data: {
     data: Buffer;
   };
+}
+
+type Medication = {
+  name: string;
+  dosage: string;
+  duration: string;
+}
+
+type Prescription = {
+  _id: string;
+  prescriptionId: string;
+  userId: string;
+  doctorId: string;
+  medications: Medication[];
+  notes?: string;
+  createdAt: string;
 }
 
 type UserDetails = {
@@ -86,6 +103,7 @@ export default function ProfilePage() {
     contentType: string;
     data: string;
   }>>([]);
+  const [showNoMeetingModal, setShowNoMeetingModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
@@ -96,6 +114,7 @@ export default function ProfilePage() {
   const [showPreview, setShowPreview] = useState(false);
   const [images, setImages] = useState<ProfileImage[]>([]);
   const [roomId, setRoomId] = useState("");
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [previewRecord, setPreviewRecord] = useState<{
     name: string;
     url: string;
@@ -237,7 +256,25 @@ const handleGenerateSummary = async (record: any) => {
         toast.error("Failed to get user details");
         return;
       }
-  
+      try {
+        console.log("fetching prescriptions from user details"+res.data.data._id);
+        const res2 = await axios.get('/api/prescriptions', {
+          headers: { userId: res.data.data._id },
+        });
+        console.log("res2",res2);
+        console.log("res2.data",res2.data);
+        console.log("res2.data.prescriptions",res2.data.prescriptions);
+        if (res2.data) {
+
+          setPrescriptions(res2.data.prescriptions);
+        } else {
+          console.log("No prescriptions found");
+          setPrescriptions([]);
+        }
+      } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+        toast.error("Failed to fetch prescriptions");
+      }
       try {
         const healthRecordsRes = await axios.get('/api/get-health-records', {
           headers: { userId: res.data.data._id },
@@ -417,31 +454,32 @@ const handleGenerateSummary = async (record: any) => {
       setLoading(false);
     }
   };
-  const fetchRoom = async (userId: string,doctorId:string) => {
+  const fetchRoom = async (userId: string, doctorId: string) => {
     try {
       setLoading(true);
       console.log("fetching room");
       const response = await axios.get('/api/rooms', {
-        headers :{
+        headers: {
           userId: userId,
-          doctorId:doctorId
+          doctorId: doctorId
         }
       });
-      console.log("response fetching");
-
-      console.log("response data",response.data);
-      console.log("response data room",response.data.room);
       
-      if (response.data) {
-        // console.log("Room found:", response.data.room);
+      console.log("response data", response.data);
+      
+      if (response.data.roomId) {
         setRoomId(response.data.roomId);
         router.push(`/room/${response.data.roomId}`);
-      } else {
-        toast.error('Room not found');
       }
-    } catch (error) {
-      console.error('Error fetching room:', error);
-      toast.error('Failed to join room');
+    } catch (error: any) {
+      console.log('Error details:', error.response?.data);
+      
+      if (error.response?.status === 406) {
+        // Using the standard toast() method instead
+       setShowNoMeetingModal(true);
+      } else {
+        toast.error('Failed to join room. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -615,7 +653,8 @@ return (
                 <PillIcon className="card-icon" />
                 <div className="card-content">
                   <h3>Medications</h3>
-                  {userDetails?.medications && userDetails.medications.length > 0 ? (
+                  {userDetails?.medications && userDetails.medications.length > 0 ? 
+                  (
                     <ul className="medications-list">
                       {userDetails.medications.map((medication, index) => (
                         <li key={index} className="medication-item">
@@ -629,6 +668,25 @@ return (
                   ) : (
                     <p>No medications</p>
                   )}
+                      {prescriptions.length > 0 ? (
+                        prescriptions.map((prescription, index) => (
+                          <div key={index} className="prescription-item">
+                            <p><strong>Date:</strong> {new Date(prescription.createdAt).toLocaleDateString()}</p>
+                            {prescription.medications.map((med, medIndex) => (
+                              <div key={medIndex} className="medication-details">
+                                <p><strong>Medicine:</strong> {med.name}</p>
+                                <p><strong>Dosage:</strong> {med.dosage}</p>
+                                <p><strong>Duration:</strong> {med.duration}</p>
+                              </div>
+                            ))}
+                            {prescription.notes && (
+                              <p><strong>Notes:</strong> {prescription.notes}</p>
+                            )}
+                          </div>
+                        ))
+                      ) : (
+                        <p>No prescriptions available</p>
+                      )}
                 </div>
               </div>
             </div>
@@ -743,14 +801,17 @@ return (
                           <div className="appointment-header">
                             <Calendar size={20} />
                             <h3>{appointment.doctorName.split('|')[0]}</h3>
+                            <div className="appointment-actions">
                             <button 
                               onClick={() => handleJoinRoom(userDetails?._id, appointment.doctorId)}
                               className="video-call-btn"
                               title="Join Video Call"
                             >
+                              <VideoIcon size={20} />
                               VideoCall
                               {/* <VideoCamera size={20} /> */}
                             </button>
+                            </div>
                           </div>
                           {appointment.identity === "2" && (
                             <p className="specialty">Specialty: {appointment.specialty}</p>
@@ -831,6 +892,8 @@ return (
                     </div>
                   </div>
                 )}
+                {/* Add the NoMeetingModal here */}
+<NoMeetingModal isOpen={showNoMeetingModal} onClose={() => setShowNoMeetingModal(false)} />
     </div>
   </div>
 );

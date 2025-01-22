@@ -1,17 +1,20 @@
 "use client";
-
-import React from "react";
-import { useState } from 'react';
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Plus, Trash2, Send } from 'lucide-react';
-import './styles.css';
-/* import { console } from "inspector"; */
+import axios from "axios";
+import toast from "react-hot-toast";
+import "./prescription.css";
 
-export default function Page() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const userId = searchParams.get("userId");
-    const doctorId = searchParams.get("doctorId");
+export default function PrescriptionPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const userId = searchParams.get("userId");
+  const doctorId = searchParams.get("doctorId");
+  const prescriptionId = searchParams.get("prescriptionId");
+
+  const [notes, setNotes] = useState("");
+
   const [medicines, setMedicines] = useState([{
     name: '',
     dosage: '',
@@ -37,12 +40,12 @@ export default function Page() {
     }]);
   };
 
-  const removeMedicine = (index) => {
+  const removeMedicine = (index:any) => {
     const updatedMedicines = medicines.filter((_, i) => i !== index);
     setMedicines(updatedMedicines);
   };
 
-  const handleMedicineChange = (index, field, value) => {
+  const handleMedicineChange = (index:any, field:any, value:any) => {
     const updatedMedicines = medicines.map((medicine, i) => {
       if (i === index) {
         return { ...medicine, [field]: value };
@@ -52,38 +55,68 @@ export default function Page() {
     setMedicines(updatedMedicines);
   };
 
-  const handleSubmit = async () => {
-/*     e.preventDefault();
- */    try {
-    console.log("trying to submit");
-      const response = await fetch(`/api/doctorgchjgv`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          doctorId,
-          prescription: medicines,
-          
-        }),
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form from reloading page
+    
+    console.log("submitting prescription");
+    
+    try {
+      console.log("1 i am there");
+      console.log("prescriptionId", prescriptionId);
+      console.log("userId", userId);
+      console.log("doctorId", doctorId);
+      console.log("medicines", medicines); // Updated to log `medicines` state
+      console.log("notes", notes);
+  
+      const response = await axios.post('/api/prescriptions', {
+        prescriptionId,
+        userId,
+        doctorId,
+        medications: medicines, // Updated to use `medicines`
+        notes,
       });
-      console.log(medicines);
-      if (response.ok) {
-        alert("Prescription updated successfully!");
-      } else {
-        console.error("Error updating prescription:", await response.json());
+  
+      console.log("2 i am there");
+      console.log("response", response.data);
+      
+      if (response.data.success) {
+        toast.success('Prescription submitted successfully');
+        // Navigate programmatically
+        router.push('/doctor_home/doctor_appointments');
       }
     } catch (error) {
-      console.error("Error submitting prescription:", error);
+      console.error('Error submitting prescription:', error);
+      toast.error('Failed to submit prescription');
     }
   };
+  
 
+
+//   const submitPrescription = async () => {
+//     console.log("submitting prescription");
+//     try {
+//         // console.log("prescriptionId", prescriptionId);
+//       await axios.post("/api/prescriptions", {
+//         headers:{prescriptionId,
+//         userId,
+//         doctorId,
+//         medications,
+//         notes,}
+//       });
+//       toast.success("Prescription saved successfully");
+//       router.push("/doctor_home/doctor_appointments");
+//     } catch (error) {
+//       console.error("Error saving prescription:", error);
+//       toast.error("Failed to save prescription");
+//     }
+//   };
+
+  
   return (
     <div className="prescription-container">
       <h1 className="prescription-title">Create Prescription</h1>
       
-      <div>
+      <form onSubmit={handleSubmit} className="prescription-form">
         <div className="patient-details">
           <h2>Patient Details</h2>
           <div className="form-grid">
@@ -200,10 +233,10 @@ export default function Page() {
           ))}
         </div>
 
-        <button className="submit-prescription-btn" onClick={handleSubmit}>
-           Submit Prescription
+        <button type="submit" className="submit-prescription-btn">
+          <Send size={20} /> Submit Prescription
         </button>
-      </div>
+      </form>
     </div>
   );
 }

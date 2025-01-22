@@ -1,0 +1,176 @@
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+/* Modal Container */
+.modal-container {
+  position: relative;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 28rem;
+  margin: auto;
+  transform: scale(1);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Close Button */
+.modal-close-button {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.modal-close-button:hover {
+  opacity: 0.7;
+}
+
+.close-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #6B7280;
+}
+
+/* Modal Content */
+.modal-content {
+  padding: 1.5rem;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.alert-icon {
+  width: 2rem;
+  height: 2rem;
+  color: #EF4444;
+  flex-shrink: 0;
+}
+
+/* Body */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main-message {
+  font-size: 1.125rem;
+  color: #4B5563;
+}
+
+.info-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.schedule-box {
+  background-color: #EFF6FF;
+}
+
+.schedule-box p {
+  color: #1D4ED8;
+}
+
+.time-box {
+  background-color: #F9FAFB;
+}
+
+.time-box p {
+  color: #4B5563;
+}
+
+.info-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.25rem;
+  flex-shrink: 0;
+}
+
+.schedule-box .info-icon {
+  color: #3B82F6;
+}
+
+.time-box .info-icon {
+  color: #6B7280;
+}
+
+/* Action Buttons */
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.action-button {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-button {
+  background-color: #F3F4F6;
+  color: #374151;
+}
+
+.cancel-button:hover {
+  background-color: #E5E7EB;
+}
+
+.confirm-button {
+  background-color: #2563EB;
+  color: white;
+}
+
+.confirm-button:hover {
+  background-color: #1D4ED8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .modal-container {
+    margin: 1rem;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .action-button {
+    width: 100%;
+  }
+}
