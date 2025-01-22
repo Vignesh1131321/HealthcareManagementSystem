@@ -97,10 +97,6 @@ export const DoctorAppointment = ({ doctorId }) => {
     });
   };
 
-  const handlePrescription = (userId, doctorId) => {
-    console.log('Prescription for:', userId, doctorId);
-    router.push(`/prescription?userId=${userId}&doctorId=${doctorId}`);
-  };
 
   if (loading) {
     return (

@@ -1,3 +1,8 @@
+.hospital-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+}
+
 .appointment-page-container {
   display: flex;
   flex-direction: column;
@@ -7,11 +12,25 @@
   margin: 0 auto;
 }
 
+@media (min-width: 768px) {
+  .appointment-page-container {
+    gap: 2rem;
+    padding: 2rem;
+  }
+}
+
 .top-sections-container {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   width: 100%;
+}
+
+@media (min-width: 992px) {
+  .top-sections-container {
+    flex-direction: row;
+    gap: 2rem;
+  }
 }
 
 .doctor-details-section {
@@ -24,6 +43,13 @@
   overflow: hidden;
 }
 
+@media (min-width: 992px) {
+  .doctor-details-section {
+    min-width: 300px;
+    border-radius: 12px;
+  }
+}
+
 /* Add new doctor card styles */
 .doctor-card {
   width: 100%;
@@ -32,6 +58,12 @@
 .doctor-card-header {
   padding: 2rem;
   border-bottom: 1px solid #f0f0f0;
+}
+
+@media (min-width: 768px) {
+  .doctor-card-header {
+    padding: 2rem;
+  }
 }
 
 
@@ -51,6 +83,14 @@
   margin-bottom: 0.25rem !important;
 }
 
+
+@media (min-width: 768px) {
+  .doctor-name {
+    font-size: 1.75rem !important;
+  }
+}
+
+
 .specialty-badge {
   display: inline-flex;
   align-items: center;
@@ -58,6 +98,13 @@
   padding: 0.5rem 1rem;
   border-radius: 6px;
   gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .specialty-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+  }
 }
 
 .specialty-icon {
@@ -74,6 +121,8 @@
 .doctor-card-content {
   padding: 1.5rem 2rem;
 }
+
+
 
 .info-row {
   display: flex;
@@ -155,15 +204,38 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+@media (min-width: 768px) {
+  .reviews-section {
+    padding: 2rem;
+    border-radius: 8px;
+  }
+}
+
 .reviews-content {
   display: grid;
   grid-template-columns: 1fr 2fr;
   gap: 2rem;
 }
 
+@media (min-width: 992px) {
+  .reviews-content {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+  }
+}
+
 .rating-distribution {
   padding-right: 2rem;
   border-right: 1px solid #eee;
+}
+
+@media (min-width: 992px) {
+  .rating-distribution {
+    padding: 0 2rem 0 0;
+    border-bottom: none;
+    border-right: 1px solid #eee;
+  }
 }
 
 .reviews-list-container {
@@ -176,6 +248,17 @@
   width: 100%;
   max-width: 300px;
   margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .calendar-input-container {
+    max-width: 300px;
+  }
+  
+  .date-input {
+    padding: 15px 45px 15px 20px;
+    font-size: 16px;
+  }
 }
 
 /* Base Input Styling */
@@ -309,6 +392,13 @@
   margin: 1.25rem 0;
 }
 
+@media (min-width: 768px) {
+  .time-slots-container {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.75rem;
+  }
+}
+
 .time-slot {
   padding: 0.75rem;
   text-align: center;
@@ -384,6 +474,13 @@
   background-color: #e0e0e0;
   color: #9e9e9e;
   cursor: not-allowed;
+}
+
+@media (min-width: 768px) {
+  .confirm-button {
+    padding: 1rem;
+    font-size: 1rem;
+  }
 }
 
 /* Slot Legend */
@@ -481,6 +578,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .modal-content {
+    padding: 2rem;
+    margin: auto;
+  }
 }
 
 .close-button {
