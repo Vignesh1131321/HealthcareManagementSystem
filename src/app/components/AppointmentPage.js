@@ -203,7 +203,8 @@ useEffect(() => {
     setIsSubmitting(true);
 
     const appointmentDetails = {
-      userId: userDetails._id,
+      userId : userDetails._id,
+      userName: userDetails.username,
       identity: doctor.identity,
       doctorId: doctor.id,
       doctorName: doctor.name,

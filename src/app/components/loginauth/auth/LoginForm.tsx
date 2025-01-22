@@ -11,28 +11,51 @@ export const LoginForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
     
-    if (!email || !password) {
-      setError("Email and Password are required.");
-      return;
-    }
+  //   if (!email || !password) {
+  //     setError("Email and Password are required.");
+  //     return;
+  //   }
 
-    // Perform manual login with credentials
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
+  //   // Perform manual login with credentials
+  //   const res = await signIn("credentials", {
+  //     redirect: false,
+  //     email,
+  //     password,
+  //   });
 
-    if (res?.error) {
-      setError(res.error);  // Set error message from NextAuth
-    } else {
-      // Redirect to home page on successful login
-      window.location.href = "/";  // Or use `router.push("/")` if you're using next/router
-    }
-  };
+  //   if (res?.error) {
+  //     setError(res.error);  // Set error message from NextAuth
+  //   } else {
+  //     // Redirect to home page on successful login
+  //     window.location.href = "/";  // Or use `router.push("/")` if you're using next/router
+  //   }
+  // };
+  // LoginForm.tsx - update handleSubmit
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+    
+  if (!email || !password) {
+    setError("Email and Password are required.");
+    return;
+  }
+
+  const res = await signIn("credentials", {
+    redirect: false,
+    email,
+    password,
+    isDoctor: false // explicitly set to false for regular users
+  });
+
+  if (res?.error) {
+    setError(res.error);
+  } else {
+    window.location.href = "/"; // redirect to user dashboard
+  }
+};
+
 
   const handleSocialLogin = () => {
     signIn("google"); // Trigger Google login

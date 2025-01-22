@@ -36,7 +36,7 @@ const DoctorProfile = () => {
   useEffect(() => {
     const getDoctorDetails = async () => {
       try {
-        const res = await axios.get<{ data: DoctorDetails }>("/doctor_side/doctors/me");
+        const res = await axios.get<{ data: DoctorDetails }>("/doctor_home/doctors/me");
       if (res.data && res.data.data) {
         setDoctorDetails(res.data.data);
       } else {
@@ -90,14 +90,14 @@ const DoctorProfile = () => {
             <div className={styles.cardContent}>
               <h3>Clinic Details</h3>
               <p><strong>Clinic Name:</strong> {doctorDetails.clinicName}</p>
-              <p><strong>Address:</strong> {doctorDetails.location.address}</p>
+              {/* <p><strong>Address:</strong> {doctorDetails.location.address}</p>
               <p><strong>City:</strong> {doctorDetails.location.city}</p>
               <p><strong>State:</strong> {doctorDetails.location.state}</p>
-              <p><strong>Country:</strong> {doctorDetails.location.country}</p>
+              <p><strong>Country:</strong> {doctorDetails.location.country}</p> */}
             </div>
           </div>
 
-          <div className={styles.detailCard}>
+          {/* <div className={styles.detailCard}>
             <h3>Account Status</h3>
             <p><strong>Verification Status:</strong> 
               {doctorDetails.isVerified ? 
@@ -106,7 +106,7 @@ const DoctorProfile = () => {
               }
             </p>
             <p><strong>Member Since:</strong> {new Date(doctorDetails.createdAt).toLocaleDateString()}</p>
-          </div>
+          </div> */}
         </div>
       )}
       </div>

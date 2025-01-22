@@ -4,14 +4,18 @@ import { useRouter } from 'next/navigation';
 import { Calendar, Clock, User, Phone, MapPin, Calendar as CalendarIcon } from 'lucide-react';
 import axios from 'axios';
 import './DoctorAppointment.css';
+import {v4 as uuid} from 'uuid';
+import toast from 'react-hot-toast';
+import { useRouter } from "next/navigation";
+
+
 
 export const DoctorAppointment = ({ doctorId }) => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filter, setFilter] = useState('all'); // all, upcoming, past
-
-  const router = useRouter();
 
   useEffect(() => {
     fetchAppointments();
@@ -27,6 +31,36 @@ export const DoctorAppointment = ({ doctorId }) => {
       console.error('Error fetching appointments:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCreateRoom = async (userId, doctorId) => {
+    const newRoomId = uuid();
+    try {
+      console.log("userId", userId);
+      console.log("doctorId", doctorId);
+      console.log("newRoomId", newRoomId);
+      const response = await axios.post("/api/rooms/create", 
+        {
+          roomId: newRoomId,
+          userId: userId,
+          doctorId: doctorId
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+  
+      if (response.data && response.data.room) {
+        router.push(`/room/${newRoomId}`);
+      } else {
+        throw new Error('Failed to create room');
+      }
+    } catch (error) {
+      console.error("Error creating room:", error);
+      toast.error("Failed to create room");
     }
   };
 
@@ -116,7 +150,7 @@ export const DoctorAppointment = ({ doctorId }) => {
             <div className="patient-details">
               <div className="detail-row">
                 <User size={20} />
-                <span>{appointment.userId}</span>
+                <span>{appointment.userName}</span>
               </div>
 
               {appointment.specialty && (
@@ -128,8 +162,8 @@ export const DoctorAppointment = ({ doctorId }) => {
             </div>
 
             <div className="appointment-actions">
-              <button className="action-btn view">View Details</button>
-              <button className="action-btn reschedule" onClick={() => handlePrescription(appointment.userId, appointment.doctorId)}>Give Prescription</button>
+              <button onClick={() => handleCreateRoom(appointment.userId, appointment.doctorId)} className="action-btn view">Video Call</button>
+              <button className="action-btn reschedule">Reschedule</button>
             </div>
           </div>
         ))}

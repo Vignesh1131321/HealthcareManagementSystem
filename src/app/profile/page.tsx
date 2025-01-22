@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch } from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch,VideoIcon} from 'lucide-react';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -10,6 +10,7 @@ import { signOut } from "next-auth/react";
 import ProfileForm from './ProfileForm';
 import "./profile.css";
 import {MedicalSummary} from "../components/MedicalSummary";
+import NoMeetingModal from '../components/NoMeetingModal';
 
 interface ProfileImage {
   contentType: string;
@@ -86,6 +87,7 @@ export default function ProfilePage() {
     contentType: string;
     data: string;
   }>>([]);
+  const [showNoMeetingModal, setShowNoMeetingModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
@@ -95,6 +97,7 @@ export default function ProfilePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
   const [images, setImages] = useState<ProfileImage[]>([]);
+  const [roomId, setRoomId] = useState("");
   const [previewRecord, setPreviewRecord] = useState<{
     name: string;
     url: string;
@@ -416,7 +419,42 @@ const handleGenerateSummary = async (record: any) => {
       setLoading(false);
     }
   };
-  
+  const fetchRoom = async (userId: string, doctorId: string) => {
+    try {
+      setLoading(true);
+      console.log("fetching room");
+      const response = await axios.get('/api/rooms', {
+        headers: {
+          userId: userId,
+          doctorId: doctorId
+        }
+      });
+      
+      console.log("response data", response.data);
+      
+      if (response.data.roomId) {
+        setRoomId(response.data.roomId);
+        router.push(`/room/${response.data.roomId}`);
+      }
+    } catch (error: any) {
+      console.log('Error details:', error.response?.data);
+      
+      if (error.response?.status === 406) {
+        // Using the standard toast() method instead
+       setShowNoMeetingModal(true);
+      } else {
+        toast.error('Failed to join room. Please try again later.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleJoinRoom = async (userId:any,doctorId:any) => {
+    console.log("trying to join room");
+    console.log("1");
+    await fetchRoom(userId,doctorId);
+  };
 
 // Trigger fetch when activeTab is "appointments"
 useEffect(() => {
@@ -705,18 +743,29 @@ return (
                       <div className="appointments-list">
                         {appointments.map((appointment:Appointment) => (
                           <div key={appointment._id} className="appointment-card">
-                            <div className="appointment-header">
-                              <Calendar size={20} />
-                              <h3>{appointment.doctorName.split('|')[0]}</h3>
-                            </div>
-                            {appointment.identity === "2" && (
-                              <p className="specialty">Specialty: {appointment.specialty}</p>
-                            )}
-                            <div className="appointment-details">
-                              <p>Date: {appointment.appointmentDate}</p>
-                              <p>Time: {appointment.appointmentTime}</p>
+                          <div className="appointment-header">
+                            <Calendar size={20} />
+                            <h3>{appointment.doctorName.split('|')[0]}</h3>
+                            <div className="appointment-actions">
+                            <button 
+                              onClick={() => handleJoinRoom(userDetails?._id, appointment.doctorId)}
+                              className="video-call-btn"
+                              title="Join Video Call"
+                            >
+                              <VideoIcon size={20} />
+                              VideoCall
+                              {/* <VideoCamera size={20} /> */}
+                            </button>
                             </div>
                           </div>
+                          {appointment.identity === "2" && (
+                            <p className="specialty">Specialty: {appointment.specialty}</p>
+                          )}
+                          <div className="appointment-details">
+                            <p>Date: {appointment.appointmentDate}</p>
+                            <p>Time: {appointment.appointmentTime}</p>
+                          </div>
+                        </div>
                         ))}
                       </div>
                     ) : (
@@ -788,6 +837,8 @@ return (
                     </div>
                   </div>
                 )}
+                {/* Add the NoMeetingModal here */}
+<NoMeetingModal isOpen={showNoMeetingModal} onClose={() => setShowNoMeetingModal(false)} />
     </div>
   </div>
 );

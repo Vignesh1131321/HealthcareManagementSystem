@@ -5,40 +5,42 @@ import Room from "@/models/roomModel";
 export async function GET(req) {
   try {
     await connect();
+    console.log("Hi in backend");
     
-    // Get URL parameters
-    const url = new URL(req.url);
-    const doctorId = url.searchParams.get("doctorId");
-    const userId = url.searchParams.get("userId");
-    const roomId = url.pathname.split('/').pop();
-
+    const userId = req.headers.get("userId");
+    const doctorId = req.headers.get("doctorId");
+    console.log("userId", userId);
+    console.log("doctorId", doctorId);
+    
     if (!doctorId || !userId) {
       return NextResponse.json(
-        { error: "doctorId and userId are required" },
+        { error: "Doctor ID and User ID are required" },
         { status: 400 }
       );
     }
 
-    // Find room with matching IDs
+    // Find active room with matching IDs
     const room = await Room.findOne({
-      roomId,
       doctorId,
       userId,
-      isActive: true
+      isActive: true  // Assuming you want to check for active rooms only
     });
 
     if (!room) {
       return NextResponse.json(
-        { error: "Room not found or unauthorized" },
-        { status: 404 }
+        { 
+          error: "No scheduled meeting found",
+          message: "Please schedule a meeting with the doctor first"
+        },
+        { status: 406 }
       );
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: "Room found",
-      roomId: room.roomId 
+      roomId: room.roomId
     });
-
+    
   } catch (error) {
     console.error("Error fetching room:", error);
     return NextResponse.json(
