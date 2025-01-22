@@ -4,7 +4,7 @@ import useUser from '@/app/hooks/useUser';
 import React, { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
-import { NavbarWrapper } from '@/app/healthcare/components/NavbarWrapper';
+import { NavbarWrapper } from '@/app/doctor_home/components/NavbarWrapper';
 import './page.css';
 
 const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
