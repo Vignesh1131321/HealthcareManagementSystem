@@ -1,0 +1,7 @@
+.hospital-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+  display: flex;
+  flex-direction: column;
+}
+

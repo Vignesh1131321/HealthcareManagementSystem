@@ -34,7 +34,10 @@ export default function DoctorAppointmentPage() {
 
   return (
 
-    <div>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)',
+    }}>
       <NavbarWrapper/>
       {doctorDetails ? (
         <DoctorAppointment doctorId={doctorDetails.placeId} />
