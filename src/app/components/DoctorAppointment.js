@@ -6,8 +6,6 @@ import axios from 'axios';
 import './DoctorAppointment.css';
 import {v4 as uuid} from 'uuid';
 import toast from 'react-hot-toast';
-import { useRouter } from "next/navigation";
-
 
 
 export const DoctorAppointment = ({ doctorId }) => {
