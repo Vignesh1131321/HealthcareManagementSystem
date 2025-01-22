@@ -31,3 +31,40 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+export async function PUT(req: NextRequest) {
+  const { userId, doctorId, prescription } = await req.json();
+  console.log("HI PUTTING info");
+  if (!userId || !doctorId || !prescription) {
+    return NextResponse.json(
+      { message: "Missing required fields" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const client = await clientPromise;
+    const db = client.db("your-database-name");
+    const appointmentsCollection = db.collection("appointments");
+
+    const result = await appointmentsCollection.updateOne(
+      { userId, doctorId },
+      { $set: { prescription } }
+    );
+
+    if (result.matchedCount === 0) {
+      return NextResponse.json(
+        { message: "Appointment not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ message: "Prescription updated successfully" });
+  } catch (error) {
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { message: "Error updating prescription" },
+      { status: 500 }
+    );
+  }
+}

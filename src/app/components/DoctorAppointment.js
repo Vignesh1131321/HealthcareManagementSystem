@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Calendar, Clock, User, Phone, MapPin, Calendar as CalendarIcon } from 'lucide-react';
 import axios from 'axios';
 import './DoctorAppointment.css';
@@ -9,6 +10,8 @@ export const DoctorAppointment = ({ doctorId }) => {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [filter, setFilter] = useState('all'); // all, upcoming, past
+
+  const router = useRouter();
 
   useEffect(() => {
     fetchAppointments();
@@ -53,6 +56,11 @@ export const DoctorAppointment = ({ doctorId }) => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handlePrescription = (userId, doctorId) => {
+    console.log('Prescription for:', userId, doctorId);
+    router.push(`/prescription?userId=${userId}&doctorId=${doctorId}`);
   };
 
   if (loading) {
@@ -121,7 +129,7 @@ export const DoctorAppointment = ({ doctorId }) => {
 
             <div className="appointment-actions">
               <button className="action-btn view">View Details</button>
-              <button className="action-btn reschedule">Reschedule</button>
+              <button className="action-btn reschedule" onClick={() => handlePrescription(appointment.userId, appointment.doctorId)}>Give Prescription</button>
             </div>
           </div>
         ))}

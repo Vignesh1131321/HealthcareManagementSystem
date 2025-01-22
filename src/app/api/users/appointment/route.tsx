@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
             appointmentDate: date,
             appointmentTime: time,
             createdAt: new Date(),
+            prescription: [], // Initialize with an empty array for prescriptions
         });
 
         return NextResponse.json(
