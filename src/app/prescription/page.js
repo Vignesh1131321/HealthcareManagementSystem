@@ -2,10 +2,16 @@
 
 import React from "react";
 import { useState } from 'react';
+import { useRouter, useSearchParams } from "next/navigation";
 import { Plus, Trash2, Send } from 'lucide-react';
 import './styles.css';
+/* import { console } from "inspector"; */
 
 export default function Page() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const userId = searchParams.get("userId");
+    const doctorId = searchParams.get("doctorId");
   const [medicines, setMedicines] = useState([{
     name: '',
     dosage: '',
@@ -46,17 +52,38 @@ export default function Page() {
     setMedicines(updatedMedicines);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Handle prescription submission here
-    console.log({ patientDetails, medicines });
+  const handleSubmit = async () => {
+/*     e.preventDefault();
+ */    try {
+    console.log("trying to submit");
+      const response = await fetch(`/api/doctorgchjgv`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+          doctorId,
+          prescription: medicines,
+          
+        }),
+      });
+      console.log(medicines);
+      if (response.ok) {
+        alert("Prescription updated successfully!");
+      } else {
+        console.error("Error updating prescription:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error submitting prescription:", error);
+    }
   };
 
   return (
     <div className="prescription-container">
       <h1 className="prescription-title">Create Prescription</h1>
       
-      <form onSubmit={handleSubmit} className="prescription-form">
+      <div>
         <div className="patient-details">
           <h2>Patient Details</h2>
           <div className="form-grid">
@@ -173,10 +200,10 @@ export default function Page() {
           ))}
         </div>
 
-        <button type="submit" className="submit-prescription-btn">
-          <Send size={20} /> Submit Prescription
+        <button className="submit-prescription-btn" onClick={handleSubmit}>
+           Submit Prescription
         </button>
-      </form>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Calendar, Clock, User, Phone, MapPin, Calendar as CalendarIcon } from 'lucide-react';
 import axios from 'axios';
 import './DoctorAppointment.css';
@@ -94,6 +95,11 @@ export const DoctorAppointment = ({ doctorId }) => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const handlePrescription = (userId, doctorId) => {
+    console.log('Prescription for:', userId, doctorId);
+    router.push(`/prescription?userId=${userId}&doctorId=${doctorId}`);
   };
 
   if (loading) {
