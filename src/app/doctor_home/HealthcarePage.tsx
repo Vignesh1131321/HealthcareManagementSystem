@@ -12,7 +12,7 @@ import {Footer} from "./footer/Footer"
 
 export const HealthcarePage: React.FC = () => {
   return (
-    <>
+    <main suppressHydrationWarning={true}>
     <NavbarWrapper/>
     <div className={styles.pageContainer}>
       {/* Header Section */}
@@ -55,6 +55,6 @@ export const HealthcarePage: React.FC = () => {
       </div>
     </div>
     <Footer/>
-    </>
+    </main>
   );
 };
