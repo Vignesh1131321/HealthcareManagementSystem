@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useLoadScript } from '@react-google-maps/api';
+import { useLoadScript,Autocomplete } from '@react-google-maps/api';
 import { 
   User, Mail, Lock, Phone, UserPlus, Building, MapPin,
   Stethoscope, ChevronRight, ChevronLeft, Award
 } from 'lucide-react';
 import styles from './DoctorSignUp.module.css';
+
 
 interface DoctorData {
   username: string;
@@ -47,7 +48,8 @@ export const DoctorSignUp: React.FC<DoctorSignUpProps> = ({ onSubmit }) => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
+  
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     libraries: ['places'],
@@ -99,6 +101,24 @@ export const DoctorSignUp: React.FC<DoctorSignUpProps> = ({ onSubmit }) => {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
+  const onPlaceSelected = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place.geometry && place.geometry.location) {
+        setPlaceData({
+          placeId: place.place_id || '',
+          location: place.formatted_address || '',
+          coordinates: {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+          }
+        });
+        if (errors.location) {
+          setErrors(prev => ({ ...prev, location: '' }));
+        }
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +134,7 @@ export const DoctorSignUp: React.FC<DoctorSignUpProps> = ({ onSubmit }) => {
       onSubmit(doctorData);
     }
   };
-
+  if (!isLoaded) return <div>Loading...</div>;
   return (
     <form onSubmit={handleSubmit} className={styles.doctorForm}>
       <div className={styles.stepIndicator}>
@@ -250,11 +270,17 @@ export const DoctorSignUp: React.FC<DoctorSignUpProps> = ({ onSubmit }) => {
             </div>
             <div className={styles.inputWrapper}>
               <MapPin className={styles.inputIcon} />
-              <input
-                type="text"
-                placeholder="Search for your clinic location"
-                className={styles.input}
-              />
+              <Autocomplete
+            onLoad={setAutocomplete}
+            onPlaceChanged={onPlaceSelected}
+          >
+            <input
+              type="text"
+              placeholder="Search for your clinic location"
+              className={`${styles.input} ${errors.location ? styles.inputError : ''}`}
+            />
+          </Autocomplete>
+          {errors.location && <span className={styles.errorMessage}>{errors.location}</span>}
             </div>
           </div>
         </div>

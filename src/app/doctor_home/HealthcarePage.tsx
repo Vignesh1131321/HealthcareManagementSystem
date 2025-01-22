@@ -23,9 +23,9 @@ export const HealthcarePage: React.FC = () => {
         {/* Hero Section */}
         <div className={styles.heroSection}>
           <HeroContent
-            title="Virtual healthcare for you"
-            description="MediLink provides progressive, and affordable healthcare, accessible on mobile and online for everyone"
-            buttonText="Learn More"
+           title="Empower Your Practice"
+           description="Join MediLink to provide cutting-edge, accessible healthcare. Manage your patients seamlessly with our intuitive platform designed for healthcare professionals."
+           buttonText="Join Now"
           />
           <div className={styles.heroImageWrapper}>
             <img
@@ -39,8 +39,9 @@ export const HealthcarePage: React.FC = () => {
 
         {/* Services Section */}
         <ServiceHeader
-          title="Our Services"
-          description="We provide the best choices for you. Adjust it to your health needs and ensure you undergo treatment with our highly qualified doctors. You can consult with us which type of service is suitable for your health."
+        title="Our Services"
+        description="Expand your reach with MediLink. Offer video consultations, manage online prescriptions, and schedule appointments effortlessly with your patients through our comprehensive platform."
+
         />
         <Services />
         <br></br>
