@@ -170,7 +170,7 @@ const handleGenerateSummary = async (record: any) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ 
-        message: `Please analyze this medical test report and provide a concise summary so that it is easy for non medical person to understand it as well as there are wnough details for a doctor to read and easily understd a: ${record.textContent}` 
+        message: `Please analyze this medical test report and provide a concise summary so that it is easy for non medical person to understand it as well as there are wnough details for a doctor to read and easily understandable: ${record.textContent}` 
       }),
     });
 
