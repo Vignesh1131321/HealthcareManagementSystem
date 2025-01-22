@@ -3,6 +3,7 @@
   max-width: 480px;
   margin: 2rem auto;
   padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .formSection {
@@ -11,6 +12,7 @@
   padding: 2.5rem 2rem;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #f3f4f6;
+  box-sizing: border-box;
 }
 
 .formSection h3 {
@@ -41,11 +43,13 @@
   width: 100%;
   max-width: 360px;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .inputWrapper {
   position: relative;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .inputIcon {
@@ -66,6 +70,8 @@
   font-size: 1rem;
   transition: all 0.2s ease;
   background-color: #f9fafb;
+  box-sizing: border-box;
+  margin: 0;
 }
 
 .input:hover {
@@ -85,6 +91,7 @@
 }
 
 .verifyButton {
+  width: 100%;
   background-color: #6366f1;
   color: white;
   padding: 0.875rem 1.5rem;
@@ -94,11 +101,11 @@
   transition: all 0.2s ease;
   border: none;
   cursor: pointer;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  box-sizing: border-box;
 }
 
 .verifyButton:hover {
@@ -130,6 +137,7 @@
   display: block;
   transition: all 0.2s ease;
   border-radius: 0.5rem;
+  width: auto;
 }
 
 .resendButton:hover {

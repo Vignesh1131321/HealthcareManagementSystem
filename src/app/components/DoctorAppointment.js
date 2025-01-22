@@ -6,7 +6,6 @@ import axios from 'axios';
 import './DoctorAppointment.css';
 import {v4 as uuid} from 'uuid';
 import toast from 'react-hot-toast';
-import { useRouter } from "next/navigation";
 
 
 
@@ -95,11 +94,6 @@ export const DoctorAppointment = ({ doctorId }) => {
       month: 'long',
       day: 'numeric'
     });
-  };
-
-  const handlePrescription = (userId, doctorId) => {
-    console.log('Prescription for:', userId, doctorId);
-    router.push(`/prescription?userId=${userId}&doctorId=${doctorId}`);
   };
 
   if (loading) {

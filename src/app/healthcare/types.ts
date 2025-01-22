@@ -11,7 +11,7 @@ export interface LogoProps {
 }
 
 export interface HeroContentProps {
-  title: string | React.ReactNode;
+  title: React.ReactNode;
   description: string;
   buttonText: string;
 }
