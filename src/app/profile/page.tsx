@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
-import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch} from 'lucide-react';
+import { X, FileText, Upload, Eye, User, Home, Phone, Activity, Heart, AlertCircle, PillIcon,Mail,MapPin,Calendar,FileSearch,VideoIcon} from 'lucide-react';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import axios from "axios";
 import { toast } from "react-hot-toast";
@@ -10,6 +10,7 @@ import { signOut } from "next-auth/react";
 import ProfileForm from './ProfileForm';
 import "./profile.css";
 import {MedicalSummary} from "../components/MedicalSummary";
+import NoMeetingModal from '../components/NoMeetingModal';
 
 interface ProfileImage {
   contentType: string;
@@ -86,6 +87,7 @@ export default function ProfilePage() {
     contentType: string;
     data: string;
   }>>([]);
+  const [showNoMeetingModal, setShowNoMeetingModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [showCompleteProfileCard, setShowCompleteProfileCard] = useState(false);
@@ -417,31 +419,32 @@ const handleGenerateSummary = async (record: any) => {
       setLoading(false);
     }
   };
-  const fetchRoom = async (userId: string,doctorId:string) => {
+  const fetchRoom = async (userId: string, doctorId: string) => {
     try {
       setLoading(true);
       console.log("fetching room");
       const response = await axios.get('/api/rooms', {
-        headers :{
+        headers: {
           userId: userId,
-          doctorId:doctorId
+          doctorId: doctorId
         }
       });
-      console.log("response fetching");
-
-      console.log("response data",response.data);
-      console.log("response data room",response.data.room);
       
-      if (response.data) {
-        // console.log("Room found:", response.data.room);
+      console.log("response data", response.data);
+      
+      if (response.data.roomId) {
         setRoomId(response.data.roomId);
         router.push(`/room/${response.data.roomId}`);
-      } else {
-        toast.error('Room not found');
       }
-    } catch (error) {
-      console.error('Error fetching room:', error);
-      toast.error('Failed to join room');
+    } catch (error: any) {
+      console.log('Error details:', error.response?.data);
+      
+      if (error.response?.status === 406) {
+        // Using the standard toast() method instead
+       setShowNoMeetingModal(true);
+      } else {
+        toast.error('Failed to join room. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -743,14 +746,17 @@ return (
                           <div className="appointment-header">
                             <Calendar size={20} />
                             <h3>{appointment.doctorName.split('|')[0]}</h3>
+                            <div className="appointment-actions">
                             <button 
                               onClick={() => handleJoinRoom(userDetails?._id, appointment.doctorId)}
                               className="video-call-btn"
                               title="Join Video Call"
                             >
+                              <VideoIcon size={20} />
                               VideoCall
                               {/* <VideoCamera size={20} /> */}
                             </button>
+                            </div>
                           </div>
                           {appointment.identity === "2" && (
                             <p className="specialty">Specialty: {appointment.specialty}</p>
@@ -831,6 +837,8 @@ return (
                     </div>
                   </div>
                 )}
+                {/* Add the NoMeetingModal here */}
+<NoMeetingModal isOpen={showNoMeetingModal} onClose={() => setShowNoMeetingModal(false)} />
     </div>
   </div>
 );
