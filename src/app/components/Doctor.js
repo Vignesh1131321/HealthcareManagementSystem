@@ -28,7 +28,8 @@ const Doctor = ({ specialty }) => {
   const specialty1 = searchParams.get('specialty');
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyCToBERY0q2_g0TDBXe5IXCRoFp8cdB2Y4",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    libraries: ["places"],
     libraries: ["places"],
   });
 
