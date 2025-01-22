@@ -1,9 +1,11 @@
 "use client";
+
 import useUser from '@/app/hooks/useUser';
 import React, { useEffect, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 import { NavbarWrapper } from '@/app/healthcare/components/NavbarWrapper';
+import './page.css';
 
 const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
   const { fullName } = useUser();
@@ -29,10 +31,8 @@ const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
           720
         );
 
-        // Store the ZegoUIKitPrebuilt instance
         zegoRef.current = ZegoUIKitPrebuilt.create(kitToken);
         
-        // Mark as initialized
         isInitializedRef.current = true;
 
         await zegoRef.current.joinRoom({
@@ -65,7 +65,6 @@ const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
 
     initRoom();
 
-    // Cleanup function
     return () => {
       if (zegoRef.current) {
         try {
@@ -81,13 +80,35 @@ const Room = ({ params }: { params: Promise<{ roomid: string }> }) => {
 
   return (
     <>
-      <NavbarWrapper/>
-      <div
-        className="myCallContainer"
-        ref={containerRef}
-        style={{ width: '100vw', height: '100vh' }}
+      <style jsx>{`
+        .hospital-page {
+          min-height: 100vh;
+          background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+          display: flex;
+          flex-direction: column;
+        }
+      `}</style>
+      
+      <main 
+        className="hospital-page"
+        style={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
       >
-      </div>
+        <NavbarWrapper />
+        <div
+          className="myCallContainer"
+          ref={containerRef}
+          style={{
+            width: '100%',
+            height: 'calc(100vh - 64px)',
+            position: 'relative'
+          }}
+        />
+      </main>
     </>
   );
 };
