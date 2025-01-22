@@ -45,6 +45,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { NavbarWrapper } from "../healthcare/components/NavbarWrapper";
 
 const AppointmentPage = () => {
   const [doctor, setDoctor] = useState(null);
@@ -311,7 +312,8 @@ useEffect(() => {
 
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", backgroundImage: "url('/hospital-background.svg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+    <div className="hospital-page"> <NavbarWrapper/>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", background:"linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%)",backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
     <div className="appointment-page-container">
       <div className="top-sections-container">
         <div className="doctor-details-section">
@@ -480,6 +482,7 @@ useEffect(() => {
         </div>
           <ReviewSlider testimonials = {reviews}></ReviewSlider>
         </div>
+      </div>
       </div>
   );
 };

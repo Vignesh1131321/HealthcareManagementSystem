@@ -801,18 +801,26 @@ return (
                           <div className="appointment-header">
                             <Calendar size={20} />
                             <h3>{appointment.doctorName.split('|')[0]}</h3>
-                            <div className="appointment-actions">
-                            <button 
-                              onClick={() => handleJoinRoom(userDetails?._id, appointment.doctorId)}
-                              className="video-call-btn"
-                              title="Join Video Call"
-                            >
-                              <VideoIcon size={20} />
-                              VideoCall
-                              {/* <VideoCamera size={20} /> */}
-                            </button>
                             </div>
-                          </div>
+                            <div className="appointment-actions">
+                              <button
+                                onClick={() => handleJoinRoom(userDetails?._id, appointment.doctorId)}
+                                className="video-call-btn"
+                                title="Join Video Call"
+                              >
+                                <VideoIcon size={20} />
+                                Video Call
+                              </button>
+                              <button
+                                /* onClick={() => handleGetPrescription(appointment._id)} */
+                                className="prescription-btn"
+                                title="Get Prescription"
+                              >
+                                <FileText size={20} />
+                                Get Prescription
+                              </button>
+                            </div>
+                      
                           {appointment.identity === "2" && (
                             <p className="specialty">Specialty: {appointment.specialty}</p>
                           )}

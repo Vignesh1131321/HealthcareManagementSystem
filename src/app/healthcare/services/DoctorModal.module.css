@@ -128,7 +128,7 @@
 .closeButton {
     padding: 10px 20px;
     border: none;
-    background-color: #e74c3c;
+    background-color: #607d8bcc;
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -137,5 +137,5 @@
 }
 
 .closeButton:hover {
-    background-color: #c0392b;
+    background-color: #607D8B;
 }

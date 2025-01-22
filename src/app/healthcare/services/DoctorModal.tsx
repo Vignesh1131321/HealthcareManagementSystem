@@ -10,6 +10,7 @@ import {
   FaBone,
   FaBaby,
   FaEye,
+  FaFemale   
 } from "react-icons/fa";
 import { MdPersonPin } from "react-icons/md";
 
@@ -23,6 +24,7 @@ const doctorTypes = [
   { name: "Pediatrician", icon: <FaBaby size={40} /> },
   { name: "Orthopedic", icon: <FaBone size={40} /> },
   { name: "Ophthalmologist", icon: <FaEye size={40} /> },
+  { name: "Gynecologist", icon: <FaFemale    size={40} /> },
 ];
 
 export const DoctorModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
