@@ -116,7 +116,7 @@ export default function ProfilePage() {
   const [roomId, setRoomId] = useState("");
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
-  const [selectedPrescriptions, setSelectedPrescriptions] = useState([]);
+  const [selectedPrescriptions, setSelectedPrescriptions] = useState<Prescription[]>([]);
   const [isLoadingPrescriptions, setIsLoadingPrescriptions] = useState(false);
   const [previewRecord, setPreviewRecord] = useState<{
     name: string;
