@@ -746,7 +746,7 @@ Base Layout
     justify-content: center;
   }
 }
-/* .modal-overlay {
+.modal-overlay {
   animation: fadeIn 0.2s ease-out;
 }
 
@@ -824,4 +824,4 @@ Base Layout
   margin-left: 1rem;
   padding: 0.5rem 0;
   border-bottom: 1px dashed #eee;
-} */
+}
