@@ -4,3 +4,4 @@ npm install
 npm install lucide-react
 npm install pdf-parse
 npm install --save groq-sdk
+npm install nodemailer

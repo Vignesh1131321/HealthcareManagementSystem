@@ -1,0 +1,191 @@
+.verificationContainer {
+  width: 100%;
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.formSection {
+  background: white;
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f3f4f6;
+  box-sizing: border-box;
+}
+
+.formSection h3 {
+  margin: 0 0 1.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+}
+
+.verificationText {
+  margin-bottom: 2rem;
+  color: #6b7280;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.verificationText strong {
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.verificationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  width: 18px;
+  height: 18px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #f9fafb;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.input:hover {
+  border-color: #d1d5db;
+  background-color: white;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.verifyButton {
+  width: 100%;
+  background-color: #6366f1;
+  color: white;
+  padding: 0.875rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-sizing: border-box;
+}
+
+.verifyButton:hover {
+  background-color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.verifyButton:active {
+  transform: translateY(0);
+}
+
+.verifyButton:disabled {
+  background-color: #e5e7eb;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.resendButton {
+  background: none;
+  border: none;
+  color: #6366f1;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin: 0 auto;
+  display: block;
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  width: auto;
+}
+
+.resendButton:hover {
+  background-color: #f5f5f5;
+  color: #4f46e5;
+}
+
+.resendButton:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+  background: none;
+}
+
+.errorMessage {
+  color: #ef4444;
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  background-color: #fef2f2;
+  border-radius: 0.5rem;
+  border: 1px solid #fee2e2;
+}
+
+.successMessage {
+  color: #10b981;
+  text-align: center;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  background-color: #f0fdf4;
+  border-radius: 0.5rem;
+  border: 1px solid #dcfce7;
+}
+
+@media (max-width: 640px) {
+  .verificationContainer {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .formSection {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .formSection h3 {
+    font-size: 1.5rem;
+  }
+
+  .verificationText {
+    font-size: 0.9rem;
+  }
+}

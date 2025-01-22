@@ -8,6 +8,7 @@ import {v4 as uuid} from 'uuid';
 import toast from 'react-hot-toast';
 
 
+
 export const DoctorAppointment = ({ doctorId }) => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,7 +95,6 @@ export const DoctorAppointment = ({ doctorId }) => {
       day: 'numeric'
     });
   };
-
 
   if (loading) {
     return (

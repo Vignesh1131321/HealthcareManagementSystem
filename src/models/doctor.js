@@ -39,7 +39,7 @@ const doctorSchema = new mongoose.Schema({
   placeId: {
     type: String,
     required: [true, "Place ID is required"],
-    unique: true,
+    
   },
   location: {
     address: String,

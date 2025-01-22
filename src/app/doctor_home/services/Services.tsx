@@ -77,18 +77,28 @@ import { FaRobot, FaHospital } from "react-icons/fa"; // Importing React Icons
 const servicesData: ServiceCardProps[] = [
   {
     imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/bcc86c97d2a1f454d7c56a4523ae36991114bba3b55e0249dce5b16e730bc59c?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
-    imageAlt: "Search doctor icon",
-    title: "Chat",
+    "https://cdn.builder.io/api/v1/image/assets/TEMP/9669e28a94a0712decf9cf2aea791a4844a0b2ba5275c0d4c287673faf5bcd92?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
+    imageAlt: "Video",
+    title: "Video Consultation",
     description:
-      "Deliver timely and reliable support to patients with messaging",
+            "Deliver personalized care through secure, face-to-face virtual consultation",
   },{
     imageSrc:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/bcc86c97d2a1f454d7c56a4523ae36991114bba3b55e0249dce5b16e730bc59c?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
-    imageAlt: "Search doctor icon",
-    title: "Video Consultations",
+    "https://cdn.builder.io/api/v1/image/assets/TEMP/9d89bab03ab543406445b1ea0544a233d317412dc0a7e20834b16dff0deeeee2?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
+    imageAlt: "Tracking icon",
+    title: "Appointments",
     description:
-      "Deliver personalized care through secure, face-to-face virtual consultations",
+      "Track your patient bookings through our webapp",
+
+  },
+  {
+    imageSrc:
+   "https://cdn.builder.io/api/v1/image/assets/TEMP/15c5bf4fcde5830907277032315d66226187cd0422f88a1e1726a4fd9f7b6645?placeholderIfAbsent=true&apiKey=47664af269c84f519addca9fde036b21",
+    imageAlt: "Prescription",
+    title: "Prescription",
+    description:
+      "Provide fast and electronic prescriptions to your patients organised in a structured format",
+
   },
 ];
 
